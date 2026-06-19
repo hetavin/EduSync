@@ -258,17 +258,17 @@ if (yearFilter) {
 
 function filterStudents() {
     const selectedClass = classFilter ? classFilter.value : 'all';
-    const selectedYear = yearFilter ? yearFilter.value : 'all';
+    const selectedBatch = yearFilter ? yearFilter.value : 'all';
     const rows = document.querySelectorAll('#studentsTableBody tr');
     
     rows.forEach(row => {
         const rowClass = row.getAttribute('data-class');
-        const rowYear = row.getAttribute('data-year');
+        const rowBatch = row.querySelector('td:nth-child(5)').textContent.trim(); // Get batch from table
         
         const classMatch = selectedClass === 'all' || rowClass === selectedClass;
-        const yearMatch = selectedYear === 'all' || rowYear === selectedYear;
+        const batchMatch = selectedBatch === 'all' || rowBatch === selectedBatch;
         
-        if (classMatch && yearMatch) {
+        if (classMatch && batchMatch) {
             row.style.display = '';
             row.style.animation = 'fadeIn 0.3s ease';
         } else {
@@ -1199,3 +1199,503 @@ function parseCSVLine(line) {
     result.push(current);
     return result;
 }
+
+// ===== Attendance Details Functionality =====
+
+// Attendance Search
+const attendanceSearch = document.getElementById('attendanceSearch');
+if (attendanceSearch) {
+    attendanceSearch.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('#attendanceTableBody tr');
+        
+        let visibleCount = 0;
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            const shouldShow = text.includes(searchTerm);
+            row.style.display = shouldShow ? '' : 'none';
+            if (shouldShow) visibleCount++;
+        });
+        
+        updateAttendanceSummary();
+    });
+}
+
+// Attendance Class Filter
+const attendanceClassFilter = document.getElementById('attendanceClassFilter');
+if (attendanceClassFilter) {
+    attendanceClassFilter.addEventListener('change', function() {
+        filterAttendanceTable();
+    });
+}
+
+// Attendance Month Filter
+const attendanceMonthFilter = document.getElementById('attendanceMonthFilter');
+if (attendanceMonthFilter) {
+    attendanceMonthFilter.addEventListener('change', function() {
+        filterAttendanceTable();
+        // Clear date range when month is selected
+        document.getElementById('attendanceDateFrom').value = '';
+        document.getElementById('attendanceDateTo').value = '';
+    });
+}
+
+// Date Range Filter
+const attendanceDateFrom = document.getElementById('attendanceDateFrom');
+const attendanceDateTo = document.getElementById('attendanceDateTo');
+const applyDateRangeBtn = document.getElementById('applyDateRangeBtn');
+const clearDateRangeBtn = document.getElementById('clearDateRangeBtn');
+
+if (applyDateRangeBtn) {
+    applyDateRangeBtn.addEventListener('click', function() {
+        const fromDate = attendanceDateFrom.value;
+        const toDate = attendanceDateTo.value;
+        
+        if (!fromDate || !toDate) {
+            showToast('Please select both from and to dates', 'warning');
+            return;
+        }
+        
+        if (new Date(fromDate) > new Date(toDate)) {
+            showToast('From date cannot be after to date', 'error');
+            return;
+        }
+        
+        // Clear month filter when date range is applied
+        if (attendanceMonthFilter) {
+            attendanceMonthFilter.value = '';
+        }
+        
+        filterAttendanceTable();
+        showToast(`Showing attendance from ${fromDate} to ${toDate}`, 'success');
+    });
+}
+
+if (clearDateRangeBtn) {
+    clearDateRangeBtn.addEventListener('click', function() {
+        attendanceDateFrom.value = '';
+        attendanceDateTo.value = '';
+        filterAttendanceTable();
+        showToast('Date range filter cleared', 'info');
+    });
+}
+
+// Filter Attendance Table
+function filterAttendanceTable() {
+    const selectedClass = attendanceClassFilter ? attendanceClassFilter.value : 'all';
+    const selectedMonth = attendanceMonthFilter ? attendanceMonthFilter.value : '';
+    const fromDate = attendanceDateFrom ? attendanceDateFrom.value : '';
+    const toDate = attendanceDateTo ? attendanceDateTo.value : '';
+    const rows = document.querySelectorAll('#attendanceTableBody tr');
+    
+    rows.forEach(row => {
+        const rowClass = row.querySelector('td:nth-child(3)').textContent.trim();
+        
+        const classMatch = selectedClass === 'all' || rowClass === selectedClass;
+        
+        // For now, we'll show all rows since we're showing monthly summary
+        // In a real app, you'd filter based on actual date data
+        if (classMatch) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    updateAttendanceSummary();
+}
+
+// Update Attendance Summary
+function updateAttendanceSummary() {
+    const visibleRows = Array.from(document.querySelectorAll('#attendanceTableBody tr'))
+        .filter(row => row.style.display !== 'none');
+    
+    let totalPresent = 0;
+    let totalAbsent = 0;
+    let totalLate = 0;
+    
+    visibleRows.forEach(row => {
+        const presentCell = row.querySelector('td:nth-child(6)');
+        const absentCell = row.querySelector('td:nth-child(7)');
+        const lateCell = row.querySelector('td:nth-child(8)');
+        
+        if (presentCell) totalPresent += parseInt(presentCell.textContent) || 0;
+        if (absentCell) totalAbsent += parseInt(absentCell.textContent) || 0;
+        if (lateCell) totalLate += parseInt(lateCell.textContent) || 0;
+    });
+    
+    const total = totalPresent + totalAbsent;
+    const percentage = total > 0 ? ((totalPresent / total) * 100).toFixed(1) : 0;
+    
+    const totalPresentCount = document.getElementById('totalPresentCount');
+    const totalAbsentCount = document.getElementById('totalAbsentCount');
+    const totalLateCount = document.getElementById('totalLateCount');
+    const attendancePercentage = document.getElementById('attendancePercentage');
+    
+    if (totalPresentCount) totalPresentCount.textContent = totalPresent;
+    if (totalAbsentCount) totalAbsentCount.textContent = totalAbsent;
+    if (totalLateCount) totalLateCount.textContent = totalLate;
+    if (attendancePercentage) attendancePercentage.textContent = percentage + '%';
+}
+
+// Export Attendance
+const exportAttendance = document.getElementById('exportAttendance');
+if (exportAttendance) {
+    exportAttendance.addEventListener('click', function() {
+        const rows = document.querySelectorAll('#attendanceTableBody tr');
+        let visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
+        
+        if (visibleRows.length === 0) {
+            showToast('No attendance data to export', 'warning');
+            return;
+        }
+        
+        let csvContent = 'Enrollment No,Student Name,Class,Month,Total Days,Present,Absent,Late,Attendance %\\n';
+        
+        visibleRows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const enrollment = cells[0].textContent.trim();
+            const name = cells[1].querySelector('span').textContent.trim();
+            const classInfo = cells[2].textContent.trim();
+            const month = cells[3].textContent.trim();
+            const totalDays = cells[4].textContent.trim();
+            const present = cells[5].textContent.trim();
+            const absent = cells[6].textContent.trim();
+            const late = cells[7].textContent.trim();
+            const percentage = cells[8].textContent.trim();
+            
+            csvContent += `${enrollment},${name},${classInfo},${month},${totalDays},${present},${absent},${late},${percentage}\\n`;
+        });
+        
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `attendance_export_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+        showToast('Attendance data exported successfully!', 'success');
+    });
+}
+
+// View Attendance Details
+const viewDetailsBtns = document.querySelectorAll('.view-details-btn');
+const viewAttendanceDetailsModal = document.getElementById('viewAttendanceDetailsModal');
+const detailsStudentName = document.getElementById('detailsStudentName');
+const detailsStudentInfo = document.getElementById('detailsStudentInfo');
+const detailsAttendanceTable = document.getElementById('detailsAttendanceTable');
+
+// Attach event listeners to view details buttons
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.view-details-btn')) {
+        const btn = e.target.closest('.view-details-btn');
+        const studentId = btn.getAttribute('data-student');
+        const row = btn.closest('tr');
+        const studentName = row.querySelector('.student-info span').textContent;
+        const classInfo = row.querySelector('td:nth-child(3)').textContent;
+        const month = row.querySelector('td:nth-child(4)').textContent;
+        
+        showAttendanceDetails(studentId, studentName, classInfo, month);
+    }
+});
+
+function showAttendanceDetails(studentId, studentName, classInfo, month) {
+    if (!viewAttendanceDetailsModal) return;
+    
+    detailsStudentName.textContent = `${studentName} - Attendance Details`;
+    detailsStudentInfo.textContent = `${studentId} | ${classInfo} | ${month}`;
+    
+    // In a real app, you'd fetch actual day-by-day data
+    // For now, we'll show sample data
+    detailsAttendanceTable.innerHTML = generateSampleAttendanceDetails();
+    
+    viewAttendanceDetailsModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function generateSampleAttendanceDetails() {
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const statuses = ['present', 'present', 'late', 'absent', 'present'];
+    const times = ['09:15 AM', '09:10 AM', '09:35 AM', '-', '09:08 AM'];
+    
+    let html = '';
+    for (let i = 0; i < 5; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const dayOfWeek = days[date.getDay()];
+        const status = statuses[i];
+        const time = times[i];
+        
+        html += `
+            <tr>
+                <td>${dateStr}</td>
+                <td>${dayOfWeek}</td>
+                <td><span class="status-badge ${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
+                <td>${time}</td>
+                <td>
+                    <button class="btn-icon edit-attendance-btn" title="Edit Attendance" 
+                            data-date="${date.toISOString().split('T')[0]}" 
+                            data-status="${status}" 
+                            data-time="${time.replace(' AM', '').replace(' PM', '')}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }
+    
+    return html;
+}
+
+// Edit Attendance
+const editAttendanceModal = document.getElementById('editAttendanceModal');
+const editAttendanceForm = document.getElementById('editAttendanceForm');
+const editAttendanceStudent = document.getElementById('editAttendanceStudent');
+const editAttendanceDate = document.getElementById('editAttendanceDate');
+const editAttendanceStatus = document.getElementById('editAttendanceStatus');
+const editAttendanceTime = document.getElementById('editAttendanceTime');
+const editAttendanceNotes = document.getElementById('editAttendanceNotes');
+const cancelAttendanceEdit = document.getElementById('cancelAttendanceEdit');
+
+let currentEditingRow = null;
+
+// Open edit attendance modal
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.edit-attendance-btn')) {
+        e.stopPropagation();
+        const btn = e.target.closest('.edit-attendance-btn');
+        currentEditingRow = btn.closest('tr');
+        
+        const date = btn.getAttribute('data-date');
+        const status = btn.getAttribute('data-status');
+        const time = btn.getAttribute('data-time');
+        
+        // Get student name from details modal title or from parent row
+        let studentName = 'Student';
+        if (detailsStudentName) {
+            studentName = detailsStudentName.textContent.split(' - ')[0];
+        }
+        
+        editAttendanceStudent.value = studentName;
+        editAttendanceDate.value = date;
+        editAttendanceStatus.value = status;
+        editAttendanceTime.value = time && time !== '-' ? time : '';
+        editAttendanceNotes.value = '';
+        
+        editAttendanceModal.classList.add('active');
+    }
+});
+
+// Cancel edit attendance
+if (cancelAttendanceEdit) {
+    cancelAttendanceEdit.addEventListener('click', function() {
+        closeModal(editAttendanceModal);
+        currentEditingRow = null;
+    });
+}
+
+// Submit edit attendance form
+if (editAttendanceForm) {
+    editAttendanceForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const newStatus = editAttendanceStatus.value;
+        const newTime = editAttendanceTime.value;
+        const notes = editAttendanceNotes.value;
+        
+        if (currentEditingRow) {
+            // Update the row
+            const statusCell = currentEditingRow.querySelector('td:nth-child(3)');
+            const timeCell = currentEditingRow.querySelector('td:nth-child(4)');
+            
+            if (statusCell) {
+                statusCell.innerHTML = `<span class="status-badge ${newStatus}">${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}</span>`;
+            }
+            
+            if (timeCell) {
+                timeCell.textContent = newTime && newStatus !== 'absent' ? formatTime(newTime) : '-';
+            }
+            
+            // Update button data attributes
+            const editBtn = currentEditingRow.querySelector('.edit-attendance-btn');
+            if (editBtn) {
+                editBtn.setAttribute('data-status', newStatus);
+                editBtn.setAttribute('data-time', newTime);
+            }
+        }
+        
+        showToast('Attendance updated successfully!', 'success');
+        closeModal(editAttendanceModal);
+        currentEditingRow = null;
+        
+        // Update summary
+        updateAttendanceSummary();
+    });
+}
+
+// Format time (convert 09:15 to 09:15 AM)
+function formatTime(time) {
+    if (!time) return '-';
+    const [hours, minutes] = time.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+}
+
+// Initialize attendance summary on page load
+if (document.getElementById('attendance-details')) {
+    updateAttendanceSummary();
+}
+
+console.log('Attendance Details functionality loaded! 📊');
+
+// ===== All Students Tab - Add Student Button =====
+const addStudentBtn = document.getElementById('addStudentBtn');
+if (addStudentBtn) {
+    addStudentBtn.addEventListener('click', function() {
+        addStudentModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+}
+
+// ===== Delete Student Functionality =====
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.delete-btn')) {
+        const btn = e.target.closest('.delete-btn');
+        const row = btn.closest('tr');
+        const studentName = row.querySelector('.student-info span').textContent;
+        const studentId = row.querySelector('.student-id').textContent;
+        
+        if (confirm(`Are you sure you want to delete ${studentName} (${studentId})?\n\nThis action cannot be undone.`)) {
+            row.style.opacity = '0';
+            row.style.transform = 'translateX(-20px)';
+            
+            setTimeout(() => {
+                row.remove();
+                showToast(`${studentName} has been deleted successfully`, 'success');
+                updateStudentCount();
+            }, 300);
+        }
+    }
+});
+
+// Update student count in dashboard
+function updateStudentCount() {
+    const totalStudents = document.querySelectorAll('#studentsTableBody tr').length;
+    const dashboardCount = document.querySelector('.stat-value');
+    if (dashboardCount) {
+        dashboardCount.textContent = totalStudents;
+    }
+}
+
+// Make Edit buttons work for dynamically added rows
+function attachRowEventListeners(row) {
+    const editBtn = row.querySelector('.edit-btn');
+    const viewBtn = row.querySelector('.view-btn');
+    const deleteBtn = row.querySelector('.delete-btn');
+    
+    if (editBtn) {
+        editBtn.addEventListener('click', function() {
+            const cells = row.querySelectorAll('td');
+            const studentId = cells[0].querySelector('.student-id').textContent;
+            const studentName = cells[1].querySelector('.student-info span').textContent;
+            const studentEmail = cells[2].textContent;
+            const studentPhone = cells[3].textContent;
+            const studentClass = cells[5].textContent;
+            const studentYear = cells[6].textContent;
+            
+            document.getElementById('editStudentName').value = studentName;
+            document.getElementById('editStudentId').value = studentId;
+            document.getElementById('editStudentEmail').value = studentEmail;
+            document.getElementById('editStudentPhone').value = studentPhone;
+            document.getElementById('editStudentClass').value = studentClass;
+            
+            const yearMap = {'1st Year': '1', '2nd Year': '2', '3rd Year': '3', '4th Year': '4'};
+            document.getElementById('editStudentYear').value = yearMap[studentYear] || '1';
+            
+            editStudentModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    }
+    
+    if (viewBtn) {
+        viewBtn.addEventListener('click', function() {
+            const studentName = row.querySelector('.student-info span').textContent;
+            const studentId = row.querySelector('.student-id').textContent;
+            const studentEmail = row.querySelector('td:nth-child(3)').textContent;
+            const studentPhone = row.querySelector('td:nth-child(4)').textContent;
+            const studentClass = row.querySelector('td:nth-child(6)').textContent;
+            const studentYear = row.querySelector('td:nth-child(7)').textContent;
+            
+            const detailsHTML = `
+                <div style="padding: 20px; background: var(--fill-tertiary); border-radius: 12px;">
+                    <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
+                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(studentName)}&background=007AFF&color=fff&size=100" 
+                             alt="${studentName}" 
+                             style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--blue);">
+                        <div>
+                            <h3 style="font-size: 24px; color: var(--text-primary); margin-bottom: 8px;">${studentName}</h3>
+                            <p style="color: var(--text-secondary); font-size: 14px;"><strong>ID:</strong> ${studentId}</p>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px;">
+                        <div>
+                            <p style="color: var(--text-tertiary); font-size: 12px; margin-bottom: 4px;">Email</p>
+                            <p style="color: var(--text-primary); font-size: 14px; font-weight: 600;">${studentEmail}</p>
+                        </div>
+                        <div>
+                            <p style="color: var(--text-tertiary); font-size: 12px; margin-bottom: 4px;">Phone</p>
+                            <p style="color: var(--text-primary); font-size: 14px; font-weight: 600;">${studentPhone}</p>
+                        </div>
+                        <div>
+                            <p style="color: var(--text-tertiary); font-size: 12px; margin-bottom: 4px;">Class</p>
+                            <p style="color: var(--text-primary); font-size: 14px; font-weight: 600;">${studentClass}</p>
+                        </div>
+                        <div>
+                            <p style="color: var(--text-tertiary); font-size: 12px; margin-bottom: 4px;">Year</p>
+                            <p style="color: var(--text-primary); font-size: 14px; font-weight: 600;">${studentYear}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Create a temporary modal for viewing details
+            const viewModal = document.createElement('div');
+            viewModal.className = 'modal active';
+            viewModal.innerHTML = `
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h2>Student Details</h2>
+                        <button class="close-modal" onclick="this.closest('.modal').remove(); document.body.style.overflow = '';">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ${detailsHTML}
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(viewModal);
+            document.body.style.overflow = 'hidden';
+            
+            viewModal.addEventListener('click', function(e) {
+                if (e.target === viewModal) {
+                    viewModal.remove();
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    }
+}
+
+// Re-attach event listeners to existing rows
+document.querySelectorAll('#studentsTableBody tr').forEach(row => {
+    attachRowEventListeners(row);
+});
+
+console.log('All Students tab buttons are now fully functional! 🎯');

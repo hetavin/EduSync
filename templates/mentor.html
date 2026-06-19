@@ -232,13 +232,9 @@
                     <i class="fas fa-user-plus"></i>
                     <span>Register Face ID</span>
                 </a>
-                <a href="#classes" class="nav-item" data-tab="classes">
-                    <i class="fas fa-chalkboard"></i>
-                    <span>My Classes</span>
-                </a>
-                <a href="#attendance" class="nav-item" data-tab="attendance">
-                    <i class="fas fa-clipboard-check"></i>
-                    <span>Mark Attendance</span>
+                <a href="#attendance-details" class="nav-item" data-tab="attendance-details">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Attendance Details</span>
                 </a>
             </nav>
             
@@ -348,19 +344,19 @@
                 <section class="quick-actions">
                     <h2 class="section-title">Quick Actions</h2>
                     <div class="action-cards">
-                        <button class="action-card" onclick="document.querySelector('[data-tab=attendance]').click()">
+                        <button class="action-card" onclick="document.querySelector('[data-tab=attendance-details]').click()">
                             <div class="action-icon green">
-                                <i class="fas fa-camera"></i>
+                                <i class="fas fa-clipboard-list"></i>
                             </div>
-                            <h3>Mark Attendance</h3>
-                            <p>Take attendance for today</p>
+                            <h3>View Attendance</h3>
+                            <p>Check attendance records</p>
                         </button>
-                        <button class="action-card" onclick="document.querySelector('[data-tab=classes]').click()">
+                        <button class="action-card" onclick="document.querySelector('[data-tab=students]').click()">
                             <div class="action-icon orange">
-                                <i class="fas fa-chart-bar"></i>
+                                <i class="fas fa-users"></i>
                             </div>
-                            <h3>View Reports</h3>
-                            <p>Check class performance</p>
+                            <h3>Manage Students</h3>
+                            <p>View and edit student info</p>
                         </button>
                     </div>
                 </section>
@@ -428,11 +424,11 @@
                                 <input type="text" id="studentTableSearch" placeholder="Search students..." aria-label="Search students">
                             </div>
                             <select class="filter-select" id="yearFilter">
-                                <option value="all">All Years</option>
-                                <option value="1">1st Year</option>
-                                <option value="2">2nd Year</option>
-                                <option value="3">3rd Year</option>
-                                <option value="4">4th Year</option>
+                                <option value="all">All Batches</option>
+                                <option value="2023">Batch 2023</option>
+                                <option value="2022">Batch 2022</option>
+                                <option value="2021">Batch 2021</option>
+                                <option value="2020">Batch 2020</option>
                             </select>
                         </div>
                         <div class="card-actions" style="display: flex; gap: 12px;">
@@ -753,158 +749,321 @@
                 </div>
             </div>
 
-            <!-- My Classes Tab -->
-            <div class="tab-content" id="classes">
+            <!-- Attendance Details Tab -->
+            <div class="tab-content" id="attendance-details">
                 <div class="content-header">
                     <div>
-                        <h2 class="section-title">My Classes</h2>
-                        <p class="section-subtitle">Classes you are mentoring</p>
+                        <h2 class="section-title">Attendance Details</h2>
+                        <p class="section-subtitle">View and manage student attendance records</p>
                     </div>
                 </div>
-                <div class="classes-grid">
-                    <div class="class-card">
-                        <div class="class-header">
-                            <h3>Computer Science - A</h3>
-                            <span class="class-badge">3rd Year</span>
-                        </div>
-                        <div class="class-stats">
-                            <div class="class-stat">
-                                <i class="fas fa-users"></i>
-                                <span>45 Students</span>
-                            </div>
-                            <div class="class-stat">
-                                <i class="fas fa-percentage"></i>
-                                <span>92% Attendance</span>
-                            </div>
-                        </div>
-                        <button class="btn-primary">
-                            <i class="fas fa-eye"></i>
-                            View Students
-                        </button>
-                    </div>
-                    <div class="class-card">
-                        <div class="class-header">
-                            <h3>Computer Science - B</h3>
-                            <span class="class-badge">2nd Year</span>
-                        </div>
-                        <div class="class-stats">
-                            <div class="class-stat">
-                                <i class="fas fa-users"></i>
-                                <span>42 Students</span>
-                            </div>
-                            <div class="class-stat">
-                                <i class="fas fa-percentage"></i>
-                                <span>88% Attendance</span>
-                            </div>
-                        </div>
-                        <button class="btn-primary">
-                            <i class="fas fa-eye"></i>
-                            View Students
-                        </button>
-                    </div>
-                    <div class="class-card">
-                        <div class="class-header">
-                            <h3>Information Technology - A</h3>
-                            <span class="class-badge">3rd Year</span>
-                        </div>
-                        <div class="class-stats">
-                            <div class="class-stat">
-                                <i class="fas fa-users"></i>
-                                <span>38 Students</span>
-                            </div>
-                            <div class="class-stat">
-                                <i class="fas fa-percentage"></i>
-                                <span>90% Attendance</span>
-                            </div>
-                        </div>
-                        <button class="btn-primary">
-                            <i class="fas fa-eye"></i>
-                            View Students
-                        </button>
-                    </div>
-                    <div class="class-card">
-                        <div class="class-header">
-                            <h3>Information Technology - B</h3>
-                            <span class="class-badge">1st Year</span>
-                        </div>
-                        <div class="class-stats">
-                            <div class="class-stat">
-                                <i class="fas fa-users"></i>
-                                <span>31 Students</span>
-                            </div>
-                            <div class="class-stat">
-                                <i class="fas fa-percentage"></i>
-                                <span>85% Attendance</span>
-                            </div>
-                        </div>
-                        <button class="btn-primary">
-                            <i class="fas fa-eye"></i>
-                            View Students
-                        </button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Mark Attendance Tab -->
-            <div class="tab-content" id="attendance">
-                <div class="content-header">
-                    <div>
-                        <h2 class="section-title">Mark Attendance</h2>
-                        <p class="section-subtitle">Take attendance using facial recognition</p>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="filter-group" style="flex-wrap: wrap; gap: 12px;">
+                            <select class="filter-select" id="attendanceClassFilter">
+                                <option value="all">All Classes</option>
+                                <option value="CS-A">Computer Science - A</option>
+                                <option value="CS-B">Computer Science - B</option>
+                                <option value="IT-A">Information Technology - A</option>
+                                <option value="IT-B">Information Technology - B</option>
+                            </select>
+                            <select class="filter-select" id="attendanceMonthFilter">
+                                <option value="2024-01">January 2024</option>
+                                <option value="2023-12">December 2023</option>
+                                <option value="2023-11">November 2023</option>
+                                <option value="2023-10">October 2023</option>
+                            </select>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <label style="font-size: 14px; color: var(--text-secondary); white-space: nowrap;">From:</label>
+                                <input type="date" class="filter-select" id="attendanceDateFrom" style="width: 160px;" value="2024-01-01">
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <label style="font-size: 14px; color: var(--text-secondary); white-space: nowrap;">To:</label>
+                                <input type="date" class="filter-select" id="attendanceDateTo" style="width: 160px;" value="2024-01-31">
+                            </div>
+                            <button class="btn-secondary" id="applyDateRangeBtn" style="padding: 8px 16px;">
+                                <i class="fas fa-filter"></i>
+                                Apply
+                            </button>
+                            <button class="btn-secondary" id="clearDateRangeBtn" style="padding: 8px 16px;">
+                                <i class="fas fa-times"></i>
+                                Clear
+                            </button>
+                        </div>
+                        <div class="card-actions" style="display: flex; gap: 12px;">
+                            <div class="search-container">
+                                <i class="fas fa-magnifying-glass"></i>
+                                <input type="text" id="attendanceSearch" placeholder="Search students...">
+                            </div>
+                            <button class="btn-secondary" id="exportAttendance">
+                                <i class="fas fa-download"></i>
+                                Export
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="attendance-container">
-                    <div class="card camera-section">
-                        <div class="card-header">
-                            <div>
-                                <h2 class="card-title">Live Camera</h2>
-                                <p class="card-subtitle">Position students in front of camera</p>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="camera-feed">
-                                <div class="camera-icon">
-                                    <i class="fas fa-camera"></i>
-                                </div>
-                                <p class="camera-status">Camera ready - Click start to begin</p>
-                                <div class="camera-info">
-                                    <span><i class="fas fa-circle"></i> Ready</span>
-                                </div>
-                            </div>
-                            <div class="attendance-controls">
-                                <select class="filter-select">
-                                    <option value="">Select Class</option>
-                                    <option value="CS-A">Computer Science - A</option>
-                                    <option value="CS-B">Computer Science - B</option>
-                                    <option value="IT-A">Information Technology - A</option>
-                                    <option value="IT-B">Information Technology - B</option>
-                                </select>
-                                <button class="btn-primary">
-                                    <i class="fas fa-play"></i>
-                                    Start Recognition
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card attendance-list-card">
-                        <div class="card-header">
-                            <div>
-                                <h2 class="card-title">Detected Students</h2>
-                                <p class="card-subtitle">0 students marked present</p>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="empty-state">
-                                <i class="fas fa-users"></i>
-                                <h3>No students detected yet</h3>
-                                <p>Start camera to begin attendance</p>
-                            </div>
+                    <div class="card-body">
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Enrollment No.</th>
+                                        <th>Student Name</th>
+                                        <th>Class</th>
+                                        <th>Month</th>
+                                        <th>Total Days</th>
+                                        <th>Present</th>
+                                        <th>Absent</th>
+                                        <th>Late</th>
+                                        <th>Attendance %</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attendanceTableBody">
+                                    <tr>
+                                        <td><span class="student-id">EN2023001</span></td>
+                                        <td>
+                                            <div class="student-info">
+                                                <img src="https://ui-avatars.com/api/?name=Alex+Martinez&background=007AFF&color=fff" alt="Alex Martinez">
+                                                <span>Alex Martinez</span>
+                                            </div>
+                                        </td>
+                                        <td>CS-A</td>
+                                        <td>January 2024</td>
+                                        <td>20</td>
+                                        <td><span class="status-badge present">18</span></td>
+                                        <td><span class="status-badge absent">1</span></td>
+                                        <td><span class="status-badge late">1</span></td>
+                                        <td><strong style="color: var(--success-color);">90%</strong></td>
+                                        <td>
+                                            <button class="btn-icon view-details-btn" title="View Details" data-student="EN2023001">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="student-id">EN2023002</span></td>
+                                        <td>
+                                            <div class="student-info">
+                                                <img src="https://ui-avatars.com/api/?name=Emma+Wilson&background=34C759&color=fff" alt="Emma Wilson">
+                                                <span>Emma Wilson</span>
+                                            </div>
+                                        </td>
+                                        <td>CS-A</td>
+                                        <td>January 2024</td>
+                                        <td>20</td>
+                                        <td><span class="status-badge present">16</span></td>
+                                        <td><span class="status-badge absent">3</span></td>
+                                        <td><span class="status-badge late">1</span></td>
+                                        <td><strong style="color: var(--warning-color);">80%</strong></td>
+                                        <td>
+                                            <button class="btn-icon view-details-btn" title="View Details" data-student="EN2023002">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="student-id">EN2022001</span></td>
+                                        <td>
+                                            <div class="student-info">
+                                                <img src="https://ui-avatars.com/api/?name=Mike+Johnson&background=FF9500&color=fff" alt="Mike Johnson">
+                                                <span>Mike Johnson</span>
+                                            </div>
+                                        </td>
+                                        <td>CS-A</td>
+                                        <td>January 2024</td>
+                                        <td>20</td>
+                                        <td><span class="status-badge present">19</span></td>
+                                        <td><span class="status-badge absent">0</span></td>
+                                        <td><span class="status-badge late">1</span></td>
+                                        <td><strong style="color: var(--success-color);">95%</strong></td>
+                                        <td>
+                                            <button class="btn-icon view-details-btn" title="View Details" data-student="EN2022001">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="student-id">EN2021001</span></td>
+                                        <td>
+                                            <div class="student-info">
+                                                <img src="https://ui-avatars.com/api/?name=John+Doe&background=5856D6&color=fff" alt="John Doe">
+                                                <span>John Doe</span>
+                                            </div>
+                                        </td>
+                                        <td>CS-A</td>
+                                        <td>January 2024</td>
+                                        <td>20</td>
+                                        <td><span class="status-badge present">17</span></td>
+                                        <td><span class="status-badge absent">2</span></td>
+                                        <td><span class="status-badge late">1</span></td>
+                                        <td><strong style="color: var(--warning-color);">85%</strong></td>
+                                        <td>
+                                            <button class="btn-icon view-details-btn" title="View Details" data-student="EN2021001">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="student-id">EN2020001</span></td>
+                                        <td>
+                                            <div class="student-info">
+                                                <img src="https://ui-avatars.com/api/?name=Sarah+Williams&background=FF3B30&color=fff" alt="Sarah Williams">
+                                                <span>Sarah Williams</span>
+                                            </div>
+                                        </td>
+                                        <td>CS-A</td>
+                                        <td>January 2024</td>
+                                        <td>20</td>
+                                        <td><span class="status-badge present">20</span></td>
+                                        <td><span class="status-badge absent">0</span></td>
+                                        <td><span class="status-badge late">0</span></td>
+                                        <td><strong style="color: var(--success-color);">100%</strong></td>
+                                        <td>
+                                            <button class="btn-icon view-details-btn" title="View Details" data-student="EN2020001">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
+
+    <!-- View Attendance Details Modal -->
+    <div class="modal" id="viewAttendanceDetailsModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <div>
+                    <h2 id="detailsStudentName">Student Attendance Details</h2>
+                    <p style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;" id="detailsStudentInfo"></p>
+                </div>
+                <button class="close-modal" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Day</th>
+                                <th>Status</th>
+                                <th>Check-in Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailsAttendanceTable">
+                            <tr>
+                                <td>Jan 20, 2024</td>
+                                <td>Saturday</td>
+                                <td><span class="status-badge present">Present</span></td>
+                                <td>09:15 AM</td>
+                                <td>
+                                    <button class="btn-icon edit-attendance-btn" title="Edit Attendance" data-date="2024-01-20" data-status="present" data-time="09:15">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jan 19, 2024</td>
+                                <td>Friday</td>
+                                <td><span class="status-badge present">Present</span></td>
+                                <td>09:10 AM</td>
+                                <td>
+                                    <button class="btn-icon edit-attendance-btn" title="Edit Attendance" data-date="2024-01-19" data-status="present" data-time="09:10">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jan 18, 2024</td>
+                                <td>Thursday</td>
+                                <td><span class="status-badge late">Late</span></td>
+                                <td>09:35 AM</td>
+                                <td>
+                                    <button class="btn-icon edit-attendance-btn" title="Edit Attendance" data-date="2024-01-18" data-status="late" data-time="09:35">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jan 17, 2024</td>
+                                <td>Wednesday</td>
+                                <td><span class="status-badge absent">Absent</span></td>
+                                <td>-</td>
+                                <td>
+                                    <button class="btn-icon edit-attendance-btn" title="Edit Attendance" data-date="2024-01-17" data-status="absent" data-time="">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jan 16, 2024</td>
+                                <td>Tuesday</td>
+                                <td><span class="status-badge present">Present</span></td>
+                                <td>09:08 AM</td>
+                                <td>
+                                    <button class="btn-icon edit-attendance-btn" title="Edit Attendance" data-date="2024-01-16" data-status="present" data-time="09:08">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Attendance Modal -->
+    <div class="modal" id="editAttendanceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Attendance</h2>
+                <button class="close-modal" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form class="modal-body" id="editAttendanceForm">
+                <div class="form-group">
+                    <label for="editAttendanceStudent">Student Name</label>
+                    <input type="text" id="editAttendanceStudent" readonly>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editAttendanceDate">Date *</label>
+                        <input type="date" id="editAttendanceDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAttendanceStatus">Status *</label>
+                        <select id="editAttendanceStatus" required>
+                            <option value="present">Present</option>
+                            <option value="absent">Absent</option>
+                            <option value="late">Late</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editAttendanceTime">Check-in Time</label>
+                    <input type="time" id="editAttendanceTime">
+                </div>
+                <div class="form-group">
+                    <label for="editAttendanceNotes">Notes</label>
+                    <textarea id="editAttendanceNotes" rows="3" placeholder="Add any notes or remarks"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="cancelAttendanceEdit">Cancel</button>
+                    <button type="submit" class="btn-primary">Update Attendance</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="../ststic/js/mentor.js"></script>
 </body>

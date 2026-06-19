@@ -1256,3 +1256,229 @@
         flex-direction: column;
     }
 }
+
+/* ===== Attendance Details Styles ===== */
+
+/* Status Badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.status-badge.present {
+    background: rgba(52, 199, 89, 0.15);
+    color: var(--green);
+    border: 1.5px solid var(--green);
+}
+
+.status-badge.absent {
+    background: rgba(255, 59, 48, 0.15);
+    color: var(--red);
+    border: 1.5px solid var(--red);
+}
+
+.status-badge.late {
+    background: rgba(255, 149, 0, 0.15);
+    color: var(--orange);
+    border: 1.5px solid var(--orange);
+}
+
+/* Stats for Attendance */
+.stat-icon.red {
+    background: var(--red);
+}
+
+/* Date Range Filter Styling */
+.filter-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.filter-group input[type="date"] {
+    padding: 8px 16px;
+    background: var(--fill-tertiary);
+    border: none;
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    font-family: inherit;
+    min-height: 36px;
+    width: 160px;
+}
+
+.filter-group input[type="date"]:hover {
+    background: var(--fill-secondary);
+}
+
+.filter-group input[type="date"]:focus {
+    background: var(--bg-primary);
+    border: 1px solid var(--blue);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+}
+
+/* Card Actions in Header */
+.card-header .card-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* View Details Button */
+.view-details-btn {
+    color: var(--blue);
+}
+
+.view-details-btn:hover {
+    background: rgba(0, 122, 255, 0.1);
+}
+
+/* Attendance Table Enhancements */
+.data-table td strong {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+/* Modal Large Size */
+.modal-large .modal-content {
+    max-width: 900px;
+}
+
+/* Details Modal Styles */
+#detailsStudentInfo {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+/* Attendance Summary Cards Specific */
+.stats-section .stat-card .stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.stats-section .stat-card .stat-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+/* Success/Warning/Error Colors */
+:root {
+    --success-color: #34C759;
+    --warning-color: #FF9500;
+    --danger-color: #FF3B30;
+}
+
+/* Button Hover States */
+.btn-secondary:hover {
+    background: var(--fill-secondary);
+    transform: translateY(-1px);
+}
+
+.btn-secondary:active {
+    transform: translateY(0);
+}
+
+/* Filter Group Responsive Alignment */
+.filter-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 24px;
+    border-bottom: 0.5px solid var(--separator);
+    gap: 20px;
+}
+
+/* Responsive Adjustments for Attendance Tab */
+@media (max-width: 1400px) {
+    .filter-group {
+        width: 100%;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .card-header .card-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .filter-group > * {
+        width: 100%;
+    }
+    
+    .filter-group input[type="date"] {
+        width: 100%;
+    }
+    
+    .card-header .card-actions {
+        flex-direction: column;
+    }
+    
+    .card-header .card-actions .search-container {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+/* Delete Button Styling */
+.delete-btn {
+    color: var(--red);
+}
+
+.delete-btn:hover {
+    background: rgba(255, 59, 48, 0.1);
+    transform: scale(1.1);
+}
+
+/* Content Header Styling */
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.content-header .btn-primary {
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .content-header .btn-primary {
+        width: 100%;
+    }
+}
