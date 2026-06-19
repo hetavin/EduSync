@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teacher Portal - EduSync</title>
-    <link rel="stylesheet" href="../ststic/css/teacher.css">
+    <link rel="stylesheet" href="../static/css/teacher.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -33,10 +33,6 @@
                 <a href="#attendance" class="nav-item" data-tab="attendance">
                     <i class="fas fa-camera"></i>
                     <span>Take Attendance</span>
-                </a>
-                <a href="#history" class="nav-item" data-tab="history">
-                    <i class="fas fa-history"></i>
-                    <span>History</span>
                 </a>
                 <a href="#students" class="nav-item" data-tab="students">
                     <i class="fas fa-users"></i>
@@ -145,19 +141,13 @@
                             <h3>Take Attendance</h3>
                             <p>Start facial recognition</p>
                         </button>
-                        <button class="action-card" onclick="document.querySelector('[data-tab=history]').click()">
-                            <div class="action-icon blue">
-                                <i class="fas fa-history"></i>
-                            </div>
-                            <h3>View History</h3>
-                            <p>Check past records</p>
-                        </button>
+
                         <button class="action-card" onclick="document.querySelector('[data-tab=students]').click()">
                             <div class="action-icon orange">
-                                <i class="fas fa-chart-bar"></i>
+                                <i class="fas fa-users"></i>
                             </div>
-                            <h3>Student Reports</h3>
-                            <p>View analytics</p>
+                            <h3>View Students</h3>
+                            <p>Check student records</p>
                         </button>
                     </div>
                 </section>
@@ -200,155 +190,124 @@
 
             <div class="tab-content" id="attendance">
                 <div class="content-header">
-                    <div>
-                        <h2 class="section-title">Take Attendance</h2>
-                        <p class="section-subtitle">Use facial recognition to mark attendance</p>
-                    </div>
+                    <h2 class="section-title">Take Attendance</h2>
+                    <p class="section-subtitle">Select date, time slot and upload group images</p>
                 </div>
+
                 <div class="attendance-container">
-                    <div class="card camera-card">
-                        <div class="card-header">
-                            <div>
-                                <h2 class="card-title">Live Camera Feed</h2>
-                                <p class="card-subtitle">Position students in front of camera</p>
+                    <!-- Step 1: Select Date & Time -->
+                    <div class="attendance-card">
+                        <div class="card-header-section">
+                            <div class="step-badge">Step 1</div>
+                            <h3 class="card-title-text">
+                                <i class="fas fa-calendar-alt"></i>
+                                Select Date & Time Slot
+                            </h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="input-group">
+                                <label class="input-label">
+                                    <i class="fas fa-calendar"></i>
+                                    Date
+                                </label>
+                                <input type="date" id="attendanceDate" class="styled-input" required>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">
+                                    <i class="fas fa-clock"></i>
+                                    Time Slot
+                                </label>
+                                <select id="attendanceSlot" class="styled-input" required>
+                                    <option value="">Choose time slot</option>
+                                    <option value="morning">Morning (09:00 AM - 12:00 PM)</option>
+                                    <option value="afternoon">Afternoon (01:00 PM - 04:00 PM)</option>
+                                    <option value="evening">Evening (05:00 PM - 08:00 PM)</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="camera-feed">
-                                <div class="camera-icon">
-                                    <i class="fas fa-camera"></i>
+                    </div>
+
+                    <!-- Step 2: Upload Group Images -->
+                    <div class="attendance-card">
+                        <div class="card-header-section">
+                            <div class="step-badge">Step 2</div>
+                            <h3 class="card-title-text">
+                                <i class="fas fa-images"></i>
+                                Upload Group Images
+                            </h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="upload-zone" id="uploadZone">
+                                <input type="file" id="groupImages" accept="image/*" multiple style="display: none;">
+                                <div class="upload-icon-circle">
+                                    <i class="fas fa-cloud-upload-alt"></i>
                                 </div>
-                                <p class="camera-status">Camera ready - Select class and click start</p>
-                                <div class="camera-info">
-                                    <span><i class="fas fa-circle"></i> Ready</span>
+                                <h4>Drag & Drop Images Here</h4>
+                                <p>or click to browse</p>
+                                <div class="file-info">
+                                    <span><i class="fas fa-check-circle"></i> JPG, PNG, JPEG</span>
+                                    <span><i class="fas fa-check-circle"></i> Multiple files supported</span>
                                 </div>
                             </div>
-                            <div class="attendance-controls">
-                                <select class="filter-select" id="classSelect">
-                                    <option value="">Select Class</option>
-                                    <option value="CS-A-3">Computer Science - A (3rd Year)</option>
-                                    <option value="CS-B-2">Computer Science - B (2nd Year)</option>
-                                    <option value="IT-A-3">Information Technology - A (3rd Year)</option>
-                                </select>
-                                <button class="btn-primary" id="startAttendanceBtn">
-                                    <i class="fas fa-play"></i>
-                                    Start Recognition
+                            
+                            <div id="imagePreviewContainer" class="image-preview-container" style="display: none;">
+                                <div class="preview-header">
+                                    <span class="preview-count"><i class="fas fa-images"></i> <span id="imageCount">0</span> Images Selected</span>
+                                    <button class="clear-images-btn" id="clearImages">
+                                        <i class="fas fa-times"></i> Clear All
+                                    </button>
+                                </div>
+                                <div class="preview-grid" id="previewGrid"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Process Attendance -->
+                    <div class="attendance-card">
+                        <div class="card-header-section">
+                            <div class="step-badge">Step 3</div>
+                            <h3 class="card-title-text">
+                                <i class="fas fa-check-circle"></i>
+                                Process Attendance
+                            </h3>
+                        </div>
+                        <div class="card-content">
+                            <button class="process-btn" id="processBtn" disabled>
+                                <i class="fas fa-play-circle"></i>
+                                Start Facial Recognition
+                            </button>
+                            <p class="info-text">Complete steps 1 & 2 to enable processing</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div id="resultsSection" class="results-section" style="display: none;">
+                    <div class="attendance-card">
+                        <div class="card-header-section">
+                            <h3 class="card-title-text">
+                                <i class="fas fa-user-check"></i>
+                                Attendance Results
+                            </h3>
+                            <div class="results-stats">
+                                <span class="stat-pill present">
+                                    <i class="fas fa-check"></i> <span id="presentCount">0</span> Present
+                                </span>
+                                <span class="stat-pill absent">
+                                    <i class="fas fa-times"></i> <span id="absentCount">0</span> Absent
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="results-list" id="resultsList"></div>
+                            <div class="results-actions">
+                                <button class="btn-secondary-action" id="cancelBtn">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                                <button class="btn-primary-action" id="submitAttendance">
+                                    <i class="fas fa-save"></i> Submit Attendance
                                 </button>
                             </div>
-                        </div>
-                    </div>
-                    <div class="card attendance-list-card">
-                        <div class="card-header">
-                            <div>
-                                <h2 class="card-title">Detected Students</h2>
-                                <p class="card-subtitle" id="detectedCount">0 students marked present</p>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="detected-list" id="detectedList">
-                                <div class="empty-state">
-                                    <i class="fas fa-users"></i>
-                                    <h3>No students detected yet</h3>
-                                    <p>Start camera to begin attendance</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <button class="btn-secondary" id="clearBtn" disabled>
-                                <i class="fas fa-redo"></i>
-                                Clear All
-                            </button>
-                            <button class="btn-primary" id="submitBtn" disabled>
-                                <i class="fas fa-check"></i>
-                                Submit Attendance
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tab-content" id="history">
-                <div class="content-header">
-                    <div>
-                        <h2 class="section-title">Attendance History</h2>
-                        <p class="section-subtitle">View past attendance records</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <div class="filter-group">
-                            <select class="filter-select">
-                                <option value="all">All Classes</option>
-                                <option value="CS-A-3">Computer Science - A</option>
-                                <option value="CS-B-2">Computer Science - B</option>
-                            </select>
-                            <select class="filter-select">
-                                <option value="week">This Week</option>
-                                <option value="month">This Month</option>
-                                <option value="year">This Year</option>
-                            </select>
-                        </div>
-                        <button class="btn-secondary">
-                            <i class="fas fa-download"></i>
-                            Export
-                        </button>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-wrapper">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Class</th>
-                                        <th>Total Students</th>
-                                        <th>Present</th>
-                                        <th>Absent</th>
-                                        <th>Attendance %</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Jan 20, 2024</td>
-                                        <td>CS-A (3rd Year)</td>
-                                        <td>48</td>
-                                        <td>42</td>
-                                        <td>6</td>
-                                        <td><span class="status-badge success">87.5%</span></td>
-                                        <td>
-                                            <button class="btn-icon" title="View Details">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Jan 19, 2024</td>
-                                        <td>CS-A (3rd Year)</td>
-                                        <td>48</td>
-                                        <td>45</td>
-                                        <td>3</td>
-                                        <td><span class="status-badge success">93.8%</span></td>
-                                        <td>
-                                            <button class="btn-icon" title="View Details">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Jan 18, 2024</td>
-                                        <td>CS-B (2nd Year)</td>
-                                        <td>42</td>
-                                        <td>38</td>
-                                        <td>4</td>
-                                        <td><span class="status-badge success">90.5%</span></td>
-                                        <td>
-                                            <button class="btn-icon" title="View Details">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                 </div>
@@ -432,6 +391,76 @@
                                         <td>8</td>
                                         <td><span class="status-badge warning">78.9%</span></td>
                                     </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="student-info">
+                                                <img src="https://ui-avatars.com/api/?name=Emily+Brown&background=FF2D55&color=fff" alt="Emily Brown">
+                                                <span>Emily Brown</span>
+                                            </div>
+                                        </td>
+                                        <td><span class="student-id">STU004</span></td>
+                                        <td>CS-A (3rd Year)</td>
+                                        <td>40</td>
+                                        <td>35</td>
+                                        <td>5</td>
+                                        <td><span class="status-badge success">87.5%</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="student-info">
+                                                <img src="https://ui-avatars.com/api/?name=David+Lee&background=5856D6&color=fff" alt="David Lee">
+                                                <span>David Lee</span>
+                                            </div>
+                                        </td>
+                                        <td><span class="student-id">STU005</span></td>
+                                        <td>CS-A (3rd Year)</td>
+                                        <td>40</td>
+                                        <td>39</td>
+                                        <td>1</td>
+                                        <td><span class="status-badge success">97.5%</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="student-info">
+                                                <img src="https://ui-avatars.com/api/?name=Sarah+Davis&background=FF9500&color=fff" alt="Sarah Davis">
+                                                <span>Sarah Davis</span>
+                                            </div>
+                                        </td>
+                                        <td><span class="student-id">STU006</span></td>
+                                        <td>CS-A (3rd Year)</td>
+                                        <td>40</td>
+                                        <td>36</td>
+                                        <td>4</td>
+                                        <td><span class="status-badge success">90.0%</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="student-info">
+                                                <img src="https://ui-avatars.com/api/?name=Tom+Martin&background=007AFF&color=fff" alt="Tom Martin">
+                                                <span>Tom Martin</span>
+                                            </div>
+                                        </td>
+                                        <td><span class="student-id">STU007</span></td>
+                                        <td>CS-B (2nd Year)</td>
+                                        <td>38</td>
+                                        <td>32</td>
+                                        <td>6</td>
+                                        <td><span class="status-badge success">84.2%</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="student-info">
+                                                <img src="https://ui-avatars.com/api/?name=Lisa+Anderson&background=34C759&color=fff" alt="Lisa Anderson">
+                                                <span>Lisa Anderson</span>
+                                            </div>
+                                        </td>
+                                        <td><span class="student-id">STU008</span></td>
+                                        <td>CS-B (2nd Year)</td>
+                                        <td>38</td>
+                                        <td>25</td>
+                                        <td>13</td>
+                                        <td><span class="status-badge danger">65.8%</span></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -441,6 +470,6 @@
         </div>
     </main>
 
-    <script src="../ststic/js/teacher.js"></script>
+    <script src="../static/js/teacher.js"></script>
 </body>
 </html>
