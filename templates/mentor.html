@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor Portal - EduSync</title>
+    <link rel="stylesheet" href="../ststic/css/mentor.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay"></div>
+
+    <!-- Add Student Modal -->
+    <div class="modal" id="addStudentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Student</h2>
+                <button class="close-modal" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form class="modal-body" id="addStudentForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentName">Full Name *</label>
+                        <input type="text" id="studentName" required placeholder="Enter student name">
+                    </div>
+                    <div class="form-group">
+                        <label for="studentId">Student ID *</label>
+                        <input type="text" id="studentId" required placeholder="e.g., STU001">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentEmail">Email *</label>
+                        <input type="email" id="studentEmail" required placeholder="student@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="studentPhone">Phone Number *</label>
+                        <input type="tel" id="studentPhone" required placeholder="+1 234 567 8900">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentClass">Class *</label>
+                        <select id="studentClass" required>
+                            <option value="">Select Class</option>
+                            <option value="CS-A">Computer Science - A</option>
+                            <option value="CS-B">Computer Science - B</option>
+                            <option value="IT-A">Information Technology - A</option>
+                            <option value="IT-B">Information Technology - B</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentYear">Year *</label>
+                        <select id="studentYear" required>
+                            <option value="">Select Year</option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentDOB">Date of Birth *</label>
+                        <input type="date" id="studentDOB" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentRoll">Roll Number *</label>
+                        <input type="text" id="studentRoll" required placeholder="e.g., CS2021001">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="studentAddress">Address</label>
+                    <textarea id="studentAddress" rows="3" placeholder="Enter complete address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="emergencyContact">Emergency Contact</label>
+                    <input type="tel" id="emergencyContact" placeholder="Parent/Guardian contact">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn-primary">Add Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Import Students Modal -->
+    <div class="modal" id="importStudentsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-import"></i> Import Students</h2>
+                <button class="close-modal" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="import-upload-area" id="importUploadArea">
+                    <input type="file" id="importFileInput" accept=".csv,.xlsx,.xls" hidden>
+                    <div class="upload-icon">
+                        <i class="fas fa-file-excel"></i>
+                    </div>
+                    <h3>Upload Excel or CSV File</h3>
+                    <p>Drag and drop your file here or click to browse</p>
+                    <div class="upload-formats">
+                        <span><i class="fas fa-check"></i> .CSV</span>
+                        <span><i class="fas fa-check"></i> .XLSX</span>
+                        <span><i class="fas fa-check"></i> .XLS</span>
+                    </div>
+                </div>
+                <div id="importFileInfo" class="file-info" style="display: none;">
+                    <i class="fas fa-file-excel"></i>
+                    <div style="flex: 1;">
+                        <span id="importFileName"></span>
+                        <p style="font-size: 12px; color: var(--text-tertiary); margin-top: 4px;" id="importFileSize"></p>
+                    </div>
+                    <button class="btn-icon" id="removeImportFile" title="Remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="import-info">
+                    <h4><i class="fas fa-info-circle"></i> File Format Requirements:</h4>
+                    <ul>
+                        <li>Required columns: <strong>Name, Email, Phone, Class, Year, Roll Number</strong></li>
+                        <li>Optional columns: Address, Date of Birth, Emergency Contact</li>
+                        <li>First row should contain column headers</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="cancelImportBtn">Cancel</button>
+                <button type="button" class="btn-primary" id="processImportBtn" disabled>
+                    <i class="fas fa-check"></i>
+                    Import Students
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Student Modal -->
+    <div class="modal" id="editStudentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Student Information</h2>
+                <button class="close-modal" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form class="modal-body" id="editStudentForm">
+                <!-- Same fields as add form -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editStudentName">Full Name *</label>
+                        <input type="text" id="editStudentName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStudentId">Student ID *</label>
+                        <input type="text" id="editStudentId" required readonly>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editStudentEmail">Email *</label>
+                        <input type="email" id="editStudentEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStudentPhone">Phone Number *</label>
+                        <input type="tel" id="editStudentPhone" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editStudentClass">Class *</label>
+                        <select id="editStudentClass" required>
+                            <option value="CS-A">Computer Science - A</option>
+                            <option value="CS-B">Computer Science - B</option>
+                            <option value="IT-A">Information Technology - A</option>
+                            <option value="IT-B">Information Technology - B</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStudentYear">Year *</label>
+                        <select id="editStudentYear" required>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="cancelEditBtn">Cancel</button>
+                    <button type="submit" class="btn-primary">Update Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-content">
+            <!-- Logo -->
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <span class="logo-text">EduSync</span>
+            </div>
+            
+            <!-- Mentor Profile -->
+            <div class="sidebar-profile">
+                <img src="https://ui-avatars.com/api/?name=Prof+Sarah+Johnson&background=34C759&color=fff&size=128" alt="Mentor">
+                <h3>Prof. Sarah Johnson</h3>
+                <p>Mentor</p>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="nav-menu">
+                <a href="#dashboard" class="nav-item active" data-tab="dashboard">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#students" class="nav-item" data-tab="students">
+                    <i class="fas fa-users"></i>
+                    <span>All Students</span>
+                </a>
+                <a href="#register-face" class="nav-item" data-tab="register-face">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Register Face ID</span>
+                </a>
+                <a href="#classes" class="nav-item" data-tab="classes">
+                    <i class="fas fa-chalkboard"></i>
+                    <span>My Classes</span>
+                </a>
+                <a href="#attendance" class="nav-item" data-tab="attendance">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Mark Attendance</span>
+                </a>
+            </nav>
+            
+            <!-- Theme Toggle -->
+            <div class="theme-toggle">
+                <div class="theme-toggle-inner">
+                    <i class="fas fa-moon"></i>
+                    <span>Dark Mode</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Logout -->
+            <div class="sidebar-footer">
+                <a href="#" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="hamburger" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div>
+                    <h1 class="page-title">Dashboard</h1>
+                    <p class="page-subtitle">Manage your students efficiently</p>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="search-container">
+                    <i class="fas fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search students..." aria-label="Search">
+                </div>
+                <button class="notification-btn" aria-label="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">5</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Content Wrapper -->
+        <div class="dashboard-wrapper">
+            <!-- Dashboard Tab -->
+            <div class="tab-content active" id="dashboard">
+                <!-- Stats Section -->
+                <section class="stats-section">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon blue">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value">156</div>
+                            <div class="stat-label">Total Students</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon green">
+                                <i class="fas fa-chalkboard"></i>
+                            </div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value">4</div>
+                            <div class="stat-label">My Classes</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon orange">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value">89.5%</div>
+                            <div class="stat-label">Avg. Attendance</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-icon purple">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                        </div>
+                        <div class="stat-body">
+                            <div class="stat-value">Today</div>
+                            <div class="stat-label">Jan 20, 2024</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quick Actions -->
+                <section class="quick-actions">
+                    <h2 class="section-title">Quick Actions</h2>
+                    <div class="action-cards">
+                        <button class="action-card" onclick="document.querySelector('[data-tab=attendance]').click()">
+                            <div class="action-icon green">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <h3>Mark Attendance</h3>
+                            <p>Take attendance for today</p>
+                        </button>
+                        <button class="action-card" onclick="document.querySelector('[data-tab=classes]').click()">
+                            <div class="action-icon orange">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <h3>View Reports</h3>
+                            <p>Check class performance</p>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Recent Activity -->
+                <section class="recent-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">Recent Activity</h2>
+                                <p class="card-subtitle">Last 24 hours</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="activity-list">
+                                <div class="activity-item">
+                                    <div class="activity-icon blue">
+                                        <i class="fas fa-user-plus"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>New Student Added</h4>
+                                        <p>John Doe registered to CS-A class</p>
+                                        <span class="activity-time">2 hours ago</span>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon green">
+                                        <i class="fas fa-clipboard-check"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Attendance Marked</h4>
+                                        <p>CS-A Morning Session completed</p>
+                                        <span class="activity-time">4 hours ago</span>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon orange">
+                                        <i class="fas fa-edit"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Student Updated</h4>
+                                        <p>Jane Smith information modified</p>
+                                        <span class="activity-time">6 hours ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- All Students Tab -->
+            <div class="tab-content" id="students">
+                <div class="content-header">
+                    <div>
+                        <h2 class="section-title">All Students</h2>
+                        <p class="section-subtitle">View all registered students</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="filter-group">
+                            <div class="search-container">
+                                <i class="fas fa-magnifying-glass"></i>
+                                <input type="text" id="studentTableSearch" placeholder="Search students..." aria-label="Search students">
+                            </div>
+                            <select class="filter-select" id="yearFilter">
+                                <option value="all">All Years</option>
+                                <option value="1">1st Year</option>
+                                <option value="2">2nd Year</option>
+                                <option value="3">3rd Year</option>
+                                <option value="4">4th Year</option>
+                            </select>
+                        </div>
+                        <div class="card-actions" style="display: flex; gap: 12px;">
+                            <button class="btn-primary" id="importStudentsBtn">
+                                <i class="fas fa-upload"></i>
+                                Import
+                            </button>
+                            <button class="btn-secondary" id="exportStudents">
+                                <i class="fas fa-download"></i>
+                                Export
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Enrollment No.</th>
+                                        <th>Student Name</th>
+                                        <th>Email</th>
+                                        <th>Phone Number</th>
+                                        <th>Batch</th>
+                                        <th>Class</th>
+                                        <th>Year</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentsTableBody">
+                                    <tr data-class="CS-A" data-year="1">
+                                        <td><span class="student-id">EN2023001</span></td>
+                                        <td>
+                                            <div class="student-info">
+                                                <img src="https://ui-avatars.com/api/?name=Alex+Martinez&background=007AFF&color=fff" alt="Alex Martinez">
+                                                <span>Alex Martinez</span>
+                                            </div>
+                                        </td>
+                                        <td>alex.martinez@example.com</td>
+                                        <td>+1 234 567 8900</td>
+                                        <td>2023</td>
+                                        <td>CS-A</td>
+                                        <td>1st Year</td>
+                                        <td>
+                                            <button class="btn-icon edit-btn" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon view-btn" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr data-class="CS-A" data-year="1">
+                                        <td><span class="student-id">EN2023002</span></td>
+                                        <td>
+                                            <div class="student-info">
+                                                <img src="https://ui-avatars.com/api/?name=Emma+Wilson&background=34C759&color=fff" alt="Emma Wilson">
+                                                <span>Emma Wilson</span>
+                                            </div>
+                                        </td>
+                                        <td>emma.wilson@example.com</td>
+                                        <td>+1 234 567 8901</td>
+                                        <td>2023</td>
+                                        <td>CS-A</td>
+                                        <td>1st Year</td>
+                                        <td>
+                                            <button class="btn-icon edit-btn" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon view-btn" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr data-class="CS-A" data-year="2">
+                                        <td><span class="student-id">EN2022001</span></td>
+                                        <td>
+                                            <div class="student-info">
+                                                <img src="https://ui-avatars.com/api/?name=Mike+Johnson&background=FF9500&color=fff" alt="Mike Johnson">
+                                                <span>Mike Johnson</span>
+                                            </div>
+                                        </td>
+                                        <td>mike.johnson@example.com</td>
+                                        <td>+1 234 567 8902</td>
+                                        <td>2022</td>
+                                        <td>CS-A</td>
+                                        <td>2nd Year</td>
+                                        <td>
+                                            <button class="btn-icon edit-btn" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon view-btn" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr data-class="CS-A" data-year="3">
+                                        <td><span class="student-id">EN2021001</span></td>
+                                        <td>
+                                            <div class="student-info">
+                                                <img src="https://ui-avatars.com/api/?name=John+Doe&background=5856D6&color=fff" alt="John Doe">
+                                                <span>John Doe</span>
+                                            </div>
+                                        </td>
+                                        <td>john.doe@example.com</td>
+                                        <td>+1 234 567 8903</td>
+                                        <td>2021</td>
+                                        <td>CS-A</td>
+                                        <td>3rd Year</td>
+                                        <td>
+                                            <button class="btn-icon edit-btn" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon view-btn" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr data-class="CS-A" data-year="4">
+                                        <td><span class="student-id">EN2020001</span></td>
+                                        <td>
+                                            <div class="student-info">
+                                                <img src="https://ui-avatars.com/api/?name=Sarah+Williams&background=FF3B30&color=fff" alt="Sarah Williams">
+                                                <span>Sarah Williams</span>
+                                            </div>
+                                        </td>
+                                        <td>sarah.williams@example.com</td>
+                                        <td>+1 234 567 8904</td>
+                                        <td>2020</td>
+                                        <td>CS-A</td>
+                                        <td>4th Year</td>
+                                        <td>
+                                            <button class="btn-icon edit-btn" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon view-btn" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Register Face ID Tab -->
+            <div class="tab-content" id="register-face">
+                <div class="content-header">
+                    <div>
+                        <h2 class="section-title">Register Student Face ID</h2>
+                        <p class="section-subtitle">Capture and register student facial recognition data</p>
+                    </div>
+                </div>
+
+                <div class="register-face-container">
+                    <!-- Student Selection Card -->
+                    <div class="card student-selection-card">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">Select Student</h2>
+                                <p class="card-subtitle">Choose a student to register face ID</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="student-selection-form">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-user"></i>
+                                        Select Student
+                                    </label>
+                                    <select id="faceStudentSelect" class="form-input">
+                                        <option value="">-- Select Student --</option>
+                                        <option value="EN2023001">EN2023001 - Alex Martinez (1st Year)</option>
+                                        <option value="EN2023002">EN2023002 - Emma Wilson (1st Year)</option>
+                                        <option value="EN2022001">EN2022001 - Mike Johnson (2nd Year)</option>
+                                        <option value="EN2021001">EN2021001 - John Doe (3rd Year)</option>
+                                        <option value="EN2020001">EN2020001 - Sarah Williams (4th Year)</option>
+                                    </select>
+                                </div>
+                                <div id="selectedStudentInfo" class="selected-student-info" style="display: none;">
+                                    <div class="student-card-preview">
+                                        <img id="selectedStudentAvatar" src="" alt="Student">
+                                        <div class="student-details">
+                                            <h3 id="selectedStudentName"></h3>
+                                            <p id="selectedStudentEnrollment"></p>
+                                            <p id="selectedStudentYear"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Image Upload Card -->
+                    <div class="card upload-images-card" id="uploadCard">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    Upload Student Images
+                                </h2>
+                                <p class="card-subtitle">Upload 2-5 clear face images</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="upload-container">
+                                <div class="upload-dropzone" id="faceUploadDropzone">
+                                    <input type="file" id="faceImageInput" accept="image/*" multiple hidden>
+                                    <div class="upload-icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <h3>Drag & Drop Images Here</h3>
+                                    <p>or click to browse from your device</p>
+                                    <div class="upload-specs">
+                                        <span><i class="fas fa-check"></i> JPG, PNG, JPEG</span>
+                                        <span><i class="fas fa-check"></i> Min: 2 images</span>
+                                        <span><i class="fas fa-check"></i> Max: 5 images</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Uploaded Images Card -->
+                    <div class="card uploaded-images-card" id="uploadedImagesCard" style="display: none;">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">
+                                    <i class="fas fa-images"></i>
+                                    Uploaded Images
+                                </h2>
+                                <p class="card-subtitle">
+                                    <span id="uploadedCount">0</span> of 5 images uploaded
+                                </p>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn-secondary" id="addMoreImagesBtn">
+                                    <i class="fas fa-plus"></i>
+                                    Add More
+                                </button>
+                                <button class="btn-secondary btn-danger" id="clearAllImagesBtn">
+                                    <i class="fas fa-trash"></i>
+                                    Clear All
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="validationMessage" class="validation-alert" style="display: none;"></div>
+                            <div class="uploaded-images-grid" id="uploadedImagesGrid"></div>
+                            <button class="btn-primary btn-register" id="registerFaceBtn" style="display: none;">
+                                <i class="fas fa-check-circle"></i>
+                                Register Face ID
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Registered Students List -->
+                <div class="registered-students-section" id="registeredStudentsSection" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">
+                                    <i class="fas fa-user-check"></i>
+                                    Registered Students
+                                </h2>
+                                <p class="card-subtitle"><span id="registeredCount">0</span> students registered</p>
+                            </div>
+                            <div class="search-container">
+                                <i class="fas fa-magnifying-glass"></i>
+                                <input type="text" id="registeredSearch" placeholder="Search registered students..." aria-label="Search">
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-wrapper">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Enrollment No.</th>
+                                            <th>Student Name</th>
+                                            <th>Year</th>
+                                            <th>Images</th>
+                                            <th>Registered Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="registeredStudentsTable">
+                                        <tr class="no-data-row">
+                                            <td colspan="6" style="text-align: center; padding: 48px;">
+                                                <i class="fas fa-user-slash" style="font-size: 48px; opacity: 0.3; display: block; margin-bottom: 16px;"></i>
+                                                <p style="color: var(--text-secondary);">No students registered yet</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Images Modal -->
+            <div class="modal" id="studentImagesModal">
+                <div class="modal-content modal-large">
+                    <div class="modal-header">
+                        <h2 id="modalStudentName">Student Images</h2>
+                        <button class="close-modal" aria-label="Close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modalStudentInfo">
+                        <!-- Student info will be populated here -->
+                    </div>
+                    <div class="modal-images-grid" id="modalImagesGrid">
+                        <!-- Images will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Classes Tab -->
+            <div class="tab-content" id="classes">
+                <div class="content-header">
+                    <div>
+                        <h2 class="section-title">My Classes</h2>
+                        <p class="section-subtitle">Classes you are mentoring</p>
+                    </div>
+                </div>
+                <div class="classes-grid">
+                    <div class="class-card">
+                        <div class="class-header">
+                            <h3>Computer Science - A</h3>
+                            <span class="class-badge">3rd Year</span>
+                        </div>
+                        <div class="class-stats">
+                            <div class="class-stat">
+                                <i class="fas fa-users"></i>
+                                <span>45 Students</span>
+                            </div>
+                            <div class="class-stat">
+                                <i class="fas fa-percentage"></i>
+                                <span>92% Attendance</span>
+                            </div>
+                        </div>
+                        <button class="btn-primary">
+                            <i class="fas fa-eye"></i>
+                            View Students
+                        </button>
+                    </div>
+                    <div class="class-card">
+                        <div class="class-header">
+                            <h3>Computer Science - B</h3>
+                            <span class="class-badge">2nd Year</span>
+                        </div>
+                        <div class="class-stats">
+                            <div class="class-stat">
+                                <i class="fas fa-users"></i>
+                                <span>42 Students</span>
+                            </div>
+                            <div class="class-stat">
+                                <i class="fas fa-percentage"></i>
+                                <span>88% Attendance</span>
+                            </div>
+                        </div>
+                        <button class="btn-primary">
+                            <i class="fas fa-eye"></i>
+                            View Students
+                        </button>
+                    </div>
+                    <div class="class-card">
+                        <div class="class-header">
+                            <h3>Information Technology - A</h3>
+                            <span class="class-badge">3rd Year</span>
+                        </div>
+                        <div class="class-stats">
+                            <div class="class-stat">
+                                <i class="fas fa-users"></i>
+                                <span>38 Students</span>
+                            </div>
+                            <div class="class-stat">
+                                <i class="fas fa-percentage"></i>
+                                <span>90% Attendance</span>
+                            </div>
+                        </div>
+                        <button class="btn-primary">
+                            <i class="fas fa-eye"></i>
+                            View Students
+                        </button>
+                    </div>
+                    <div class="class-card">
+                        <div class="class-header">
+                            <h3>Information Technology - B</h3>
+                            <span class="class-badge">1st Year</span>
+                        </div>
+                        <div class="class-stats">
+                            <div class="class-stat">
+                                <i class="fas fa-users"></i>
+                                <span>31 Students</span>
+                            </div>
+                            <div class="class-stat">
+                                <i class="fas fa-percentage"></i>
+                                <span>85% Attendance</span>
+                            </div>
+                        </div>
+                        <button class="btn-primary">
+                            <i class="fas fa-eye"></i>
+                            View Students
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mark Attendance Tab -->
+            <div class="tab-content" id="attendance">
+                <div class="content-header">
+                    <div>
+                        <h2 class="section-title">Mark Attendance</h2>
+                        <p class="section-subtitle">Take attendance using facial recognition</p>
+                    </div>
+                </div>
+                <div class="attendance-container">
+                    <div class="card camera-section">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">Live Camera</h2>
+                                <p class="card-subtitle">Position students in front of camera</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="camera-feed">
+                                <div class="camera-icon">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                                <p class="camera-status">Camera ready - Click start to begin</p>
+                                <div class="camera-info">
+                                    <span><i class="fas fa-circle"></i> Ready</span>
+                                </div>
+                            </div>
+                            <div class="attendance-controls">
+                                <select class="filter-select">
+                                    <option value="">Select Class</option>
+                                    <option value="CS-A">Computer Science - A</option>
+                                    <option value="CS-B">Computer Science - B</option>
+                                    <option value="IT-A">Information Technology - A</option>
+                                    <option value="IT-B">Information Technology - B</option>
+                                </select>
+                                <button class="btn-primary">
+                                    <i class="fas fa-play"></i>
+                                    Start Recognition
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card attendance-list-card">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">Detected Students</h2>
+                                <p class="card-subtitle">0 students marked present</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="empty-state">
+                                <i class="fas fa-users"></i>
+                                <h3>No students detected yet</h3>
+                                <p>Start camera to begin attendance</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../ststic/js/mentor.js"></script>
+</body>
+</html>

@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - EduSync</title>
+    <link rel="stylesheet" href="../ststic/css/student.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-content">
+            <!-- Logo -->
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <span class="logo-text">EduSync</span>
+            </div>
+            
+            <!-- Student Profile Preview -->
+            <div class="sidebar-profile">
+                <img src="https://ui-avatars.com/api/?name=John+Doe&background=007AFF&color=fff&size=128" alt="Student">
+                <h3>John Doe</h3>
+                <p>STU001</p>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="nav-menu">
+                <a href="#dashboard" class="nav-item active" data-tab="dashboard">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#profile" class="nav-item" data-tab="profile">
+                    <i class="fas fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+                <a href="#attendance" class="nav-item" data-tab="attendance">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Attendance</span>
+                </a>
+                <a href="#schedule" class="nav-item" data-tab="schedule">
+                    <i class="fas fa-clock"></i>
+                    <span>Schedule</span>
+                </a>
+            </nav>
+            
+            <!-- Theme Toggle -->
+            <div class="theme-toggle">
+                <div class="theme-toggle-inner">
+                    <i class="fas fa-moon"></i>
+                    <span>Dark Mode</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Logout -->
+            <div class="sidebar-footer">
+                <a href="#" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="hamburger" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div>
+                    <h1 class="page-title">Dashboard</h1>
+                    <p class="page-subtitle">Welcome back, John!</p>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <button class="notification-btn" aria-label="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">2</span>
+                </button>
+                <div class="current-time">
+                    <i class="fas fa-clock"></i>
+                    <span id="currentTime">10:30 AM</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="content-wrapper">
+            <!-- Dashboard Tab -->
+            <div class="tab-content active" id="dashboard">
+                <!-- Stats Cards -->
+                <section class="stats-section">
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>92.5%</h3>
+                            <p>Overall Attendance</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>37 Days</h3>
+                            <p>Present This Month</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red">
+                            <i class="fas fa-calendar-times"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>3 Days</h3>
+                            <p>Absent This Month</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>08:45 AM</h3>
+                            <p>Avg. Check-in Time</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Main Content Grid -->
+                <div class="dashboard-grid">
+                    <!-- Recent Attendance -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">Recent Attendance</h2>
+                                <p class="card-subtitle">Last 7 days</p>
+                            </div>
+                            <button class="btn-secondary">
+                                <i class="fas fa-calendar"></i>
+                                View All
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="attendance-list">
+                                <div class="attendance-item">
+                                    <div class="attendance-date">
+                                        <span class="day">Mon</span>
+                                        <span class="date">Jan 15</span>
+                                    </div>
+                                    <div class="attendance-details">
+                                        <p class="attendance-time">08:45 AM</p>
+                                        <p class="attendance-status">Check-in</p>
+                                    </div>
+                                    <span class="status-badge success">Present</span>
+                                </div>
+                                <div class="attendance-item">
+                                    <div class="attendance-date">
+                                        <span class="day">Tue</span>
+                                        <span class="date">Jan 16</span>
+                                    </div>
+                                    <div class="attendance-details">
+                                        <p class="attendance-time">08:50 AM</p>
+                                        <p class="attendance-status">Check-in</p>
+                                    </div>
+                                    <span class="status-badge success">Present</span>
+                                </div>
+                                <div class="attendance-item">
+                                    <div class="attendance-date">
+                                        <span class="day">Wed</span>
+                                        <span class="date">Jan 17</span>
+                                    </div>
+                                    <div class="attendance-details">
+                                        <p class="attendance-time">09:15 AM</p>
+                                        <p class="attendance-status">Check-in</p>
+                                    </div>
+                                    <span class="status-badge warning">Late</span>
+                                </div>
+                                <div class="attendance-item">
+                                    <div class="attendance-date">
+                                        <span class="day">Thu</span>
+                                        <span class="date">Jan 18</span>
+                                    </div>
+                                    <div class="attendance-details">
+                                        <p class="attendance-time">--:-- --</p>
+                                        <p class="attendance-status">No record</p>
+                                    </div>
+                                    <span class="status-badge error">Absent</span>
+                                </div>
+                                <div class="attendance-item">
+                                    <div class="attendance-date">
+                                        <span class="day">Fri</span>
+                                        <span class="date">Jan 19</span>
+                                    </div>
+                                    <div class="attendance-details">
+                                        <p class="attendance-time">08:42 AM</p>
+                                        <p class="attendance-status">Check-in</p>
+                                    </div>
+                                    <span class="status-badge success">Present</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Cards -->
+                    <div class="sidebar-cards">
+                        <!-- Attendance Chart -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <h2 class="card-title">Monthly Overview</h2>
+                                    <p class="card-subtitle">January 2024</p>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="progress-ring">
+                                    <svg viewBox="0 0 120 120">
+                                        <circle class="progress-ring-bg" cx="60" cy="60" r="50"></circle>
+                                        <circle class="progress-ring-fill" cx="60" cy="60" r="50" 
+                                                style="stroke-dasharray: 314; stroke-dashoffset: 23.55;"></circle>
+                                    </svg>
+                                    <div class="progress-value">
+                                        <h3>92.5%</h3>
+                                        <p>Attendance</p>
+                                    </div>
+                                </div>
+                                <div class="progress-stats">
+                                    <div class="progress-stat-item">
+                                        <span class="stat-color green"></span>
+                                        <span>Present: 37</span>
+                                    </div>
+                                    <div class="progress-stat-item">
+                                        <span class="stat-color red"></span>
+                                        <span>Absent: 3</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Upcoming Classes -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div>
+                                    <h2 class="card-title">Today's Classes</h2>
+                                    <p class="card-subtitle">5 classes scheduled</p>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="class-list">
+                                    <div class="class-item">
+                                        <div class="class-time">
+                                            <i class="fas fa-clock"></i>
+                                            <span>09:00 AM</span>
+                                        </div>
+                                        <div class="class-info">
+                                            <h4>Data Structures</h4>
+                                            <p>Prof. Sarah Johnson</p>
+                                        </div>
+                                    </div>
+                                    <div class="class-item">
+                                        <div class="class-time">
+                                            <i class="fas fa-clock"></i>
+                                            <span>11:00 AM</span>
+                                        </div>
+                                        <div class="class-info">
+                                            <h4>Web Development</h4>
+                                            <p>Prof. Michael Brown</p>
+                                        </div>
+                                    </div>
+                                    <div class="class-item">
+                                        <div class="class-time">
+                                            <i class="fas fa-clock"></i>
+                                            <span>02:00 PM</span>
+                                        </div>
+                                        <div class="class-info">
+                                            <h4>Database Systems</h4>
+                                            <p>Dr. Emily Davis</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div class="tab-content" id="profile">
+                <div class="profile-container">
+                    <div class="profile-header-card">
+                        <div class="profile-cover"></div>
+                        <div class="profile-main">
+                            <img src="https://ui-avatars.com/api/?name=John+Doe&background=007AFF&color=fff&size=256" alt="John Doe" class="profile-avatar">
+                            <div class="profile-info-header">
+                                <h2>John Doe</h2>
+                                <p>Student ID: STU001</p>
+                                <span class="status-badge success">Active</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Personal Information</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <label>Full Name</label>
+                                        <p>John Doe</p>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>Email</label>
+                                        <p>john.doe@example.com</p>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>Phone Number</label>
+                                        <p>+1 234 567 8900</p>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>Date of Birth</label>
+                                        <p>January 15, 2002</p>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>Address</label>
+                                        <p>123 Main Street, City, State 12345</p>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>Emergency Contact</label>
+                                        <p>+1 234 567 8901</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Academic Information</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <label>Department</label>
+                                        <p>Computer Science</p>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>Year</label>
+                                        <p>3rd Year</p>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>Enrollment Date</label>
+                                        <p>September 1, 2021</p>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>Roll Number</label>
+                                        <p>CS2021001</p>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>Section</label>
+                                        <p>A</p>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>GPA</label>
+                                        <p>3.8 / 4.0</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Tab -->
+            <div class="tab-content" id="attendance">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2 class="card-title">Attendance History</h2>
+                            <p class="card-subtitle">Complete attendance record</p>
+                        </div>
+                        <div class="card-actions">
+                            <select class="filter-select">
+                                <option>This Month</option>
+                                <option>Last Month</option>
+                                <option>This Year</option>
+                            </select>
+                            <button class="btn-secondary">
+                                <i class="fas fa-download"></i>
+                                Export
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Day</th>
+                                        <th>Check-in Time</th>
+                                        <th>Subject</th>
+                                        <th>Faculty</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Jan 19, 2024</td>
+                                        <td>Friday</td>
+                                        <td>08:42 AM</td>
+                                        <td>Data Structures</td>
+                                        <td>Prof. Sarah Johnson</td>
+                                        <td><span class="status-badge success">Present</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jan 18, 2024</td>
+                                        <td>Thursday</td>
+                                        <td>--:-- --</td>
+                                        <td>Web Development</td>
+                                        <td>Prof. Michael Brown</td>
+                                        <td><span class="status-badge error">Absent</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jan 17, 2024</td>
+                                        <td>Wednesday</td>
+                                        <td>09:15 AM</td>
+                                        <td>Database Systems</td>
+                                        <td>Dr. Emily Davis</td>
+                                        <td><span class="status-badge warning">Late</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jan 16, 2024</td>
+                                        <td>Tuesday</td>
+                                        <td>08:50 AM</td>
+                                        <td>Data Structures</td>
+                                        <td>Prof. Sarah Johnson</td>
+                                        <td><span class="status-badge success">Present</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jan 15, 2024</td>
+                                        <td>Monday</td>
+                                        <td>08:45 AM</td>
+                                        <td>Web Development</td>
+                                        <td>Prof. Michael Brown</td>
+                                        <td><span class="status-badge success">Present</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schedule Tab -->
+            <div class="tab-content" id="schedule">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2 class="card-title">Weekly Schedule</h2>
+                            <p class="card-subtitle">Spring 2024 Semester</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="schedule-grid">
+                            <div class="schedule-day">
+                                <h3>Monday</h3>
+                                <div class="schedule-classes">
+                                    <div class="schedule-class">
+                                        <span class="class-time">09:00 - 10:30</span>
+                                        <h4>Data Structures</h4>
+                                        <p>Prof. Sarah Johnson</p>
+                                        <span class="class-room">Room 201</span>
+                                    </div>
+                                    <div class="schedule-class">
+                                        <span class="class-time">11:00 - 12:30</span>
+                                        <h4>Web Development</h4>
+                                        <p>Prof. Michael Brown</p>
+                                        <span class="class-room">Lab 101</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="schedule-day">
+                                <h3>Tuesday</h3>
+                                <div class="schedule-classes">
+                                    <div class="schedule-class">
+                                        <span class="class-time">10:00 - 11:30</span>
+                                        <h4>Database Systems</h4>
+                                        <p>Dr. Emily Davis</p>
+                                        <span class="class-room">Room 305</span>
+                                    </div>
+                                    <div class="schedule-class">
+                                        <span class="class-time">02:00 - 03:30</span>
+                                        <h4>Algorithms</h4>
+                                        <p>Prof. James Wilson</p>
+                                        <span class="class-room">Room 202</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="schedule-day">
+                                <h3>Wednesday</h3>
+                                <div class="schedule-classes">
+                                    <div class="schedule-class">
+                                        <span class="class-time">09:00 - 10:30</span>
+                                        <h4>Data Structures</h4>
+                                        <p>Prof. Sarah Johnson</p>
+                                        <span class="class-room">Room 201</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="schedule-day">
+                                <h3>Thursday</h3>
+                                <div class="schedule-classes">
+                                    <div class="schedule-class">
+                                        <span class="class-time">11:00 - 12:30</span>
+                                        <h4>Web Development</h4>
+                                        <p>Prof. Michael Brown</p>
+                                        <span class="class-room">Lab 101</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="schedule-day">
+                                <h3>Friday</h3>
+                                <div class="schedule-classes">
+                                    <div class="schedule-class">
+                                        <span class="class-time">10:00 - 11:30</span>
+                                        <h4>Database Systems</h4>
+                                        <p>Dr. Emily Davis</p>
+                                        <span class="class-room">Room 305</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../ststic/js/student.js"></script>
+</body>
+</html>

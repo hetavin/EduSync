@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduSync - Admin Dashboard</title>
+    <link rel="stylesheet" href="../ststic/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-content">
+            <!-- Logo -->
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <span class="logo-text">EduSync</span>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="nav-menu">
+                <a href="#dashboard" class="nav-item active" data-tab="dashboard">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#students" class="nav-item" data-tab="students">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>batch & Students</span>
+                </a>
+                <a href="#faculties" class="nav-item" data-tab="faculties">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>Add Faculties</span>
+                </a>
+                <a href="#reports" class="nav-item" data-tab="reports">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Reports</span>
+                </a>
+            </nav>
+            
+            <!-- Theme Toggle -->
+            <div class="theme-toggle">
+                <div class="theme-toggle-inner">
+                    <i class="fas fa-moon"></i>
+                    <span>Dark Mode</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="hamburger" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <h1 class="page-title">Overview</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="search-container">
+                    <i class="fas fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search students..." aria-label="Search">
+                </div>
+                <button class="notification-btn" aria-label="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <div class="profile-menu">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=007AFF&color=fff&size=128" alt="Admin profile">
+                    <div class="profile-info">
+                        <span class="profile-name">Admin</span>
+                        <span class="profile-role">Administrator</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-wrapper">
+            <!-- Dashboard Tab -->
+            <div class="tab-content active" id="dashboard">
+                <!-- Stats Overview -->
+                <section class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <span class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            12%
+                        </span>
+                    </div>
+                    <div class="stat-body">
+                        <h3 class="stat-value">120</h3>
+                        <p class="stat-label">Total Students</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon green">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <span class="stat-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            5%
+                        </span>
+                    </div>
+                    <div class="stat-body">
+                        <h3 class="stat-value success">105</h3>
+                        <p class="stat-label">Present Today</p>
+                        <div class="stat-progress">
+                            <div class="progress-bar" style="width: 87.5%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon red">
+                            <i class="fas fa-user-times"></i>
+                        </div>
+                        <span class="stat-trend negative">
+                            <i class="fas fa-arrow-down"></i>
+                            3%
+                        </span>
+                    </div>
+                    <div class="stat-body">
+                        <h3 class="stat-value error">15</h3>
+                        <p class="stat-label">Absent Today</p>
+                        <div class="stat-progress">
+                            <div class="progress-bar error" style="width: 12.5%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon green">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <span class="stat-status online">
+                            <i class="fas fa-circle"></i>
+                            Online
+                        </span>
+                    </div>
+                    <div class="stat-body">
+                        <h3 class="stat-value success">Active</h3>
+                        <p class="stat-label">System Status</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Content Grid -->
+            <div class="content-grid">
+                <!-- Recent Attendance -->
+                <div class="content-main">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">Recent Attendance</h2>
+                                <p class="card-subtitle">Today's attendance log</p>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn-icon" aria-label="Filter">
+                                    <i class="fas fa-filter"></i>
+                                </button>
+                                <button class="btn-secondary">
+                                    <i class="fas fa-download"></i>
+                                    Export
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-wrapper">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Student Name</th>
+                                            <th>ID</th>
+                                            <th>Time Logged</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="student-info">
+                                                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=007AFF&color=fff" alt="John Doe">
+                                                    <div>
+                                                        <span class="student-name">John Doe</span>
+                                                        <span class="student-class">Computer Science</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><span class="student-id">STU001</span></td>
+                                            <td><span class="time-logged">08:45 AM</span></td>
+                                            <td><span class="status-badge success">Present</span></td>
+                                            <td>
+                                                <button class="btn-icon" aria-label="View details">
+                                                    <i class="fas fa-ellipsis-h"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="student-info">
+                                                    <img src="https://ui-avatars.com/api/?name=Jane+Smith&background=34C759&color=fff" alt="Jane Smith">
+                                                    <div>
+                                                        <span class="student-name">Jane Smith</span>
+                                                        <span class="student-class">Computer Science</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><span class="student-id">STU002</span></td>
+                                            <td><span class="time-logged">08:50 AM</span></td>
+                                            <td><span class="status-badge success">Present</span></td>
+                                            <td>
+                                                <button class="btn-icon" aria-label="View details">
+                                                    <i class="fas fa-ellipsis-h"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="student-info">
+                                                    <img src="https://ui-avatars.com/api/?name=Mike+Johnson&background=FF9500&color=fff" alt="Mike Johnson">
+                                                    <div>
+                                                        <span class="student-name">Mike Johnson</span>
+                                                        <span class="student-class">Computer Science</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><span class="student-id">STU003</span></td>
+                                            <td><span class="time-logged">09:15 AM</span></td>
+                                            <td><span class="status-badge warning">Late</span></td>
+                                            <td>
+                                                <button class="btn-icon" aria-label="View details">
+                                                    <i class="fas fa-ellipsis-h"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="student-info">
+                                                    <img src="https://ui-avatars.com/api/?name=Sarah+Williams&background=5856D6&color=fff" alt="Sarah Williams">
+                                                    <div>
+                                                        <span class="student-name">Sarah Williams</span>
+                                                        <span class="student-class">Information Technology</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><span class="student-id">STU004</span></td>
+                                            <td><span class="time-logged">08:42 AM</span></td>
+                                            <td><span class="status-badge success">Present</span></td>
+                                            <td>
+                                                <button class="btn-icon" aria-label="View details">
+                                                    <i class="fas fa-ellipsis-h"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="student-info">
+                                                    <img src="https://ui-avatars.com/api/?name=David+Brown&background=FF3B30&color=fff" alt="David Brown">
+                                                    <div>
+                                                        <span class="student-name">David Brown</span>
+                                                        <span class="student-class">Computer Science</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><span class="student-id">STU005</span></td>
+                                            <td><span class="time-logged">08:38 AM</span></td>
+                                            <td><span class="status-badge success">Present</span></td>
+                                            <td>
+                                                <button class="btn-icon" aria-label="View details">
+                                                    <i class="fas fa-ellipsis-h"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Content -->
+                <div class="content-sidebar">
+                    <!-- Camera Feed Card -->
+                    <div class="card camera-card">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">Live Camera Feed</h2>
+                                <p class="card-subtitle">Facial Recognition</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="camera-feed">
+                                <div class="camera-icon">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                                <p class="camera-status">Awaiting facial recognition...</p>
+                                <div class="camera-info">
+                                    <span><i class="fas fa-circle"></i> Camera Ready</span>
+                                </div>
+                            </div>
+                            <button class="btn-primary">
+                                <i class="fas fa-play"></i>
+                                Start Recognition
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2 class="card-title">Quick Stats</h2>
+                                <p class="card-subtitle">This week</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="quick-stats">
+                                <div class="quick-stat-item">
+                                    <div class="quick-stat-label">
+                                        <i class="fas fa-calendar-check"></i>
+                                        Avg. Attendance
+                                    </div>
+                                    <div class="quick-stat-value">92.5%</div>
+                                </div>
+                                <div class="quick-stat-item">
+                                    <div class="quick-stat-label">
+                                        <i class="fas fa-clock"></i>
+                                        Avg. Check-in Time
+                                    </div>
+                                    <div class="quick-stat-value">8:47 AM</div>
+                                </div>
+                                <div class="quick-stat-item">
+                                    <div class="quick-stat-label">
+                                        <i class="fas fa-user-clock"></i>
+                                        Late Arrivals
+                                    </div>
+                                    <div class="quick-stat-value">8</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <!-- End Dashboard Tab -->
+
+            <!-- Students Tab -->
+            <div class="tab-content" id="students">
+                <div class="content-header">
+                    <div>
+                        <h2 class="section-title">Student Management</h2>
+                        <p class="section-subtitle">Upload and manage student records</p>
+                    </div>
+                </div>
+                
+                <!-- File Upload Card -->
+                <div class="card upload-card">
+                    <div class="card-header">
+                        <div>
+                            <h2 class="card-title">Import Students</h2>
+                            <p class="card-subtitle">Upload Excel (.xlsx, .xls) or CSV files</p>
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding: 24px;">
+                        <div class="upload-area" id="uploadArea">
+                            <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" hidden>
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <h3>Drag & Drop file here</h3>
+                            <p>or click to browse</p>
+                            <span class="upload-formats">Supports: Excel (.xlsx, .xls), CSV (.csv)</span>
+                        </div>
+                        <div class="file-info" id="fileInfo" style="display: none;">
+                            <i class="fas fa-file-excel"></i>
+                            <span id="fileName"></span>
+                            <button class="btn-icon" id="removeFile">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <button class="btn-primary" id="uploadBtn" style="margin-top: 16px; display: none;">
+                            <i class="fas fa-upload"></i>
+                            Upload & Process
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Students Table Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2 class="card-title">Uploaded Students</h2>
+                            <p class="card-subtitle"><span id="studentCount">0</span> students loaded</p>
+                        </div>
+                        <div class="card-actions">
+                            <div class="search-container">
+                                <i class="fas fa-magnifying-glass"></i>
+                                <input type="text" id="studentSearch" placeholder="Search students..." aria-label="Search students">
+                            </div>
+                            <div class="filter-dropdown">
+                                <button class="btn-icon" id="filterBtn" aria-label="Filter">
+                                    <i class="fas fa-filter"></i>
+                                </button>
+                                <div class="filter-menu" id="filterMenu">
+                                    <div class="filter-section">
+                                        <label class="filter-label">Batch</label>
+                                        <select id="filterBatch" class="filter-select">
+                                            <option value="">All Batches</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-actions">
+                                        <button class="btn-secondary" id="clearFilters" style="flex: 1;">
+                                            Clear
+                                        </button>
+                                        <button class="btn-primary" id="applyFilters" style="flex: 1;">
+                                            Apply
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn-secondary" id="exportTable">
+                                <i class="fas fa-download"></i>
+                                Export
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-wrapper">
+                            <table class="data-table" id="studentTable">
+                                <thead>
+                                    <tr>
+                                        <th>Enrollment No.</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone Number</th>
+                                        <th>Batch</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentTableBody">
+                                    <tr class="no-data-row">
+                                        <td colspan="6" style="text-align: center; padding: 48px; color: var(--text-secondary);">
+                                            <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 16px; display: block; opacity: 0.3;"></i>
+                                            <p>No student data uploaded yet</p>
+                                            <p style="font-size: 13px; margin-top: 8px;">Upload an Excel or CSV file to get started</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Students Tab -->
+
+            <!-- Add Faculties Tab -->
+            <div class="tab-content" id="faculties">
+                <div class="content-header">
+                    <div>
+                        <h2 class="section-title">Faculty & Mentor Management</h2>
+                        <p class="section-subtitle">Manage teaching staff, instructors, and mentors</p>
+                    </div>
+                </div>
+
+                <!-- Add Faculty/Mentor Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2 class="card-title">Add New Faculty/Mentor</h2>
+                            <p class="card-subtitle">Fill in the details below</p>
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding: 24px;">
+                        <form id="facultyForm" class="faculty-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Type</label>
+                                    <select id="facultyType" class="form-input" required>
+                                        <option value="">Select Type</option>
+                                        <option value="faculty">Faculty</option>
+                                        <option value="mentor">Mentor</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" id="facultyName" class="form-input" placeholder="Full Name" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" id="facultyEmail" class="form-input" placeholder="email@example.com" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Profession/Role</label>
+                                    <select id="facultyProfession" class="form-input" required>
+                                        <option value="">Select Role</option>
+                                        <option value="Professor">Professor</option>
+                                        <option value="Associate Professor">Associate Professor</option>
+                                        <option value="Assistant Professor">Assistant Professor</option>
+                                        <option value="Lecturer">Lecturer</option>
+                                        <option value="Senior Lecturer">Senior Lecturer</option>
+                                        <option value="Instructor">Instructor</option>
+                                        <option value="Teaching Assistant">Teaching Assistant</option>
+                                        <option value="Lab Instructor">Lab Instructor</option>
+                                        <option value="Guest Faculty">Guest Faculty</option>
+                                        <option value="Mentor">Mentor</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group" id="classGroup" style="display: none;">
+                                    <label class="form-label">Class (For Mentors)</label>
+                                    <input type="text" id="facultyClass" class="form-input" placeholder="e.g., CS-A, IT-B">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-primary" style="width: auto; margin-top: 8px;">
+                                <i class="fas fa-plus"></i>
+                                Add Faculty/Mentor
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Faculty List -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2 class="card-title">All Faculties & Mentors</h2>
+                            <p class="card-subtitle"><span id="facultyCount">0</span> members</p>
+                        </div>
+                        <div class="card-actions">
+                            <div class="search-container">
+                                <i class="fas fa-magnifying-glass"></i>
+                                <input type="text" id="facultySearch" placeholder="Search..." aria-label="Search faculty">
+                            </div>
+                            <div class="filter-dropdown">
+                                <button class="btn-icon" id="facultyFilterBtn" aria-label="Filter">
+                                    <i class="fas fa-filter"></i>
+                                </button>
+                                <div class="filter-menu" id="facultyFilterMenu">
+                                    <div class="filter-section">
+                                        <label class="filter-label">Type</label>
+                                        <select id="filterFacultyType" class="filter-select">
+                                            <option value="">All Types</option>
+                                            <option value="faculty">Faculty Only</option>
+                                            <option value="mentor">Mentor Only</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-actions">
+                                        <button class="btn-secondary" id="clearFacultyFilters" style="flex: 1;">
+                                            Clear
+                                        </button>
+                                        <button class="btn-primary" id="applyFacultyFilters" style="flex: 1;">
+                                            Apply
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn-secondary" id="exportFaculty">
+                                <i class="fas fa-download"></i>
+                                Export
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="faculty-grid" id="facultyGrid">
+                            <div class="no-faculty-message">
+                                <i class="fas fa-user-tie" style="font-size: 48px; opacity: 0.3; margin-bottom: 16px;"></i>
+                                <p>No faculty or mentor added yet</p>
+                                <p style="font-size: 13px; margin-top: 8px; color: var(--text-secondary);">Add your first faculty or mentor using the form above</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Add Faculties Tab -->
+
+            <!-- Reports Tab -->
+            <div class="tab-content" id="reports">
+                <div class="content-header">
+                    <div>
+                        <h2 class="section-title">Reports & Analytics</h2>
+                        <p class="section-subtitle">View attendance reports and statistics</p>
+                    </div>
+                </div>
+                <div class="reports-grid">
+                    <div class="card report-card">
+                        <div class="card-body" style="padding: 32px; text-align: center;">
+                            <div class="report-icon">
+                                <i class="fas fa-calendar-week"></i>
+                            </div>
+                            <h3>Weekly Report</h3>
+                            <p class="report-description">Last 7 days attendance summary</p>
+                            <button class="btn-primary">
+                                <i class="fas fa-download"></i>
+                                Generate Report
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card report-card">
+                        <div class="card-body" style="padding: 32px; text-align: center;">
+                            <div class="report-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <h3>Monthly Report</h3>
+                            <p class="report-description">Full month attendance analysis</p>
+                            <button class="btn-primary">
+                                <i class="fas fa-download"></i>
+                                Generate Report
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card report-card">
+                        <div class="card-body" style="padding: 32px; text-align: center;">
+                            <div class="report-icon">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <h3>Student Report</h3>
+                            <p class="report-description">Individual student attendance</p>
+                            <button class="btn-primary">
+                                <i class="fas fa-download"></i>
+                                Generate Report
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card report-card">
+                        <div class="card-body" style="padding: 32px; text-align: center;">
+                            <div class="report-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h3>Analytics Dashboard</h3>
+                            <p class="report-description">Comprehensive data visualization</p>
+                            <button class="btn-primary">
+                                <i class="fas fa-eye"></i>
+                                View Analytics
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Reports Tab -->
+    </main>
+
+    <script src="../ststic/js/dashboard.js"></script>
+</body>
+</html>
