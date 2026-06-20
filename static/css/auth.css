@@ -116,32 +116,38 @@ body::after {
 }
 
 .form-container.slide-out-left {
-    animation: slideOutLeft 0.4s ease forwards;
+    animation: slideOutLeft 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
 
 .form-container.slide-in-right {
-    animation: slideInRight 0.4s ease forwards;
+    animation: slideInRight 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
 
 @keyframes slideOutLeft {
-    from {
+    0% {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateX(0) scale(1);
     }
-    to {
+    50% {
+        transform: translateX(-20px) scale(0.98);
+    }
+    100% {
         opacity: 0;
-        transform: translateX(-30px);
+        transform: translateX(-50px) scale(0.95);
     }
 }
 
 @keyframes slideInRight {
-    from {
+    0% {
         opacity: 0;
-        transform: translateX(30px);
+        transform: translateX(50px) scale(0.95);
     }
-    to {
+    50% {
+        transform: translateX(20px) scale(0.98);
+    }
+    100% {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateX(0) scale(1);
     }
 }
 
@@ -249,9 +255,10 @@ body::after {
     font-size: 15px;
     font-weight: 400;
     pointer-events: none;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     background: transparent;
     padding: 0 4px;
+    transform-origin: left center;
 }
 
 .input-group input {
@@ -261,7 +268,7 @@ body::after {
     border-radius: 12px;
     font-size: 15px;
     background: rgba(255, 255, 255, 0.8);
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .input-group.password-field input {
@@ -298,10 +305,12 @@ body::after {
     color: #667eea;
     background: white;
     font-weight: 500;
+    transform: translateY(0) scale(1);
 }
 
 .input-group.input-focused {
     transform: scale(1.01);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .input-group.shake {
@@ -390,4 +399,28 @@ body::after {
 
 .toggle-link a:hover {
     color: #764ba2;
+}
+
+.form-description {
+    text-align: center;
+    color: #86868b;
+    font-size: 14px;
+    margin: -20px 0 30px 0;
+    line-height: 1.5;
+}
+
+#otp-code {
+    text-align: center;
+    font-size: 20px;
+    letter-spacing: 8px;
+    font-weight: 600;
+}
+
+#verifyOtpForm .input-group,
+#resetPasswordForm .input-group {
+    margin-bottom: 25px;
+}
+
+#resetPasswordForm .btn-submit {
+    margin-top: 15px;
 }

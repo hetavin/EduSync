@@ -11,23 +11,47 @@ $(document).ready(function() {
             registerForm.removeClass('hidden').addClass('slide-in-right');
             setTimeout(() => {
                 registerForm.removeClass('slide-in-right');
-            }, 400);
-        }, 400);
+            }, 500);
+        }, 500);
     });
 
     $('.show-login').on('click', function(e) {
         e.preventDefault();
         const loginForm = $('#loginForm');
         const registerForm = $('#registerForm');
+        const forgotForm = $('#forgotPasswordForm');
+        const verifyForm = $('#verifyOtpForm');
+        const resetForm = $('#resetPasswordForm');
         
         registerForm.addClass('slide-out-left');
+        forgotForm.addClass('slide-out-left');
+        verifyForm.addClass('slide-out-left');
+        resetForm.addClass('slide-out-left');
         setTimeout(() => {
             registerForm.addClass('hidden').removeClass('slide-out-left');
+            forgotForm.addClass('hidden').removeClass('slide-out-left');
+            verifyForm.addClass('hidden').removeClass('slide-out-left');
+            resetForm.addClass('hidden').removeClass('slide-out-left');
             loginForm.removeClass('hidden').addClass('slide-in-right');
             setTimeout(() => {
                 loginForm.removeClass('slide-in-right');
-            }, 400);
-        }, 400);
+            }, 500);
+        }, 500);
+    });
+
+    $('.show-forgot').on('click', function(e) {
+        e.preventDefault();
+        const loginForm = $('#loginForm');
+        const forgotForm = $('#forgotPasswordForm');
+        
+        loginForm.addClass('slide-out-left');
+        setTimeout(() => {
+            loginForm.addClass('hidden').removeClass('slide-out-left');
+            forgotForm.removeClass('hidden').addClass('slide-in-right');
+            setTimeout(() => {
+                forgotForm.removeClass('slide-in-right');
+            }, 500);
+        }, 500);
     });
 
     // Password toggle functionality
@@ -120,6 +144,124 @@ $(document).ready(function() {
         }
 
         $('#registerForm .btn-submit').html('<i class="fas fa-spinner fa-spin"></i> Processing...');
+    });
+
+    // Forgot password form validation
+    $('#forgotPasswordEmailForm').on('submit', function(e) {
+        e.preventDefault();
+        const email = $('#forgot-email').val().trim();
+
+        if (!email) {
+            $('.input-group').has('#forgot-email').addClass('shake');
+            setTimeout(() => {
+                $('.input-group').has('#forgot-email').removeClass('shake');
+            }, 500);
+            alert('Please enter your email address!');
+            return false;
+        }
+
+        $('#forgotPasswordForm .btn-submit').html('<i class="fas fa-spinner fa-spin"></i> Sending...');
+
+        $.ajax({
+            url: '/forgot-password',
+            method: 'POST',
+            data: { email: email },
+            success: function(response) {
+                $('#forgotPasswordForm').addClass('slide-out-left');
+                setTimeout(() => {
+                    $('#forgotPasswordForm').addClass('hidden').removeClass('slide-out-left');
+                    $('#verifyOtpForm').removeClass('hidden').addClass('slide-in-right');
+                    setTimeout(() => {
+                        $('#verifyOtpForm').removeClass('slide-in-right');
+                    }, 500);
+                }, 500);
+                $('#forgotPasswordForm .btn-submit').html('Send OTP');
+            },
+            error: function(xhr) {
+                alert(xhr.responseJSON?.message || 'Error sending OTP');
+                $('#forgotPasswordForm .btn-submit').html('Send OTP');
+            }
+        });
+    });
+
+    // Verify OTP form
+    $('#verifyOtpCodeForm').on('submit', function(e) {
+        e.preventDefault();
+        const otp = $('#otp-code').val().trim();
+        const email = $('#forgot-email').val().trim();
+
+        if (!otp) {
+            $('.input-group').has('#otp-code').addClass('shake');
+            setTimeout(() => {
+                $('.input-group').has('#otp-code').removeClass('shake');
+            }, 500);
+            alert('Please enter OTP!');
+            return false;
+        }
+
+        $('#verifyOtpForm .btn-submit').html('<i class="fas fa-spinner fa-spin"></i> Verifying...');
+
+        $.ajax({
+            url: '/verify-otp',
+            method: 'POST',
+            data: { email: email, otp: otp },
+            success: function(response) {
+                $('#verifyOtpForm').addClass('slide-out-left');
+                setTimeout(() => {
+                    $('#verifyOtpForm').addClass('hidden').removeClass('slide-out-left');
+                    $('#resetPasswordForm').removeClass('hidden').addClass('slide-in-right');
+                    setTimeout(() => {
+                        $('#resetPasswordForm').removeClass('slide-in-right');
+                    }, 500);
+                }, 500);
+                $('#verifyOtpForm .btn-submit').html('Verify OTP');
+            },
+            error: function(xhr) {
+                alert(xhr.responseJSON?.message || 'Invalid OTP');
+                $('#verifyOtpForm .btn-submit').html('Verify OTP');
+            }
+        });
+    });
+
+    // Reset password form
+    $('#resetPasswordNewForm').on('submit', function(e) {
+        e.preventDefault();
+        const password = $('#new-password').val();
+        const confirmPassword = $('#confirm-new-password').val();
+        const email = $('#forgot-email').val().trim();
+
+        if (password !== confirmPassword) {
+            $('.input-group').has('#confirm-new-password').addClass('shake');
+            setTimeout(() => {
+                $('.input-group').has('#confirm-new-password').removeClass('shake');
+            }, 500);
+            alert('Passwords do not match!');
+            return false;
+        }
+
+        $('#resetPasswordForm .btn-submit').html('<i class="fas fa-spinner fa-spin"></i> Resetting...');
+
+        $.ajax({
+            url: '/reset-password',
+            method: 'POST',
+            data: { email: email, password: password },
+            success: function(response) {
+                alert('Password reset successful! Please login.');
+                $('#resetPasswordForm').addClass('slide-out-left');
+                setTimeout(() => {
+                    $('#resetPasswordForm').addClass('hidden').removeClass('slide-out-left');
+                    $('#loginForm').removeClass('hidden').addClass('slide-in-right');
+                    setTimeout(() => {
+                        $('#loginForm').removeClass('slide-in-right');
+                    }, 500);
+                }, 500);
+                $('#resetPasswordForm .btn-submit').html('Reset Password');
+            },
+            error: function(xhr) {
+                alert(xhr.responseJSON?.message || 'Error resetting password');
+                $('#resetPasswordForm .btn-submit').html('Reset Password');
+            }
+        });
     });
 
     // Input focus animation

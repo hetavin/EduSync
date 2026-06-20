@@ -64,7 +64,7 @@
                             <input type="checkbox" name="remember" id="remember">
                             <span>Remember me</span>
                         </label>
-                        <a href="#" class="forgot-password">Forgot Password?</a>
+                        <a href="#" class="forgot-password show-forgot">Forgot Password?</a>
                     </div>
                     <button type="submit" class="btn-submit">Login</button>
                     <p class="toggle-link">Don't have an account? <a href="#" class="show-register">Register</a></p>
@@ -95,6 +95,53 @@
                     </div>
                     <button type="submit" class="btn-submit">Register</button>
                     <p class="toggle-link">Already have an account? <a href="#" class="show-login">Login</a></p>
+                </form>
+            </div>
+
+            <!-- Forgot Password Form -->
+            <div class="form-container hidden" id="forgotPasswordForm">
+                <h2>Reset Password</h2>
+                <p class="form-description">Enter your email address and we'll send you an OTP.</p>
+                <form id="forgotPasswordEmailForm">
+                    <div class="input-group">
+                        <input type="email" id="forgot-email" name="email" required>
+                        <label for="forgot-email">Email</label>
+                    </div>
+                    <button type="submit" class="btn-submit">Send OTP</button>
+                    <p class="toggle-link"><a href="#" class="show-login">Back to Login</a></p>
+                </form>
+            </div>
+
+            <!-- Verify OTP Form -->
+            <div class="form-container hidden" id="verifyOtpForm">
+                <h2>Verify OTP</h2>
+                <p class="form-description">Enter the OTP sent to your email.</p>
+                <form id="verifyOtpCodeForm">
+                    <div class="input-group">
+                        <input type="text" id="otp-code" name="otp" required maxlength="6">
+                        <label for="otp-code">OTP Code</label>
+                    </div>
+                    <button type="submit" class="btn-submit">Verify OTP</button>
+                    <p class="toggle-link"><a href="#" class="show-login">Back to Login</a></p>
+                </form>
+            </div>
+
+            <!-- Reset Password Form -->
+            <div class="form-container hidden" id="resetPasswordForm">
+                <h2>Create New Password</h2>
+                <p class="form-description">Enter your new password.</p>
+                <form id="resetPasswordNewForm">
+                    <div class="input-group password-field">
+                        <input type="password" id="new-password" name="password" required>
+                        <label for="new-password">New Password</label>
+                        <i class="fas fa-eye password-toggle" data-target="new-password"></i>
+                    </div>
+                    <div class="input-group password-field">
+                        <input type="password" id="confirm-new-password" name="confirm_password" required>
+                        <label for="confirm-new-password">Confirm Password</label>
+                        <i class="fas fa-eye password-toggle" data-target="confirm-new-password"></i>
+                    </div>
+                    <button type="submit" class="btn-submit">Reset Password</button>
                 </form>
             </div>
         </div>
