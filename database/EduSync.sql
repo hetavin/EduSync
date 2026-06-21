@@ -5,11 +5,14 @@ CREATE TABLE users (
     enrollment VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    role ENUM('admin', 'teacher', 'mentor', 'student') NOT NULL DEFAULT 'student',
+    role ENUM('admin', 'faculty', 'mentor', 'student') NOT NULL DEFAULT 'student',
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+ALTER TABLE users
+MODIFY role ENUM('admin','faculty','mentor','student');
 
 drop TABLE users
 
@@ -23,4 +26,17 @@ CREATE TABLE students (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-UPDATE users role SET role = 'admin' WHERE id = 2
+UPDATE users role SET role = 'admin' WHERE id = 1
+
+
+CREATE TABLE faculty (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    type ENUM('faculty', 'mentor') NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    profession VARCHAR(100) NOT NULL,
+    class_name VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+DROP Table faculty

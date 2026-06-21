@@ -536,7 +536,7 @@ if (logoutBtn) {
         if (confirm('Are you sure you want to logout?')) {
             showToast('Logging out...', 'info');
             setTimeout(() => {
-                window.location.href = '/login';
+                window.location.href = '/logout';
             }, 1000);
         }
     });

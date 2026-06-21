@@ -64,7 +64,7 @@ def login():
         "redirect": url_for("mentor.dashboard")
     })
 
-    elif user["role"] == "teacher":
+    elif user["role"] == "faculty":
          return jsonify({
         "success": True,
         "redirect": url_for("teacher.dashboard")

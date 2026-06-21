@@ -25,10 +25,10 @@ def mentor_dashboard():
     return render_template("mentor.html")
 
 
-@auth_bp.route("/teacher")
+@auth_bp.route("/faculty")
 def teacher_dashboard():
 
-    if session.get("role") != "teacher":
+    if session.get("role") != "faculty":
         return redirect(url_for("auth.home"))
 
     return render_template("teacher.html")

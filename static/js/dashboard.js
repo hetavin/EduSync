@@ -20,7 +20,7 @@ if (savedTheme === 'dark') {
 }
 
 // Theme toggle event
-themeToggle.addEventListener('change', function() {
+themeToggle.addEventListener('change', function () {
     if (this.checked) {
         body.classList.add('dark');
         localStorage.setItem('theme', 'dark');
@@ -34,17 +34,17 @@ themeToggle.addEventListener('change', function() {
 const hamburger = document.querySelector('.hamburger');
 const sidebar = document.querySelector('.sidebar');
 
-hamburger.addEventListener('click', function(e) {
+hamburger.addEventListener('click', function (e) {
     e.stopPropagation();
     sidebar.classList.toggle('active');
     mobileOverlay.classList.toggle('active');
-    
+
     // Hamburger animation
     this.classList.toggle('active');
 });
 
 // Close sidebar when clicking overlay
-mobileOverlay.addEventListener('click', function() {
+mobileOverlay.addEventListener('click', function () {
     sidebar.classList.remove('active');
     mobileOverlay.classList.remove('active');
     hamburger.classList.remove('active');
@@ -55,21 +55,21 @@ const navItems = document.querySelectorAll('.nav-item');
 const tabContents = document.querySelectorAll('.tab-content');
 
 navItems.forEach(item => {
-    item.addEventListener('click', function(e) {
+    item.addEventListener('click', function (e) {
         e.preventDefault();
-        
+
         const targetTab = this.getAttribute('data-tab');
-        
+
         // Update active nav item
         navItems.forEach(nav => nav.classList.remove('active'));
         this.classList.add('active');
-        
+
         // Update active tab content
         tabContents.forEach(tab => tab.classList.remove('active'));
         const targetContent = document.getElementById(targetTab);
         if (targetContent) {
             targetContent.classList.add('active');
-            
+
             // Animate tab content
             targetContent.style.opacity = '0';
             targetContent.style.transform = 'translateY(10px)';
@@ -79,11 +79,11 @@ navItems.forEach(item => {
                 targetContent.style.transform = 'translateY(0)';
             }, 10);
         }
-        
+
         // Update page title
         const navText = this.querySelector('span').textContent;
         document.querySelector('.page-title').textContent = navText;
-        
+
         // Close mobile menu
         if (window.innerWidth <= 768) {
             sidebar.classList.remove('active');
@@ -95,9 +95,9 @@ navItems.forEach(item => {
 
 // Close sidebar when resizing to desktop
 let resizeTimer;
-window.addEventListener('resize', function() {
+window.addEventListener('resize', function () {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function() {
+    resizeTimer = setTimeout(function () {
         if (window.innerWidth > 768) {
             sidebar.classList.remove('active');
             mobileOverlay.classList.remove('active');
@@ -125,20 +125,20 @@ const searchInput = document.querySelector('.search-container input');
 const tableRows = document.querySelectorAll('.data-table tbody tr');
 
 if (searchInput) {
-    searchInput.addEventListener('input', function(e) {
+    searchInput.addEventListener('input', function (e) {
         const searchTerm = e.target.value.toLowerCase().trim();
-        
+
         tableRows.forEach(row => {
             const text = row.textContent.toLowerCase();
             const shouldShow = text.includes(searchTerm);
-            
+
             row.style.display = shouldShow ? '' : 'none';
-            
+
             if (shouldShow && searchTerm) {
                 row.style.animation = 'fadeIn 0.3s ease';
             }
         });
-        
+
         // Show "no results" message if needed
         const visibleRows = Array.from(tableRows).filter(row => row.style.display !== 'none');
         if (visibleRows.length === 0 && searchTerm) {
@@ -160,15 +160,15 @@ if (searchInput) {
 //             isRecognizing = true;
 //             this.disabled = true;
 //             this.style.opacity = '0.6';
-            
+
 //             cameraIcon.className = 'fas fa-spinner fa-spin';
 //             cameraStatus.textContent = 'Initializing camera...';
-            
+
 //             setTimeout(() => {
 //                 cameraIcon.className = 'fas fa-camera-retro';
 //                 cameraStatus.textContent = 'Recognition active - Ready to scan';
 //                 cameraStatus.style.color = 'var(--green)';
-                
+
 //                 this.innerHTML = '<i class="fas fa-stop"></i> Stop Recognition';
 //                 this.disabled = false;
 //                 this.style.opacity = '1';
@@ -179,15 +179,15 @@ if (searchInput) {
 //             isRecognizing = false;
 //             this.disabled = true;
 //             this.style.opacity = '0.6';
-            
+
 //             cameraIcon.className = 'fas fa-spinner fa-spin';
 //             cameraStatus.textContent = 'Stopping camera...';
-            
+
 //             setTimeout(() => {
 //                 cameraIcon.className = 'fas fa-camera';
 //                 cameraStatus.textContent = 'Awaiting facial recognition...';
 //                 cameraStatus.style.color = '';
-                
+
 //                 this.innerHTML = '<i class="fas fa-play"></i> Start Recognition';
 //                 this.disabled = false;
 //                 this.style.opacity = '1';
@@ -200,18 +200,18 @@ if (searchInput) {
 // ===== Export Button =====
 const exportBtn = document.querySelector('.btn-secondary');
 if (exportBtn && exportBtn.textContent.includes('Export')) {
-    exportBtn.addEventListener('click', function() {
+    exportBtn.addEventListener('click', function () {
         const originalHTML = this.innerHTML;
         const originalBg = this.style.background;
-        
+
         this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
         this.disabled = true;
-        
+
         setTimeout(() => {
             this.innerHTML = '<i class="fas fa-check"></i> Exported!';
             this.style.background = 'var(--green)';
             this.style.color = 'white';
-            
+
             setTimeout(() => {
                 this.innerHTML = originalHTML;
                 this.style.background = originalBg;
@@ -225,13 +225,13 @@ if (exportBtn && exportBtn.textContent.includes('Export')) {
 // ===== Notification Button =====
 const notificationBtn = document.querySelector('.notification-btn');
 if (notificationBtn) {
-    notificationBtn.addEventListener('click', function() {
+    notificationBtn.addEventListener('click', function () {
         // Add animation
         this.style.transform = 'scale(0.95)';
         setTimeout(() => {
             this.style.transform = '';
         }, 100);
-        
+
         // Here you would show notification dropdown
         console.log('Notifications clicked');
     });
@@ -240,7 +240,7 @@ if (notificationBtn) {
 // ===== Profile Menu =====
 const profileMenu = document.querySelector('.profile-menu');
 if (profileMenu) {
-    profileMenu.addEventListener('click', function() {
+    profileMenu.addEventListener('click', function () {
         // Here you would show profile dropdown
         console.log('Profile menu clicked');
     });
@@ -249,13 +249,13 @@ if (profileMenu) {
 // ===== Table Row Actions =====
 const actionButtons = document.querySelectorAll('.data-table .btn-icon');
 actionButtons.forEach(btn => {
-    btn.addEventListener('click', function(e) {
+    btn.addEventListener('click', function (e) {
         e.stopPropagation();
         const row = this.closest('tr');
         const studentName = row.querySelector('.student-name').textContent;
-        
+
         console.log('Action clicked for:', studentName);
-        
+
         // Add ripple effect
         this.style.transform = 'scale(0.9)';
         setTimeout(() => {
@@ -265,26 +265,26 @@ actionButtons.forEach(btn => {
 });
 
 // ===== Card Animations on Load =====
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     // Animate stat cards
     const statCards = document.querySelectorAll('.stat-card');
     statCards.forEach((card, index) => {
         card.style.opacity = '0';
         card.style.transform = 'translateY(20px)';
-        
+
         setTimeout(() => {
             card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
             card.style.opacity = '1';
             card.style.transform = 'translateY(0)';
         }, index * 100);
     });
-    
+
     // Animate table rows
     setTimeout(() => {
         tableRows.forEach((row, index) => {
             row.style.opacity = '0';
             row.style.transform = 'translateX(-20px)';
-            
+
             setTimeout(() => {
                 row.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
                 row.style.opacity = '1';
@@ -292,7 +292,7 @@ window.addEventListener('load', function() {
             }, index * 80);
         });
     }, 400);
-    
+
     // Animate progress bars
     const progressBars = document.querySelectorAll('.progress-bar');
     progressBars.forEach(bar => {
@@ -310,7 +310,7 @@ function updateTime() {
     const hours = now.getHours().toString().padStart(2, '0');
     const minutes = now.getMinutes().toString().padStart(2, '0');
     const timeString = `${hours}:${minutes}`;
-    
+
     // Update any time displays
     const timeElements = document.querySelectorAll('[data-time]');
     timeElements.forEach(el => {
@@ -322,19 +322,19 @@ updateTime();
 setInterval(updateTime, 60000);
 
 // ===== Keyboard Shortcuts =====
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     // Ctrl/Cmd + K for search
     if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
         searchInput?.focus();
     }
-    
+
     // Ctrl/Cmd + D for dark mode toggle
     if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
         e.preventDefault();
         themeToggle.click();
     }
-    
+
     // Escape to close mobile menu
     if (e.key === 'Escape') {
         if (sidebar.classList.contains('active')) {
@@ -350,7 +350,7 @@ function animateValue(element, start, end, duration) {
     const range = end - start;
     const increment = range / (duration / 16);
     let current = start;
-    
+
     const timer = setInterval(() => {
         current += increment;
         if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
@@ -400,14 +400,14 @@ function showToast(message, type = 'info') {
         transform: translateY(20px);
         transition: all 0.3s ease;
     `;
-    
+
     document.body.appendChild(toast);
-    
+
     setTimeout(() => {
         toast.style.opacity = '1';
         toast.style.transform = 'translateY(0)';
     }, 10);
-    
+
     setTimeout(() => {
         toast.style.opacity = '0';
         toast.style.transform = 'translateY(20px)';
@@ -421,6 +421,13 @@ function showToast(message, type = 'info') {
 console.log('EduSync Dashboard loaded successfully! 🎓');
 console.log('Theme:', body.classList.contains('dark') ? 'Dark' : 'Light');
 console.log('Keyboard shortcuts: Cmd/Ctrl+K (Search), Cmd/Ctrl+D (Toggle theme)');
+// Load existing faculties from server (uses jQuery)
+if (window.jQuery) {
+    loadFacultyFromServer();
+} else {
+    // jQuery not available yet; try again shortly
+    window.addEventListener('load', () => setTimeout(loadFacultyFromServer, 100));
+}
 
 // ===== File Upload Handling =====
 const uploadArea = document.getElementById('uploadArea');
@@ -484,9 +491,9 @@ if (uploadArea && fileInput) {
     });
 
     // Upload button
-    uploadBtn?.addEventListener('click', () => {
+    uploadBtn?.addEventListener('click', async () => {
         if (currentFile) {
-            processFile(currentFile);
+            await processFile(currentFile);
         }
     });
 }
@@ -495,7 +502,7 @@ if (uploadArea && fileInput) {
 function handleFileSelect(file) {
     const validTypes = ['.xlsx', '.xls', '.csv'];
     const fileExt = '.' + file.name.split('.').pop().toLowerCase();
-    
+
     if (!validTypes.includes(fileExt)) {
         showToast('Please select a valid Excel or CSV file', 'error');
         return;
@@ -518,50 +525,86 @@ function resetFileUpload() {
 }
 
 // Process uploaded file
-function processFile(file) {
-    const reader = new FileReader();
+async function processFile(file) {
     const fileExt = '.' + file.name.split('.').pop().toLowerCase();
 
     uploadBtn.disabled = true;
     uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
-    reader.onload = function(e) {
-        try {
-            let data = [];
-            
-            if (fileExt === '.csv') {
-                data = parseCSV(e.target.result);
-            } else {
-                // For Excel files, you'd need a library like xlsx/SheetJS
-                // This is a placeholder - add SheetJS library to parse Excel
-                showToast('Excel parsing requires SheetJS library. Use CSV for now.', 'warning');
-                resetFileUpload();
-                uploadBtn.disabled = false;
-                uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Upload & Process';
-                return;
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+
+        reader.onload = async function (e) {
+            try {
+                let data = [];
+
+                if (fileExt === '.csv') {
+                    data = parseCSV(e.target.result);
+                } else {
+                    // For Excel files, you'd need a library like xlsx/SheetJS
+                    showToast('Excel parsing requires SheetJS library. Use CSV for now.', 'warning');
+                    resetFileUpload();
+                    uploadBtn.disabled = false;
+                    uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Upload & Process';
+                    resolve();
+                    return;
+                }
+
+                if (data.length > 0) {
+                    const saved = await saveStudentsToServer(data);
+                    if (saved) {
+                        studentData = data;
+                        populateFilters(data);
+                        displayStudents(data);
+                        showToast(`Successfully imported ${data.length} students`, 'success');
+                        resetFileUpload();
+                    }
+                } else {
+                    showToast('No valid data found in file', 'error');
+                }
+            } catch (error) {
+                showToast('Error processing file: ' + error.message, 'error');
             }
 
-            if (data.length > 0) {
-                studentData = data;
-                populateFilters(data);
-                displayStudents(data);
-                showToast(`Successfully loaded ${data.length} students`, 'success');
-                resetFileUpload();
-            } else {
-                showToast('No valid data found in file', 'error');
-            }
-        } catch (error) {
-            showToast('Error processing file: ' + error.message, 'error');
+            uploadBtn.disabled = false;
+            uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Upload & Process';
+            resolve();
+        };
+
+        if (fileExt === '.csv') {
+            reader.readAsText(file);
+        } else {
+            reader.readAsBinaryString(file);
         }
-        
-        uploadBtn.disabled = false;
-        uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Upload & Process';
-    };
+    });
+}
 
-    if (fileExt === '.csv') {
-        reader.readAsText(file);
-    } else {
-        reader.readAsBinaryString(file);
+async function saveStudentsToServer(students) {
+    try {
+        const response = await fetch('/api/import-students', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ students })
+        });
+
+        const result = await response.json();
+        if (!response.ok) {
+            showToast(result.message || 'Failed to save students to database', 'error');
+            return false;
+        }
+
+        if (result.inserted || result.updated) {
+            showToast(result.message || `${result.inserted || 0} students saved`, 'success');
+            return true;
+        }
+
+        showToast(result.message || 'Students imported but nothing was saved', 'warning');
+        return false;
+    } catch (error) {
+        showToast('Server error saving student data: ' + error.message, 'error');
+        return false;
     }
 }
 
@@ -593,7 +636,7 @@ function parseCSV(text) {
 // Populate filter dropdowns
 function populateFilters(data) {
     const batches = [...new Set(data.map(s => s.batch))].sort();
-    
+
     filterBatch.innerHTML = '<option value="">All Batches</option>';
     batches.forEach(batch => {
         if (batch) {
@@ -608,14 +651,14 @@ function populateFilters(data) {
 // Display students in table with filters applied
 function displayStudents(data) {
     studentTableBody.innerHTML = '';
-    
+
     let filteredData = data;
-    
+
     // Apply filters
     if (activeFilters.batch) {
         filteredData = filteredData.filter(s => s.batch === activeFilters.batch);
     }
-    
+
     if (filteredData.length === 0) {
         studentTableBody.innerHTML = `
             <tr class="no-data-row">
@@ -629,7 +672,7 @@ function displayStudents(data) {
         studentCount.textContent = '0';
         return;
     }
-    
+
     filteredData.forEach((student, index) => {
         const originalIndex = data.indexOf(student);
         const row = document.createElement('tr');
@@ -652,7 +695,7 @@ function displayStudents(data) {
         row.dataset.index = originalIndex;
         studentTableBody.appendChild(row);
     });
-    
+
     studentCount.textContent = filteredData.length;
 }
 
@@ -677,7 +720,7 @@ if (applyFiltersBtn) {
         activeFilters.batch = filterBatch.value;
         displayStudents(studentData);
         filterMenu.classList.remove('active');
-        
+
         if (activeFilters.batch) {
             filterBtn.style.color = 'var(--blue)';
             showToast('Filter applied', 'success');
@@ -701,16 +744,16 @@ if (studentSearch) {
     studentSearch.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase().trim();
         const rows = studentTableBody.querySelectorAll('tr:not(.no-data-row)');
-        
+
         let visibleCount = 0;
         rows.forEach(row => {
             const text = row.textContent.toLowerCase();
             const shouldShow = text.includes(searchTerm);
-            
+
             row.style.display = shouldShow ? '' : 'none';
             if (shouldShow) visibleCount++;
         });
-        
+
         // Update count display
         if (searchTerm && visibleCount === 0 && rows.length > 0) {
             if (!studentTableBody.querySelector('.no-results-row')) {
@@ -768,13 +811,13 @@ function downloadCSV(csv, filename) {
 }
 
 // Edit student
-window.editStudent = function(index) {
+window.editStudent = function (index) {
     const student = studentData[index];
     showToast(`Edit functionality for ${student.name}`, 'info');
 };
 
 // Delete student
-window.deleteStudent = function(index) {
+window.deleteStudent = function (index) {
     if (confirm('Are you sure you want to delete this student?')) {
         studentData.splice(index, 1);
         populateFilters(studentData);
@@ -820,9 +863,9 @@ if (facultyType) {
 
 // Add faculty/mentor form submission
 if (facultyForm) {
-    facultyForm.addEventListener('submit', (e) => {
+    facultyForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const newFaculty = {
             type: facultyType.value,
             name: facultyName.value.trim(),
@@ -830,7 +873,12 @@ if (facultyForm) {
             profession: facultyProfession.value.trim(),
             class: facultyType.value === 'mentor' ? facultyClass.value.trim() : ''
         };
-        
+
+        const saved = await saveFacultyToServer(newFaculty);
+        if (!saved) {
+            return;
+        }
+
         facultyData.push(newFaculty);
         displayFaculty(facultyData);
         facultyForm.reset();
@@ -839,17 +887,92 @@ if (facultyForm) {
     });
 }
 
+function saveFacultyToServer(faculty) {
+    return new Promise((resolve) => {
+        $.ajax({
+            url: '/api/faculty',
+            method: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(faculty),
+            dataType: 'json'
+        }).done(function (result) {
+            showToast(result.message || 'Saved successfully', 'success');
+            resolve(true);
+        }).fail(function (xhr) {
+            let msg = 'Failed to save faculty/mentor';
+            try {
+                const res = JSON.parse(xhr.responseText);
+                if (res && res.message) msg = res.message;
+            } catch (e) { }
+            showToast(msg, 'error');
+            resolve(false);
+        });
+    });
+}
+
+// function loadFacultyFromServer() {
+//     // load existing faculty list and populate UI
+//     $.ajax({
+//         url: '/api/faculty',
+//         method: 'GET',
+//         dataType: 'json'
+//     }).done(function(data) {
+//         if (Array.isArray(data)) {
+//             facultyData = data.map(f => ({
+//                 id: f.id,
+//                 type: f.type,
+//                 name: f.name,
+//                 email: f.email,
+//                 profession: f.profession,
+//                 class: f.class_name || f.class || '',
+//                 created_at: f.created_at || ''
+//             }));
+//             displayFaculty(facultyData);
+//         }
+//     }).fail(function() {
+//         showToast('Failed to load faculties from server', 'warning');
+//     });
+// }
+
+function loadFacultyFromServer() {
+    $.ajax({
+        url: '/api/faculty',
+        method: 'GET',
+        dataType: 'json'
+    })
+        .done(function (data) {
+
+            console.log("Faculty Data:", data);
+
+            facultyData = data.map(f => ({
+                id: f.id,
+                type: f.type,
+                name: f.name,
+                email: f.email,
+                profession: f.profession,
+                class: f.class_name || '',
+                created_at: f.created_at || ''
+            }));
+
+            displayFaculty(facultyData);
+        })
+        .fail(function (xhr, status, error) {
+            console.error(error);
+            showToast('Failed to load faculties from server', 'warning');
+        });
+}
+
 // Display faculty/mentors
 function displayFaculty(data) {
     facultyGrid.innerHTML = '';
-    
+
     let filteredData = data;
-    
+
     // Apply filter
     if (activeFacultyFilter) {
         filteredData = filteredData.filter(f => f.type === activeFacultyFilter);
     }
-    
+
     if (filteredData.length === 0) {
         facultyGrid.innerHTML = `
             <div class="no-faculty-message">
@@ -861,14 +984,16 @@ function displayFaculty(data) {
         facultyCount.textContent = '0';
         return;
     }
-    
+
     const colors = ['007AFF', '34C759', 'FF9500', '5856D6', 'FF3B30', 'FF2D55', '32ADE6'];
-    
+
     filteredData.forEach((faculty, index) => {
         const originalIndex = data.indexOf(faculty);
         const color = colors[index % colors.length];
         const card = document.createElement('div');
         card.className = 'faculty-card';
+        // attach server id for delete operations
+        if (faculty.id) card.dataset.id = faculty.id;
         card.innerHTML = `
             <span class="faculty-type-badge ${faculty.type}">${faculty.type}</span>
             <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(faculty.name)}&background=${color}&color=fff&size=128" alt="${faculty.name}">
@@ -878,6 +1003,7 @@ function displayFaculty(data) {
             <div class="faculty-contact">
                 <span><i class="fas fa-envelope"></i> ${faculty.email}</span>
             </div>
+            ${faculty.type === 'faculty' && faculty.created_at ? `<div class="faculty-meta"><small>Added: ${new Date(faculty.created_at).toLocaleString()}</small></div>` : ''}
             <div class="faculty-actions">
                 <button class="btn-secondary" onclick="editFaculty(${originalIndex})" style="flex: 1;">
                     <i class="fas fa-edit"></i>
@@ -890,7 +1016,7 @@ function displayFaculty(data) {
         `;
         facultyGrid.appendChild(card);
     });
-    
+
     facultyCount.textContent = filteredData.length;
 }
 
@@ -899,7 +1025,7 @@ if (facultySearch) {
     facultySearch.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase().trim();
         const cards = facultyGrid.querySelectorAll('.faculty-card');
-        
+
         let visibleCount = 0;
         cards.forEach(card => {
             const text = card.textContent.toLowerCase();
@@ -924,7 +1050,7 @@ if (applyFacultyFiltersBtn) {
         activeFacultyFilter = filterFacultyType.value;
         displayFaculty(facultyData);
         facultyFilterMenu.classList.remove('active');
-        
+
         if (activeFacultyFilter) {
             facultyFilterBtn.style.color = 'var(--blue)';
             showToast('Filter applied', 'success');
@@ -950,7 +1076,7 @@ if (exportFacultyBtn) {
             showToast('No data to export', 'warning');
             return;
         }
-        
+
         const csv = convertFacultyToCSV(facultyData);
         downloadCSV(csv, 'faculty_mentors_export.csv');
         showToast('Data exported successfully', 'success');
@@ -965,16 +1091,36 @@ function convertFacultyToCSV(data) {
 }
 
 // Edit faculty
-window.editFaculty = function(index) {
+window.editFaculty = function (index) {
     const faculty = facultyData[index];
     showToast(`Edit functionality for ${faculty.name}`, 'info');
 };
 
 // Delete faculty
-window.deleteFaculty = function(index) {
-    if (confirm('Are you sure you want to delete this faculty/mentor?')) {
+// Delete faculty (server-backed if `id` available)
+window.deleteFaculty = function (index) {
+    const faculty = facultyData[index];
+    if (!faculty) return;
+
+    if (!confirm('Are you sure you want to delete this faculty/mentor?')) return;
+
+    // If we have server id, call DELETE endpoint
+    if (faculty.id) {
+        $.ajax({
+            url: `/api/faculty/${faculty.id}`,
+            method: 'DELETE',
+            dataType: 'json'
+        }).done(function (res) {
+            facultyData.splice(index, 1);
+            displayFaculty(facultyData);
+            showToast(res.message || 'Faculty/Mentor deleted successfully', 'success');
+        }).fail(function () {
+            showToast('Failed to delete on server', 'error');
+        });
+    } else {
+        // local-only item
         facultyData.splice(index, 1);
         displayFaculty(facultyData);
-        showToast('Faculty/Mentor deleted successfully', 'success');
+        showToast('Faculty/Mentor deleted locally', 'success');
     }
 };
