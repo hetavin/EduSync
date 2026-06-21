@@ -1,0 +1,26 @@
+-- Active: 1766670365285@@localhost@3306@edusync
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    enrollment VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('admin', 'teacher', 'mentor', 'student') NOT NULL DEFAULT 'student',
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+drop TABLE users
+
+CREATE TABLE students (
+    enrollment_no VARCHAR(30) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    phone_number VARCHAR(15) UNIQUE DEFAULT NULL,
+    batch VARCHAR(50) NOT NULL,
+    class VARCHAR(50) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+UPDATE users role SET role = 'admin' WHERE id = 2

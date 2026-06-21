@@ -76,7 +76,7 @@
                 </div>
                 <button class="notification-btn" aria-label="Notifications">
                     <i class="fas fa-bell"></i>
-                    <span class="notification-badge">3</span>
+                    <span class="notification-badge" id="notificationCount" aria-hidden="true">0</span>
                 </button>
                 <div class="profile-menu">
                     <img src="https://ui-avatars.com/api/?name=Admin&background=007AFF&color=fff&size=128" alt="Admin profile">
@@ -99,13 +99,12 @@
                         <div class="stat-icon blue">
                             <i class="fas fa-users"></i>
                         </div>
-                        <span class="stat-trend positive">
+                        <span class="stat-trend positive" aria-hidden="true">
                             <i class="fas fa-arrow-up"></i>
-                            12%
                         </span>
                     </div>
                     <div class="stat-body">
-                        <h3 class="stat-value">120</h3>
+                        <h3 class="stat-value" id="totalStudents">0</h3>
                         <p class="stat-label">Total Students</p>
                     </div>
                 </div>
@@ -115,16 +114,15 @@
                         <div class="stat-icon green">
                             <i class="fas fa-user-check"></i>
                         </div>
-                        <span class="stat-trend positive">
+                        <span class="stat-trend positive" aria-hidden="true">
                             <i class="fas fa-arrow-up"></i>
-                            5%
                         </span>
                     </div>
                     <div class="stat-body">
-                        <h3 class="stat-value success">105</h3>
+                        <h3 class="stat-value success" id="presentToday">0</h3>
                         <p class="stat-label">Present Today</p>
                         <div class="stat-progress">
-                            <div class="progress-bar" style="width: 87.5%"></div>
+                            <div class="progress-bar" style="width: 0%"></div>
                         </div>
                     </div>
                 </div>
@@ -134,16 +132,15 @@
                         <div class="stat-icon red">
                             <i class="fas fa-user-times"></i>
                         </div>
-                        <span class="stat-trend negative">
+                        <span class="stat-trend negative" aria-hidden="true">
                             <i class="fas fa-arrow-down"></i>
-                            3%
                         </span>
                     </div>
                     <div class="stat-body">
-                        <h3 class="stat-value error">15</h3>
+                        <h3 class="stat-value error" id="absentToday">0</h3>
                         <p class="stat-label">Absent Today</p>
                         <div class="stat-progress">
-                            <div class="progress-bar error" style="width: 12.5%"></div>
+                            <div class="progress-bar error" style="width: 0%"></div>
                         </div>
                     </div>
                 </div>
@@ -159,7 +156,7 @@
                         </span>
                     </div>
                     <div class="stat-body">
-                        <h3 class="stat-value success">Active</h3>
+                        <h3 class="stat-value success" id="systemStatus">Active</h3>
                         <p class="stat-label">System Status</p>
                     </div>
                 </div>
@@ -198,99 +195,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="student-info">
-                                                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=007AFF&color=fff" alt="John Doe">
-                                                    <div>
-                                                        <span class="student-name">John Doe</span>
-                                                        <span class="student-class">Computer Science</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td><span class="student-id">STU001</span></td>
-                                            <td><span class="time-logged">08:45 AM</span></td>
-                                            <td><span class="status-badge success">Present</span></td>
-                                            <td>
-                                                <button class="btn-icon" aria-label="View details">
-                                                    <i class="fas fa-ellipsis-h"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="student-info">
-                                                    <img src="https://ui-avatars.com/api/?name=Jane+Smith&background=34C759&color=fff" alt="Jane Smith">
-                                                    <div>
-                                                        <span class="student-name">Jane Smith</span>
-                                                        <span class="student-class">Computer Science</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td><span class="student-id">STU002</span></td>
-                                            <td><span class="time-logged">08:50 AM</span></td>
-                                            <td><span class="status-badge success">Present</span></td>
-                                            <td>
-                                                <button class="btn-icon" aria-label="View details">
-                                                    <i class="fas fa-ellipsis-h"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="student-info">
-                                                    <img src="https://ui-avatars.com/api/?name=Mike+Johnson&background=FF9500&color=fff" alt="Mike Johnson">
-                                                    <div>
-                                                        <span class="student-name">Mike Johnson</span>
-                                                        <span class="student-class">Computer Science</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td><span class="student-id">STU003</span></td>
-                                            <td><span class="time-logged">09:15 AM</span></td>
-                                            <td><span class="status-badge warning">Late</span></td>
-                                            <td>
-                                                <button class="btn-icon" aria-label="View details">
-                                                    <i class="fas fa-ellipsis-h"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="student-info">
-                                                    <img src="https://ui-avatars.com/api/?name=Sarah+Williams&background=5856D6&color=fff" alt="Sarah Williams">
-                                                    <div>
-                                                        <span class="student-name">Sarah Williams</span>
-                                                        <span class="student-class">Information Technology</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td><span class="student-id">STU004</span></td>
-                                            <td><span class="time-logged">08:42 AM</span></td>
-                                            <td><span class="status-badge success">Present</span></td>
-                                            <td>
-                                                <button class="btn-icon" aria-label="View details">
-                                                    <i class="fas fa-ellipsis-h"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="student-info">
-                                                    <img src="https://ui-avatars.com/api/?name=David+Brown&background=FF3B30&color=fff" alt="David Brown">
-                                                    <div>
-                                                        <span class="student-name">David Brown</span>
-                                                        <span class="student-class">Computer Science</span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td><span class="student-id">STU005</span></td>
-                                            <td><span class="time-logged">08:38 AM</span></td>
-                                            <td><span class="status-badge success">Present</span></td>
-                                            <td>
-                                                <button class="btn-icon" aria-label="View details">
-                                                    <i class="fas fa-ellipsis-h"></i>
-                                                </button>
+                                        <tr class="no-data-row">
+                                            <td colspan="5" style="text-align: center; padding: 48px; color: var(--text-secondary);">
+                                                <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 16px; display: block; opacity: 0.3;"></i>
+                                                <p>No recent attendance data</p>
+                                                <p style="font-size: 13px; margin-top: 8px;">Attendance will appear here when students check in</p>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -342,21 +251,21 @@
                                         <i class="fas fa-calendar-check"></i>
                                         Avg. Attendance
                                     </div>
-                                    <div class="quick-stat-value">92.5%</div>
+                                    <div class="quick-stat-value" id="avgAttendance">—</div>
                                 </div>
                                 <div class="quick-stat-item">
                                     <div class="quick-stat-label">
                                         <i class="fas fa-clock"></i>
                                         Avg. Check-in Time
                                     </div>
-                                    <div class="quick-stat-value">8:47 AM</div>
+                                    <div class="quick-stat-value" id="avgCheckin">—</div>
                                 </div>
                                 <div class="quick-stat-item">
                                     <div class="quick-stat-label">
                                         <i class="fas fa-user-clock"></i>
                                         Late Arrivals
                                     </div>
-                                    <div class="quick-stat-value">8</div>
+                                    <div class="quick-stat-value" id="lateArrivals">0</div>
                                 </div>
                             </div>
                         </div>

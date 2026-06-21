@@ -148,54 +148,54 @@ if (searchInput) {
 }
 
 // ===== Camera Recognition =====
-const startBtn = document.querySelector('.btn-primary');
-const cameraIcon = document.querySelector('.camera-icon i');
-const cameraStatus = document.querySelector('.camera-status');
-let isRecognizing = false;
+// const startBtn = document.querySelector('.btn-primary');
+// const cameraIcon = document.querySelector('.camera-icon i');
+// const cameraStatus = document.querySelector('.camera-status');
+// let isRecognizing = false;
 
-if (startBtn && cameraIcon && cameraStatus) {
-    startBtn.addEventListener('click', function() {
-        if (!isRecognizing) {
-            // Start recognition
-            isRecognizing = true;
-            this.disabled = true;
-            this.style.opacity = '0.6';
+// if (startBtn && cameraIcon && cameraStatus) {
+//     startBtn.addEventListener('click', function() {
+//         if (!isRecognizing) {
+//             // Start recognition
+//             isRecognizing = true;
+//             this.disabled = true;
+//             this.style.opacity = '0.6';
             
-            cameraIcon.className = 'fas fa-spinner fa-spin';
-            cameraStatus.textContent = 'Initializing camera...';
+//             cameraIcon.className = 'fas fa-spinner fa-spin';
+//             cameraStatus.textContent = 'Initializing camera...';
             
-            setTimeout(() => {
-                cameraIcon.className = 'fas fa-camera-retro';
-                cameraStatus.textContent = 'Recognition active - Ready to scan';
-                cameraStatus.style.color = 'var(--green)';
+//             setTimeout(() => {
+//                 cameraIcon.className = 'fas fa-camera-retro';
+//                 cameraStatus.textContent = 'Recognition active - Ready to scan';
+//                 cameraStatus.style.color = 'var(--green)';
                 
-                this.innerHTML = '<i class="fas fa-stop"></i> Stop Recognition';
-                this.disabled = false;
-                this.style.opacity = '1';
-                this.style.background = 'var(--red)';
-            }, 2000);
-        } else {
-            // Stop recognition
-            isRecognizing = false;
-            this.disabled = true;
-            this.style.opacity = '0.6';
+//                 this.innerHTML = '<i class="fas fa-stop"></i> Stop Recognition';
+//                 this.disabled = false;
+//                 this.style.opacity = '1';
+//                 this.style.background = 'var(--red)';
+//             }, 2000);
+//         } else {
+//             // Stop recognition
+//             isRecognizing = false;
+//             this.disabled = true;
+//             this.style.opacity = '0.6';
             
-            cameraIcon.className = 'fas fa-spinner fa-spin';
-            cameraStatus.textContent = 'Stopping camera...';
+//             cameraIcon.className = 'fas fa-spinner fa-spin';
+//             cameraStatus.textContent = 'Stopping camera...';
             
-            setTimeout(() => {
-                cameraIcon.className = 'fas fa-camera';
-                cameraStatus.textContent = 'Awaiting facial recognition...';
-                cameraStatus.style.color = '';
+//             setTimeout(() => {
+//                 cameraIcon.className = 'fas fa-camera';
+//                 cameraStatus.textContent = 'Awaiting facial recognition...';
+//                 cameraStatus.style.color = '';
                 
-                this.innerHTML = '<i class="fas fa-play"></i> Start Recognition';
-                this.disabled = false;
-                this.style.opacity = '1';
-                this.style.background = 'var(--blue)';
-            }, 1500);
-        }
-    });
-}
+//                 this.innerHTML = '<i class="fas fa-play"></i> Start Recognition';
+//                 this.disabled = false;
+//                 this.style.opacity = '1';
+//                 this.style.background = 'var(--blue)';
+//             }, 1500);
+//         }
+//     });
+// }
 
 // ===== Export Button =====
 const exportBtn = document.querySelector('.btn-secondary');
