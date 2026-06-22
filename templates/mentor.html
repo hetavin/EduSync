@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="../static/css/mentor.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <!-- Mobile Overlay -->
     <div class="mobile-overlay"></div>
@@ -116,7 +118,8 @@
                     <i class="fas fa-file-excel"></i>
                     <div style="flex: 1;">
                         <span id="importFileName"></span>
-                        <p style="font-size: 12px; color: var(--text-tertiary); margin-top: 4px;" id="importFileSize"></p>
+                        <p style="font-size: 12px; color: var(--text-tertiary); margin-top: 4px;" id="importFileSize">
+                        </p>
                     </div>
                     <button class="btn-icon" id="removeImportFile" title="Remove">
                         <i class="fas fa-times"></i>
@@ -210,14 +213,14 @@
                 </div>
                 <span class="logo-text">EduSync</span>
             </div>
-            
+
             <!-- Mentor Profile -->
             <div class="sidebar-profile">
-                <img src="https://ui-avatars.com/api/?name=Prof+Sarah+Johnson&background=34C759&color=fff&size=128" alt="Mentor">
+                <img id="mentorAvatar" src="" alt="Mentor">
                 <h3 id="mentorName"></h3>
                 <p>Mentor</p>
             </div>
-            
+
             <!-- Navigation -->
             <nav class="nav-menu">
                 <a href="#dashboard" class="nav-item active" data-tab="dashboard">
@@ -226,7 +229,7 @@
                 </a>
                 <a href="#students" class="nav-item" data-tab="students">
                     <i class="fas fa-users"></i>
-                    <span>All Students</span>
+                    <span>My Students</span>
                 </a>
                 <a href="#register-face" class="nav-item" data-tab="register-face">
                     <i class="fas fa-user-plus"></i>
@@ -237,7 +240,7 @@
                     <span>Attendance Details</span>
                 </a>
             </nav>
-            
+
             <!-- Theme Toggle -->
             <div class="theme-toggle">
                 <div class="theme-toggle-inner">
@@ -275,7 +278,7 @@
                     <p class="page-subtitle">Manage your students efficiently</p>
                 </div>
             </div>
-            
+
             <div class="header-right">
                 <div class="search-container">
                     <i class="fas fa-magnifying-glass"></i>
@@ -301,7 +304,7 @@
                             </div>
                         </div>
                         <div class="stat-body">
-                            <div class="stat-value" id="studentCount">156</div>
+                            <div class="stat-value" id="totalstudentCount"></div>
                             <div class="stat-label">Total Students</div>
                         </div>
                     </div>
@@ -312,8 +315,8 @@
                             </div>
                         </div>
                         <div class="stat-body">
-                            <div class="stat-value">4</div>
-                            <div class="stat-label">My Classes</div>
+                            <div class="stat-value" id="studentCount"></div>
+                            <div class="stat-label">My Students</div>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -344,7 +347,8 @@
                 <section class="quick-actions">
                     <h2 class="section-title">Quick Actions</h2>
                     <div class="action-cards">
-                        <button class="action-card" onclick="document.querySelector('[data-tab=attendance-details]').click()">
+                        <button class="action-card"
+                            onclick="document.querySelector('[data-tab=attendance-details]').click()">
                             <div class="action-icon green">
                                 <i class="fas fa-clipboard-list"></i>
                             </div>
@@ -412,7 +416,7 @@
             <div class="tab-content" id="students">
                 <div class="content-header">
                     <div>
-                        <h2 class="section-title">All Students</h2>
+                        <h2 class="section-title">My Students</h2>
                         <p class="section-subtitle">View all registered students</p>
                     </div>
                 </div>
@@ -421,15 +425,16 @@
                         <div class="filter-group">
                             <div class="search-container">
                                 <i class="fas fa-magnifying-glass"></i>
-                                <input type="text" id="studentTableSearch" placeholder="Search students..." aria-label="Search students">
+                                <input type="text" id="studentTableSearch" placeholder="Search students..."
+                                    aria-label="Search students">
                             </div>
-                            <select class="filter-select" id="yearFilter">
+                            <!-- <select class="filter-select" id="yearFilter">
                                 <option value="all">All Batches</option>
                                 <option value="2023">Batch 2023</option>
                                 <option value="2022">Batch 2022</option>
                                 <option value="2021">Batch 2021</option>
                                 <option value="2020">Batch 2020</option>
-                            </select>
+                            </select> -->
                         </div>
                         <div class="card-actions" style="display: flex; gap: 12px;">
                             <button class="btn-primary" id="importStudentsBtn">
@@ -458,7 +463,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="studentsTableBody">
-                                    
+
                                 </tbody>
                             </table>
                         </div>
@@ -591,7 +596,8 @@
                             </div>
                             <div class="search-container">
                                 <i class="fas fa-magnifying-glass"></i>
-                                <input type="text" id="registeredSearch" placeholder="Search registered students..." aria-label="Search">
+                                <input type="text" id="registeredSearch" placeholder="Search registered students..."
+                                    aria-label="Search">
                             </div>
                         </div>
                         <div class="card-body">
@@ -610,7 +616,8 @@
                                     <tbody id="registeredStudentsTable">
                                         <tr class="no-data-row">
                                             <td colspan="6" style="text-align: center; padding: 48px;">
-                                                <i class="fas fa-user-slash" style="font-size: 48px; opacity: 0.3; display: block; margin-bottom: 16px;"></i>
+                                                <i class="fas fa-user-slash"
+                                                    style="font-size: 48px; opacity: 0.3; display: block; margin-bottom: 16px;"></i>
                                                 <p style="color: var(--text-secondary);">No students registered yet</p>
                                             </td>
                                         </tr>
@@ -666,12 +673,16 @@
                                 <option value="2023-10">October 2023</option>
                             </select>
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <label style="font-size: 14px; color: var(--text-secondary); white-space: nowrap;">From:</label>
-                                <input type="date" class="filter-select" id="attendanceDateFrom" style="width: 160px;" value="2024-01-01">
+                                <label
+                                    style="font-size: 14px; color: var(--text-secondary); white-space: nowrap;">From:</label>
+                                <input type="date" class="filter-select" id="attendanceDateFrom" style="width: 160px;"
+                                    value="2024-01-01">
                             </div>
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <label style="font-size: 14px; color: var(--text-secondary); white-space: nowrap;">To:</label>
-                                <input type="date" class="filter-select" id="attendanceDateTo" style="width: 160px;" value="2024-01-31">
+                                <label
+                                    style="font-size: 14px; color: var(--text-secondary); white-space: nowrap;">To:</label>
+                                <input type="date" class="filter-select" id="attendanceDateTo" style="width: 160px;"
+                                    value="2024-01-31">
                             </div>
                             <button class="btn-secondary" id="applyDateRangeBtn" style="padding: 8px 16px;">
                                 <i class="fas fa-filter"></i>
@@ -715,7 +726,8 @@
                                         <td><span class="student-id">EN2023001</span></td>
                                         <td>
                                             <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=Alex+Martinez&background=007AFF&color=fff" alt="Alex Martinez">
+                                                <img src="https://ui-avatars.com/api/?name=Alex+Martinez&background=007AFF&color=fff"
+                                                    alt="Alex Martinez">
                                                 <span>Alex Martinez</span>
                                             </div>
                                         </td>
@@ -727,7 +739,8 @@
                                         <td><span class="status-badge late">1</span></td>
                                         <td><strong style="color: var(--success-color);">90%</strong></td>
                                         <td>
-                                            <button class="btn-icon view-details-btn" title="View Details" data-student="EN2023001">
+                                            <button class="btn-icon view-details-btn" title="View Details"
+                                                data-student="EN2023001">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                         </td>
@@ -736,7 +749,8 @@
                                         <td><span class="student-id">EN2023002</span></td>
                                         <td>
                                             <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=Emma+Wilson&background=34C759&color=fff" alt="Emma Wilson">
+                                                <img src="https://ui-avatars.com/api/?name=Emma+Wilson&background=34C759&color=fff"
+                                                    alt="Emma Wilson">
                                                 <span>Emma Wilson</span>
                                             </div>
                                         </td>
@@ -748,7 +762,8 @@
                                         <td><span class="status-badge late">1</span></td>
                                         <td><strong style="color: var(--warning-color);">80%</strong></td>
                                         <td>
-                                            <button class="btn-icon view-details-btn" title="View Details" data-student="EN2023002">
+                                            <button class="btn-icon view-details-btn" title="View Details"
+                                                data-student="EN2023002">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                         </td>
@@ -757,7 +772,8 @@
                                         <td><span class="student-id">EN2022001</span></td>
                                         <td>
                                             <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=Mike+Johnson&background=FF9500&color=fff" alt="Mike Johnson">
+                                                <img src="https://ui-avatars.com/api/?name=Mike+Johnson&background=FF9500&color=fff"
+                                                    alt="Mike Johnson">
                                                 <span>Mike Johnson</span>
                                             </div>
                                         </td>
@@ -769,7 +785,8 @@
                                         <td><span class="status-badge late">1</span></td>
                                         <td><strong style="color: var(--success-color);">95%</strong></td>
                                         <td>
-                                            <button class="btn-icon view-details-btn" title="View Details" data-student="EN2022001">
+                                            <button class="btn-icon view-details-btn" title="View Details"
+                                                data-student="EN2022001">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                         </td>
@@ -778,7 +795,8 @@
                                         <td><span class="student-id">EN2021001</span></td>
                                         <td>
                                             <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=John+Doe&background=5856D6&color=fff" alt="John Doe">
+                                                <img src="https://ui-avatars.com/api/?name=John+Doe&background=5856D6&color=fff"
+                                                    alt="John Doe">
                                                 <span>John Doe</span>
                                             </div>
                                         </td>
@@ -790,7 +808,8 @@
                                         <td><span class="status-badge late">1</span></td>
                                         <td><strong style="color: var(--warning-color);">85%</strong></td>
                                         <td>
-                                            <button class="btn-icon view-details-btn" title="View Details" data-student="EN2021001">
+                                            <button class="btn-icon view-details-btn" title="View Details"
+                                                data-student="EN2021001">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                         </td>
@@ -799,7 +818,8 @@
                                         <td><span class="student-id">EN2020001</span></td>
                                         <td>
                                             <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=Sarah+Williams&background=FF3B30&color=fff" alt="Sarah Williams">
+                                                <img src="https://ui-avatars.com/api/?name=Sarah+Williams&background=FF3B30&color=fff"
+                                                    alt="Sarah Williams">
                                                 <span>Sarah Williams</span>
                                             </div>
                                         </td>
@@ -811,7 +831,8 @@
                                         <td><span class="status-badge late">0</span></td>
                                         <td><strong style="color: var(--success-color);">100%</strong></td>
                                         <td>
-                                            <button class="btn-icon view-details-btn" title="View Details" data-student="EN2020001">
+                                            <button class="btn-icon view-details-btn" title="View Details"
+                                                data-student="EN2020001">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                         </td>
@@ -831,7 +852,8 @@
             <div class="modal-header">
                 <div>
                     <h2 id="detailsStudentName">Student Attendance Details</h2>
-                    <p style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;" id="detailsStudentInfo"></p>
+                    <p style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;" id="detailsStudentInfo">
+                    </p>
                 </div>
                 <button class="close-modal" aria-label="Close">
                     <i class="fas fa-times"></i>
@@ -856,7 +878,8 @@
                                 <td><span class="status-badge present">Present</span></td>
                                 <td>09:15 AM</td>
                                 <td>
-                                    <button class="btn-icon edit-attendance-btn" title="Edit Attendance" data-date="2024-01-20" data-status="present" data-time="09:15">
+                                    <button class="btn-icon edit-attendance-btn" title="Edit Attendance"
+                                        data-date="2024-01-20" data-status="present" data-time="09:15">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                 </td>
@@ -867,7 +890,8 @@
                                 <td><span class="status-badge present">Present</span></td>
                                 <td>09:10 AM</td>
                                 <td>
-                                    <button class="btn-icon edit-attendance-btn" title="Edit Attendance" data-date="2024-01-19" data-status="present" data-time="09:10">
+                                    <button class="btn-icon edit-attendance-btn" title="Edit Attendance"
+                                        data-date="2024-01-19" data-status="present" data-time="09:10">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                 </td>
@@ -878,7 +902,8 @@
                                 <td><span class="status-badge late">Late</span></td>
                                 <td>09:35 AM</td>
                                 <td>
-                                    <button class="btn-icon edit-attendance-btn" title="Edit Attendance" data-date="2024-01-18" data-status="late" data-time="09:35">
+                                    <button class="btn-icon edit-attendance-btn" title="Edit Attendance"
+                                        data-date="2024-01-18" data-status="late" data-time="09:35">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                 </td>
@@ -889,7 +914,8 @@
                                 <td><span class="status-badge absent">Absent</span></td>
                                 <td>-</td>
                                 <td>
-                                    <button class="btn-icon edit-attendance-btn" title="Edit Attendance" data-date="2024-01-17" data-status="absent" data-time="">
+                                    <button class="btn-icon edit-attendance-btn" title="Edit Attendance"
+                                        data-date="2024-01-17" data-status="absent" data-time="">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                 </td>
@@ -900,7 +926,8 @@
                                 <td><span class="status-badge present">Present</span></td>
                                 <td>09:08 AM</td>
                                 <td>
-                                    <button class="btn-icon edit-attendance-btn" title="Edit Attendance" data-date="2024-01-16" data-status="present" data-time="09:08">
+                                    <button class="btn-icon edit-attendance-btn" title="Edit Attendance"
+                                        data-date="2024-01-16" data-status="present" data-time="09:08">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                 </td>
@@ -959,4 +986,5 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="../static/js/mentor.js"></script>
 </body>
+
 </html>

@@ -77,21 +77,27 @@ navItems.forEach(item => {
 
 $(document).ready(function () {
 
-    console.log("Loading mentor profile...");
-
     $.get("/profile", function (data) {
 
-        console.log(data);
-
         $("#mentorName").text(data.name);
+
+        const initials = data.name
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase())
+            .join('');
+
+        $("#mentorAvatar").attr(
+            "src",
+            `https://ui-avatars.com/api/?name=${initials}&background=34C759&color=fff&size=128`
+        );
 
     }).fail(function (xhr) {
 
         console.log(xhr);
+
     });
 
 });
-
 
 // ===== Modal Management =====
 const addStudentModal = document.getElementById('addStudentModal');
@@ -511,6 +517,8 @@ async function loadStudents() {
 
         // Student Count
         document.getElementById("studentCount").textContent = data.count;
+        
+        document.getElementById("totalstudentCount").textContent = data.totalcount;
 
         // No Students Found
         if (data.count === 0) {

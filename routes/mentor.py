@@ -42,7 +42,28 @@ def displayStudents():
 
     conn = db_connection()
     cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT f.class_name
+        FROM users u
+        JOIN faculty f ON u.email = f.email
+        WHERE u.id = %s
+    """, (session["user_id"],))
 
+    mentor = cursor.fetchone()
+    
+    if not mentor:
+        cursor.close()
+        conn.close()
+
+        return jsonify({
+            "success": False,
+            "message": "Mentor not found"
+        }), 404
+
+    mentor_class = mentor["class_name"]
+
+     # Get only students of mentor's class
     cursor.execute("""
         SELECT
             enrollment_no,
@@ -53,19 +74,28 @@ def displayStudents():
             class,
             department
         FROM students
+        WHERE class = %s
         ORDER BY enrollment_no ASC
-
-    """)
+    """, (mentor_class,))
 
     students = cursor.fetchall()
+    
+     # Get all students
+    cursor.execute(
+        "SELECT * FROM students"
+    )
+    Allstudent = cursor.fetchall()
 
     cursor.close()
     conn.close()
 
     return jsonify({
         "count": len(students),
+        "totalcount": len(Allstudent),
         "students": students
     })
+    
+    
     
 
 @mentor_bp.route('/api/mentor/updateClass', methods=['POST'])

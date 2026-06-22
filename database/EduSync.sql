@@ -31,7 +31,7 @@ drop table students
 
 UPDATE users role SET role = 'admin' WHERE id = 1
 
-UPDATE students SET batch = '23-27' WHERE enrollment_no = '23BECE30291';
+UPDATE students SET batch = '2024-28' WHERE enrollment_no = '23BECE30291';
 
 CREATE TABLE faculty (
     id INT AUTO_INCREMENT PRIMARY KEY,

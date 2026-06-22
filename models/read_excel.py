@@ -68,23 +68,20 @@ def get_batch_from_enrollment(enrollment):
     enrollment = str(enrollment).strip().upper()
 
     # D2D Students
-    # 224SBECE -> 2023-2027
-    # 225SBECE -> 2024-2028
     match = re.match(r'^(\d{3})S', enrollment)
 
     if match:
         start_year = 1799 + int(match.group(1))
-        return f"{start_year}-{start_year + 4}"
+        end_year = (start_year + 4) % 100
+        return f"{start_year}-{end_year:02d}"
 
     # Regular Students
-    # 23BECE -> 2023-2027
-    # 24BECE -> 2024-2028
-    # 30BECE -> 2030-2034
     match = re.match(r'^(\d{2})[A-Z]', enrollment)
 
     if match:
         start_year = 2000 + int(match.group(1))
-        return f"{start_year}-{start_year + 4}"
+        end_year = (start_year + 4) % 100
+        return f"{start_year}-{end_year:02d}"
 
     return ""
 
