@@ -2,9 +2,11 @@ from flask import Blueprint, render_template, session, redirect, url_for, reques
 from threading import Thread
 from connect import db_connection
 from service.mail_service import send_faculty_credentials
+from models.read_excel import extract_student_data
 import random
 import string
 import os
+import re
 import pandas as pd
 
 admin_bp = Blueprint("admin", __name__)
@@ -38,10 +40,10 @@ def students():
         ext = os.path.splitext(file.filename)[1].lower()
 
         if ext == '.csv':
-            df = pd.read_csv(file)
+            df = pd.read_csv(file, header=None)
 
         elif ext in ['.xlsx', '.xls']:
-            df = pd.read_excel(file)
+            df = pd.read_excel(file, header=None)
 
         else:
             return jsonify({
@@ -57,13 +59,12 @@ def students():
 
         for _, row in df.iterrows():
 
-            enrollment_no = str(row['ENROLLMENT NO.']).strip()
-            name = str(row['NAME OF STUDENTS']).strip()
-            email = str(row['EMAIL']).strip()
+            student = extract_student_data(row)
 
-            phone_number = str(row.get('Mobile No.', '')).strip()
-            batch = str(row.get('batch', '')).strip()
-            student_class = str(row.get('class', '')).strip()
+            enrollment_no = student["enrollment_no"]
+
+            if not enrollment_no:
+                continue
 
             cursor.execute(
                 "SELECT * FROM students WHERE enrollment_no=%s",
@@ -83,17 +84,19 @@ def students():
                     email,
                     phone_number,
                     batch,
-                    class
+                    class,
+                    department
                 )
-                VALUES (%s,%s,%s,%s,%s,%s)
+                VALUES (%s,%s,%s,%s,%s,%s,%s)
                 """,
                 (
-                    enrollment_no,
-                    name,
-                    email,
-                    phone_number,
-                    batch,
-                    student_class
+                    student["enrollment_no"],
+                    student["name"],
+                    student["email"],
+                    student["phone_number"],
+                    student["batch"],
+                    student["class"],
+                    student["department"]
                 )
             )
 
@@ -131,7 +134,8 @@ def get_students():
             email,
             phone_number,
             batch,
-            class
+            class,
+            department
         FROM students
         ORDER BY enrollment_no ASC
     """)

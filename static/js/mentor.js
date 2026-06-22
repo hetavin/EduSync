@@ -397,6 +397,7 @@ function addStudentToTable(data) {
         <td>${data.phone}</td>
         <td>${data.batch}</td>
         <td>${data.class}</td>
+        <td>${data.department}</td>
         <td>
             <button class="btn-icon edit-btn" title="Edit">
                 <i class="fas fa-edit"></i>
@@ -430,17 +431,16 @@ function attachRowEventListeners(row) {
             const studentName = cells[1].querySelector('.student-info span').textContent;
             const studentEmail = cells[2].textContent;
             const studentPhone = cells[3].textContent;
-            const studentClass = cells[5].textContent;
-            const studentYear = cells[6].textContent;
+            const studentBatch = cells[4].textContent;
+            const studentDepartment = cells[6].textContent;
             
             document.getElementById('editStudentName').value = studentName;
             document.getElementById('editStudentId').value = studentId;
             document.getElementById('editStudentEmail').value = studentEmail;
             document.getElementById('editStudentPhone').value = studentPhone;
             document.getElementById('editStudentClass').value = studentClass;
-            
-            const yearMap = {'1st Year': '1', '2nd Year': '2', '3rd Year': '3', '4th Year': '4'};
-            document.getElementById('editStudentYear').value = yearMap[studentYear] || '1';
+            document.getElementById('editStudentBatch').value = studentBatch;
+            document.getElementById('editStudentClass').value = studentDepartment;
             
             editStudentModal.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -489,8 +489,9 @@ async function loadStudents() {
                 name: student.name,
                 email: student.email,
                 phone: student.phone_number,
+                batch: student.batch,
                 class: student.class,
-                batch: student.batch
+                department: student.department
             });
 
             // Add to Face ID Dropdown
@@ -501,7 +502,7 @@ async function loadStudents() {
                 option.value = student.enrollment_no;
 
                 option.textContent =
-                    `${student.enrollment_no} - ${student.name} (${student.class})`;
+                    `${student.enrollment_no} - ${student.name} (${student.department})`;
 
                 faceStudentSelect.appendChild(option);
             }
@@ -1170,124 +1171,190 @@ function formatFileSize(bytes) {
 }
 
 // Process import
+
 if (processImportBtn) {
-    processImportBtn.addEventListener('click', function() {
+
+    processImportBtn.addEventListener('click', function () {
+
         if (!selectedImportFile) {
             showToast('Please select a file first', 'warning');
             return;
         }
-        
-        this.disabled = true;
-        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-        
-        const fileExtension = '.' + selectedImportFile.name.split('.').pop().toLowerCase();
-        
-        if (fileExtension === '.csv') {
-            processCSVFile(selectedImportFile);
-        } else {
-            showToast('Excel file processing requires additional library. Use CSV format.', 'warning');
-            this.disabled = false;
-            this.innerHTML = '<i class="fas fa-check"></i> Import Students';
-        }
-    });
-}
 
-// Process CSV file
-function processCSVFile(file) {
-    const reader = new FileReader();
-    
-    reader.onload = function(e) {
-        const text = e.target.result;
-        const lines = text.split('\n').filter(line => line.trim());
-        
-        if (lines.length < 2) {
-            showToast('File is empty or has no data', 'error');
-            processImportBtn.disabled = false;
-            processImportBtn.innerHTML = '<i class="fas fa-check"></i> Import Students';
-            return;
-        }
-        
-        const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-        const requiredFields = ['name', 'email', 'phone', 'class', 'year'];
-        const missingFields = requiredFields.filter(field => 
-            !headers.some(h => h.includes(field.replace(' ', '')))
-        );
-        
-        if (missingFields.length > 0) {
-            showToast(`Missing required columns: ${missingFields.join(', ')}`, 'error');
-            processImportBtn.disabled = false;
-            processImportBtn.innerHTML = '<i class="fas fa-check"></i> Import Students';
-            return;
-        }
-        
-        let importedCount = 0;
-        
-        for (let i = 1; i < lines.length; i++) {
-            const values = parseCSVLine(lines[i]);
-            if (values.length < headers.length) continue;
-            
-            const studentData = {};
-            headers.forEach((header, index) => {
-                studentData[header] = values[index]?.trim() || '';
-            });
-            
-            // Map CSV data to student object
-            const student = {
-                name: studentData.name || studentData['student name'] || '',
-                email: studentData.email || '',
-                phone: studentData.phone || studentData['phone number'] || '',
-                class: studentData.class || '',
-                year: studentData.year || '',
-                roll: studentData['roll number'] || studentData.rollnumber || studentData.roll || `EN${new Date().getFullYear()}${String(i).padStart(3, '0')}`,
-                address: studentData.address || '',
-                dob: studentData['date of birth'] || studentData.dob || '',
-                emergencyContact: studentData['emergency contact'] || studentData.emergencycontact || ''
-            };
-            
-            if (student.name && student.email) {
-                addStudentToTable(student);
-                importedCount++;
+        const formData = new FormData();
+        formData.append('file', selectedImportFile);
+
+        processImportBtn.disabled = true;
+        processImportBtn.innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+        $.ajax({
+            url: '/api/mentor/updateClass',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+
+            success: function (response) {
+
+                showToast(
+                    response.message ||
+                    `${response.inserted} students imported successfully`,
+                    'success'
+                );
+
+                closeModal(importStudentsModal);
+                resetImportForm();
+
+                loadStudents();
+            },
+
+            error: function (xhr) {
+
+                let message = 'Import failed';
+
+                if (
+                    xhr.responseJSON &&
+                    xhr.responseJSON.message
+                ) {
+                    message = xhr.responseJSON.message;
+                }
+
+                showToast(message, 'error');
+            },
+
+            complete: function () {
+
+                processImportBtn.disabled = false;
+
+                processImportBtn.innerHTML =
+                    '<i class="fas fa-check"></i> Import Students';
             }
-        }
-        
-        showToast(`Successfully imported ${importedCount} student(s)!`, 'success');
-        closeModal(importStudentsModal);
-        resetImportForm();
-        processImportBtn.disabled = false;
-        processImportBtn.innerHTML = '<i class="fas fa-check"></i> Import Students';
-    };
-    
-    reader.onerror = function() {
-        showToast('Error reading file', 'error');
-        processImportBtn.disabled = false;
-        processImportBtn.innerHTML = '<i class="fas fa-check"></i> Import Students';
-    };
-    
-    reader.readAsText(file);
+        });
+
+    });
+
 }
 
-// Parse CSV line (handles quoted values)
-function parseCSVLine(line) {
-    const result = [];
-    let current = '';
-    let inQuotes = false;
-    
-    for (let i = 0; i < line.length; i++) {
-        const char = line[i];
+
+// if (processImportBtn) {
+//     processImportBtn.addEventListener('click', function() {
+//         if (!selectedImportFile) {
+//             showToast('Please select a file first', 'warning');
+//             return;
+//         }
         
-        if (char === '"') {
-            inQuotes = !inQuotes;
-        } else if (char === ',' && !inQuotes) {
-            result.push(current);
-            current = '';
-        } else {
-            current += char;
-        }
-    }
+//         this.disabled = true;
+//         this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        
+//         const fileExtension = '.' + selectedImportFile.name.split('.').pop().toLowerCase();
+        
+//         if (fileExtension === '.csv') {
+//             processCSVFile(selectedImportFile);
+//         } else {
+//             showToast('Excel file processing requires additional library. Use CSV format.', 'warning');
+//             this.disabled = false;
+//             this.innerHTML = '<i class="fas fa-check"></i> Import Students';
+//         }
+//     });
+// }
+
+// // Process CSV file
+// function processCSVFile(file) {
+//     const reader = new FileReader();
     
-    result.push(current);
-    return result;
-}
+//     reader.onload = function(e) {
+//         const text = e.target.result;
+//         const lines = text.split('\n').filter(line => line.trim());
+        
+//         if (lines.length < 2) {
+//             showToast('File is empty or has no data', 'error');
+//             processImportBtn.disabled = false;
+//             processImportBtn.innerHTML = '<i class="fas fa-check"></i> Import Students';
+//             return;
+//         }
+        
+//         const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+//         const requiredFields = ['name', 'email', 'phone', 'class', 'year'];
+//         const missingFields = requiredFields.filter(field => 
+//             !headers.some(h => h.includes(field.replace(' ', '')))
+//         );
+        
+//         if (missingFields.length > 0) {
+//             showToast(`Missing required columns: ${missingFields.join(', ')}`, 'error');
+//             processImportBtn.disabled = false;
+//             processImportBtn.innerHTML = '<i class="fas fa-check"></i> Import Students';
+//             return;
+//         }
+        
+//         let importedCount = 0;
+        
+//         for (let i = 1; i < lines.length; i++) {
+//             const values = parseCSVLine(lines[i]);
+//             if (values.length < headers.length) continue;
+            
+//             const studentData = {};
+//             headers.forEach((header, index) => {
+//                 studentData[header] = values[index]?.trim() || '';
+//             });
+            
+//             // Map CSV data to student object
+//             const student = {
+//                 name: studentData.name || studentData['student name'] || '',
+//                 email: studentData.email || '',
+//                 phone: studentData.phone || studentData['phone number'] || '',
+//                 class: studentData.class || '',
+//                 year: studentData.year || '',
+//                 roll: studentData['roll number'] || studentData.rollnumber || studentData.roll || `EN${new Date().getFullYear()}${String(i).padStart(3, '0')}`,
+//                 address: studentData.address || '',
+//                 dob: studentData['date of birth'] || studentData.dob || '',
+//                 emergencyContact: studentData['emergency contact'] || studentData.emergencycontact || ''
+//             };
+            
+//             if (student.name && student.email) {
+//                 addStudentToTable(student);
+//                 importedCount++;
+//             }
+//         }
+        
+//         showToast(`Successfully imported ${importedCount} student(s)!`, 'success');
+//         closeModal(importStudentsModal);
+//         resetImportForm();
+//         processImportBtn.disabled = false;
+//         processImportBtn.innerHTML = '<i class="fas fa-check"></i> Import Students';
+//     };
+    
+//     reader.onerror = function() {
+//         showToast('Error reading file', 'error');
+//         processImportBtn.disabled = false;
+//         processImportBtn.innerHTML = '<i class="fas fa-check"></i> Import Students';
+//     };
+    
+//     reader.readAsText(file);
+// }
+
+// // Parse CSV line (handles quoted values)
+// function parseCSVLine(line) {
+//     const result = [];
+//     let current = '';
+//     let inQuotes = false;
+    
+//     for (let i = 0; i < line.length; i++) {
+//         const char = line[i];
+        
+//         if (char === '"') {
+//             inQuotes = !inQuotes;
+//         } else if (char === ',' && !inQuotes) {
+//             result.push(current);
+//             current = '';
+//         } else {
+//             current += char;
+//         }
+//     }
+    
+//     result.push(current);
+//     return result;
+// }
 
 // ===== Attendance Details Functionality =====
 
@@ -1695,17 +1762,18 @@ function attachRowEventListeners(row) {
             const studentName = cells[1].querySelector('.student-info span').textContent;
             const studentEmail = cells[2].textContent;
             const studentPhone = cells[3].textContent;
+            const studentBatch = cells[4].textContent;
             const studentClass = cells[5].textContent;
-            const studentYear = cells[6].textContent;
+            const studentDepartment = cells[6].textContent;
             
             document.getElementById('editStudentName').value = studentName;
             document.getElementById('editStudentId').value = studentId;
             document.getElementById('editStudentEmail').value = studentEmail;
             document.getElementById('editStudentPhone').value = studentPhone;
             document.getElementById('editStudentClass').value = studentClass;
-            
-            const yearMap = {'1st Year': '1', '2nd Year': '2', '3rd Year': '3', '4th Year': '4'};
-            document.getElementById('editStudentYear').value = yearMap[studentYear] || '1';
+            document.getElementById('editStudentBatch').value = studentBatch;
+            document.getElementById('editStudentDepartment').value = studentDepartment;
+                    
             
             editStudentModal.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1718,8 +1786,9 @@ function attachRowEventListeners(row) {
             const studentId = row.querySelector('.student-id').textContent;
             const studentEmail = row.querySelector('td:nth-child(3)').textContent;
             const studentPhone = row.querySelector('td:nth-child(4)').textContent;
+            const studentBatch = row.querySelector('td:nth-child(5)').textContent;
             const studentClass = row.querySelector('td:nth-child(6)').textContent;
-            const studentYear = row.querySelector('td:nth-child(7)').textContent;
+            const studentDepartment = row.querySelector('td:nth-child(7)').textContent;
             
             const detailsHTML = `
                 <div style="padding: 20px; background: var(--fill-tertiary); border-radius: 12px;">
@@ -1746,8 +1815,12 @@ function attachRowEventListeners(row) {
                             <p style="color: var(--text-primary); font-size: 14px; font-weight: 600;">${studentClass}</p>
                         </div>
                         <div>
-                            <p style="color: var(--text-tertiary); font-size: 12px; margin-bottom: 4px;">Year</p>
-                            <p style="color: var(--text-primary); font-size: 14px; font-weight: 600;">${studentYear}</p>
+                            <p style="color: var(--text-tertiary); font-size: 12px; margin-bottom: 4px;">Batch</p>
+                            <p style="color: var(--text-primary); font-size: 14px; font-weight: 600;">${studentBatch}</p>
+                        </div>
+                        <div>
+                            <p style="color: var(--text-tertiary); font-size: 12px; margin-bottom: 4px;">Department</p>
+                            <p style="color: var(--text-primary); font-size: 14px; font-weight: 600;">${studentDepartment}</p>
                         </div>
                     </div>
                 </div>

@@ -673,6 +673,7 @@ function displayStudents(data) {
             <td>${student.phone}</td>
             <td>${student.batch}</td>
             <td>${student.class}</td>
+            <td>${student.department}</td>
             <td>
                 <button class="btn-icon" onclick="editStudent(${originalIndex})" aria-label="Edit">
                     <i class="fas fa-edit"></i>
@@ -707,7 +708,8 @@ function loadStudentsFromServer() {
                 email: student.email,
                 phone: student.phone_number,
                 batch: student.batch,
-                class: student.class
+                class: student.class,
+                department: student.department
             }));
 
             populateFilters(studentData);

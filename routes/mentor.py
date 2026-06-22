@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template, session, redirect, url_for, jsonify
+from flask import Blueprint, render_template, session, redirect, url_for, jsonify, request
+from models.read_excel import extract_student_data
 from connect import db_connection
+import pandas as pd
 
 mentor_bp = Blueprint("mentor", __name__)
 
@@ -48,7 +50,8 @@ def displayStudents():
             email,
             phone_number,
             batch,
-            class
+            class,
+            department
         FROM students
         ORDER BY enrollment_no ASC
 
@@ -64,3 +67,92 @@ def displayStudents():
         "students": students
     })
     
+
+@mentor_bp.route('/api/mentor/updateClass', methods=['POST'])
+def update_class():
+
+    if 'user_id' not in session:
+        return jsonify({
+            "success": False,
+            "message": "Login required"
+        }), 401
+
+    file = request.files.get('file')
+
+    if not file:
+        return jsonify({
+            "success": False,
+            "message": "No file uploaded"
+        }), 400
+
+    try:
+
+        df = pd.read_excel(file, header=None)
+
+        enrollments = []
+
+        for _, row in df.iterrows():
+
+            student = extract_student_data(row)
+
+            if student["enrollment_no"]:
+                enrollments.append(student["enrollment_no"])
+
+        if not enrollments:
+            return jsonify({
+                "success": False,
+                "message": "No enrollment numbers found"
+            }), 400
+
+        conn = db_connection()
+        cursor = conn.cursor()
+
+        # Get mentor class using logged-in user's email
+        cursor.execute("""
+            SELECT f.class_name
+            FROM users u
+            JOIN faculty f ON u.email = f.email
+            WHERE u.id = %s
+        """, (session["user_id"],))
+
+        mentor = cursor.fetchone()
+
+        if not mentor:
+            return jsonify({
+                "success": False,
+                "message": "Mentor not found"
+            }), 404
+
+        mentor_class = mentor["class_name"]
+
+        placeholders = ",".join(["%s"] * len(enrollments))
+
+        query = f"""
+            UPDATE students
+            SET class = %s
+            WHERE enrollment_no IN ({placeholders})
+        """
+
+        cursor.execute(
+            query,
+            [mentor_class] + enrollments
+        )
+
+        updated = cursor.rowcount
+
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        return jsonify({
+            "success": True,
+            "message": f"{updated} students updated successfully",
+            "updated": updated
+        })
+
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "message": str(e)
+        }), 500
