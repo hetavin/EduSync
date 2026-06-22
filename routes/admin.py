@@ -4,18 +4,148 @@ from connect import db_connection
 from service.mail_service import send_faculty_credentials
 import random
 import string
+import os
+import pandas as pd
 
 admin_bp = Blueprint("admin", __name__)
 
 @admin_bp.route("/admin")
 def dashboard():
 
+    if "user_id" not in session:
+        return redirect(url_for("auth.home"))
+
     if session.get("role") != "admin":
         return redirect(url_for("auth.home"))
 
     return render_template("dashboard.html")
-import random
-import string
+
+# START STUDENT TAB
+
+@admin_bp.route('/api/students', methods=['POST'])
+def students():
+
+    file = request.files.get('file')
+
+    if not file:
+        return jsonify({
+            "success": False,
+            "message": "No file uploaded"
+        }), 400
+
+    try:
+
+        ext = os.path.splitext(file.filename)[1].lower()
+
+        if ext == '.csv':
+            df = pd.read_csv(file)
+
+        elif ext in ['.xlsx', '.xls']:
+            df = pd.read_excel(file)
+
+        else:
+            return jsonify({
+                "success": False,
+                "message": "Only CSV and Excel files are allowed"
+            }), 400
+
+        conn = db_connection()
+        cursor = conn.cursor()
+
+        inserted = 0
+        skipped = 0
+
+        for _, row in df.iterrows():
+
+            enrollment_no = str(row['ENROLLMENT NO.']).strip()
+            name = str(row['NAME OF STUDENTS']).strip()
+            email = str(row['EMAIL']).strip()
+
+            phone_number = str(row.get('Mobile No.', '')).strip()
+            batch = str(row.get('batch', '')).strip()
+            student_class = str(row.get('class', '')).strip()
+
+            cursor.execute(
+                "SELECT * FROM students WHERE enrollment_no=%s",
+                (enrollment_no,)
+            )
+
+            if cursor.fetchone():
+                skipped += 1
+                continue
+
+            cursor.execute(
+                """
+                INSERT INTO students
+                (
+                    enrollment_no,
+                    name,
+                    email,
+                    phone_number,
+                    batch,
+                    class
+                )
+                VALUES (%s,%s,%s,%s,%s,%s)
+                """,
+                (
+                    enrollment_no,
+                    name,
+                    email,
+                    phone_number,
+                    batch,
+                    student_class
+                )
+            )
+
+            inserted += 1
+
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        return jsonify({
+            "success": True,
+            "inserted": inserted,
+            "skipped": skipped,
+            "message": f"{inserted} students imported successfully"
+        })
+
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "message": str(e)
+        }), 500
+        
+        
+@admin_bp.route('/api/students', methods=['GET'])
+def get_students():
+
+    conn = db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            enrollment_no,
+            name,
+            email,
+            phone_number,
+            batch,
+            class
+        FROM students
+        ORDER BY enrollment_no ASC
+    """)
+
+    students = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(students)
+    
+# END STUDENT TAB
+
+# START ALL FACULTY/MENOR TAB
 
 @admin_bp.route('/api/faculty', methods=['POST'])
 def add_faculty():
@@ -149,3 +279,6 @@ def delete_faculty(id):
         "success":True,
         "message":"Deleted Successfully"
     })
+    
+
+# END FACULTY/MENTOR TAB

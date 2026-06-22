@@ -12,6 +12,14 @@ app = Flask(__name__)
 
 app.secret_key = "edusync_secret"
 
+# Prevent browser from caching protected pages
+@app.after_request
+def add_header(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
 app.register_blueprint(auth_bp)
 app.register_blueprint(login_bp)
 app.register_blueprint(register_bp)

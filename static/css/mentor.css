@@ -575,6 +575,9 @@
     background: var(--purple);
 }
 
+.studentsTableBody td {
+    font-size: 10px !important;
+}
 /* Register Face ID Styles */
 .register-face-container {
     display: grid;

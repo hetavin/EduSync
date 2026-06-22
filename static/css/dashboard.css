@@ -179,6 +179,36 @@ body {
     opacity: 1;
 }
 
+/* Sidebar Footer */
+.sidebar-footer {
+    padding: 16px 12px;
+    border-top: 0.5px solid var(--separator);
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    color: var(--red);
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    min-height: 44px;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 59, 48, 0.1);
+}
+
+.logout-btn i {
+    font-size: 18px;
+    width: 22px;
+}
+
+
 /* Theme Toggle */
 .theme-toggle {
     padding: 16px 20px;
@@ -712,7 +742,8 @@ input:checked+.slider:before {
 }
 
 .data-table td {
-    padding: 16px 24px;
+    padding: 10px 20px;
+    font-size: 17px;
     border-top: 0.5px solid var(--separator);
 }
 
@@ -748,8 +779,8 @@ input:checked+.slider:before {
 }
 
 .student-id {
-    font-size: 14px;
-    color: var(--text-secondary);
+    font-size: 18px;
+    /* color: var(--text-secondary); */
     font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
 }
 
@@ -927,7 +958,7 @@ input:checked+.slider:before {
 
     .data-table th,
     .data-table td {
-        padding: 12px 16px;
+        padding: 8px 10px;
     }
 
     .card-header {

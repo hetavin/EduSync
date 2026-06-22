@@ -147,6 +147,17 @@ if (searchInput) {
     });
 }
 
+// ===== Logout Confirmation =====
+const logoutBtn = document.querySelector('.logout-btn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (confirm('Are you sure you want to logout?')) {
+            window.location.href = '/logout';
+        }
+    });
+}
+
 // ===== Camera Recognition =====
 // const startBtn = document.querySelector('.btn-primary');
 // const cameraIcon = document.querySelector('.camera-icon i');
@@ -330,7 +341,7 @@ document.addEventListener('keydown', function (e) {
     }
 
     // Ctrl/Cmd + D for dark mode toggle
-    if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+    if ((e.ctrlKey || e.metaKey) && e.key === '') {
         e.preventDefault();
         themeToggle.click();
     }
@@ -526,112 +537,91 @@ function resetFileUpload() {
 
 // Process uploaded file
 async function processFile(file) {
-    const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+
+    let formData = new FormData();
+    formData.append("file", file);
 
     uploadBtn.disabled = true;
-    uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    uploadBtn.innerHTML =
+        '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
     return new Promise((resolve) => {
-        const reader = new FileReader();
 
-        reader.onload = async function (e) {
-            try {
-                let data = [];
+        $.ajax({
+            url: '/api/students',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
 
-                if (fileExt === '.csv') {
-                    data = parseCSV(e.target.result);
-                } else {
-                    // For Excel files, you'd need a library like xlsx/SheetJS
-                    showToast('Excel parsing requires SheetJS library. Use CSV for now.', 'warning');
+            success: function (result) {
+
+                if (result.success) {
+
+                    showToast(result.message, 'success');
+
+                    console.log(
+                        `Inserted: ${result.inserted}, Skipped: ${result.skipped}`
+                    );
+
                     resetFileUpload();
-                    uploadBtn.disabled = false;
-                    uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Upload & Process';
-                    resolve();
-                    return;
-                }
+                    resolve(true);
 
-                if (data.length > 0) {
-                    const saved = await saveStudentsToServer(data);
-                    if (saved) {
-                        studentData = data;
-                        populateFilters(data);
-                        displayStudents(data);
-                        showToast(`Successfully imported ${data.length} students`, 'success');
-                        resetFileUpload();
-                    }
                 } else {
-                    showToast('No valid data found in file', 'error');
+
+                    showToast(result.message, 'error');
+                    resolve(false);
                 }
-            } catch (error) {
-                showToast('Error processing file: ' + error.message, 'error');
+            },
+
+            error: function (xhr) {
+
+                let msg = 'Upload Failed';
+
+                if (xhr.responseJSON) {
+                    msg = xhr.responseJSON.message;
+                }
+
+                showToast(msg, 'error');
+                resolve(false);
+            },
+
+            complete: function () {
+
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML =
+                    '<i class="fas fa-upload"></i> Upload & Process';
             }
+        });
 
-            uploadBtn.disabled = false;
-            uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Upload & Process';
-            resolve();
-        };
-
-        if (fileExt === '.csv') {
-            reader.readAsText(file);
-        } else {
-            reader.readAsBinaryString(file);
-        }
     });
 }
 
-async function saveStudentsToServer(students) {
-    try {
-        const response = await fetch('/api/import-students', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ students })
-        });
-
-        const result = await response.json();
-        if (!response.ok) {
-            showToast(result.message || 'Failed to save students to database', 'error');
-            return false;
-        }
-
-        if (result.inserted || result.updated) {
-            showToast(result.message || `${result.inserted || 0} students saved`, 'success');
-            return true;
-        }
-
-        showToast(result.message || 'Students imported but nothing was saved', 'warning');
-        return false;
-    } catch (error) {
-        showToast('Server error saving student data: ' + error.message, 'error');
-        return false;
-    }
-}
-
 // Parse CSV file
-function parseCSV(text) {
-    const lines = text.split('\n').filter(line => line.trim());
-    if (lines.length < 2) return [];
+// function parseCSV(text) {
+//     const lines = text.split('\n').filter(line => line.trim());
+//     if (lines.length < 2) return [];
 
-    const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-    const data = [];
+//     const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+//     const data = [];
 
-    for (let i = 1; i < lines.length; i++) {
-        const values = lines[i].split(',').map(v => v.trim());
-        if (values.length >= 6) {
-            data.push({
-                enrollment: values[0] || '',
-                name: values[1] || '',
-                email: values[2] || '',
-                phone: values[3] || '',
-                batch: values[4] || '',
-                semester: values[5] || ''
-            });
-        }
-    }
+//     for (let i = 1; i < lines.length; i++) {
+//         const values = lines[i].split(',').map(v => v.trim());
+//         if (values.length >= 6) {
+//             data.push({
+//                 enrollment: values[0] || '',
+//                 name: values[1] || '',
+//                 email: values[2] || '',
+//                 phone: values[3] || '',
+//                 batch: values[4] || '',
+//                 semester: values[5] || ''
+//             });
+//         }
+//     }
 
-    return data;
-}
+//     return data;
+// }
 
 // Populate filter dropdowns
 function populateFilters(data) {
@@ -662,7 +652,7 @@ function displayStudents(data) {
     if (filteredData.length === 0) {
         studentTableBody.innerHTML = `
             <tr class="no-data-row">
-                <td colspan="7" style="text-align: center; padding: 48px; color: var(--text-secondary);">
+                <td colspan="8" style="text-align: center; padding: 48px; color: var(--text-secondary);">
                     <i class="fas fa-filter" style="font-size: 48px; margin-bottom: 16px; display: block; opacity: 0.3;"></i>
                     <p>No students match the selected filters</p>
                     <p style="font-size: 13px; margin-top: 8px;">Try adjusting your filter criteria</p>
@@ -682,7 +672,7 @@ function displayStudents(data) {
             <td>${student.email}</td>
             <td>${student.phone}</td>
             <td>${student.batch}</td>
-            <td>${student.semester}</td>
+            <td>${student.class}</td>
             <td>
                 <button class="btn-icon" onclick="editStudent(${originalIndex})" aria-label="Edit">
                     <i class="fas fa-edit"></i>
@@ -698,6 +688,44 @@ function displayStudents(data) {
 
     studentCount.textContent = filteredData.length;
 }
+
+function loadStudentsFromServer() {
+
+    $.ajax({
+        url: '/api/students',
+        method: 'GET',
+        dataType: 'json'
+    })
+
+        .done(function (data) {
+
+            console.log("Students:", data);
+
+            studentData = data.map(student => ({
+                enrollment: student.enrollment_no,
+                name: student.name,
+                email: student.email,
+                phone: student.phone_number,
+                batch: student.batch,
+                class: student.class
+            }));
+
+            populateFilters(studentData);
+            displayStudents(studentData);
+
+        })
+
+        .fail(function (xhr, status, error) {
+
+            console.error(error);
+            showToast('Failed to load students', 'error');
+
+        });
+}
+
+$(document).ready(function () {
+    loadStudentsFromServer();
+});
 
 // Filter button toggle
 if (filterBtn) {

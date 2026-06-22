@@ -214,7 +214,7 @@
             <!-- Mentor Profile -->
             <div class="sidebar-profile">
                 <img src="https://ui-avatars.com/api/?name=Prof+Sarah+Johnson&background=34C759&color=fff&size=128" alt="Mentor">
-                <h3>Prof. Sarah Johnson</h3>
+                <h3 id="mentorName"></h3>
                 <p>Mentor</p>
             </div>
             
@@ -301,7 +301,7 @@
                             </div>
                         </div>
                         <div class="stat-body">
-                            <div class="stat-value">156</div>
+                            <div class="stat-value" id="studentCount">156</div>
                             <div class="stat-label">Total Students</div>
                         </div>
                     </div>
@@ -453,121 +453,11 @@
                                         <th>Phone Number</th>
                                         <th>Batch</th>
                                         <th>Class</th>
-                                        <th>Year</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="studentsTableBody">
-                                    <tr data-class="CS-A" data-year="1">
-                                        <td><span class="student-id">EN2023001</span></td>
-                                        <td>
-                                            <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=Alex+Martinez&background=007AFF&color=fff" alt="Alex Martinez">
-                                                <span>Alex Martinez</span>
-                                            </div>
-                                        </td>
-                                        <td>alex.martinez@example.com</td>
-                                        <td>+1 234 567 8900</td>
-                                        <td>2023</td>
-                                        <td>CS-A</td>
-                                        <td>1st Year</td>
-                                        <td>
-                                            <button class="btn-icon edit-btn" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-icon view-btn" title="View Details">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr data-class="CS-A" data-year="1">
-                                        <td><span class="student-id">EN2023002</span></td>
-                                        <td>
-                                            <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=Emma+Wilson&background=34C759&color=fff" alt="Emma Wilson">
-                                                <span>Emma Wilson</span>
-                                            </div>
-                                        </td>
-                                        <td>emma.wilson@example.com</td>
-                                        <td>+1 234 567 8901</td>
-                                        <td>2023</td>
-                                        <td>CS-A</td>
-                                        <td>1st Year</td>
-                                        <td>
-                                            <button class="btn-icon edit-btn" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-icon view-btn" title="View Details">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr data-class="CS-A" data-year="2">
-                                        <td><span class="student-id">EN2022001</span></td>
-                                        <td>
-                                            <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=Mike+Johnson&background=FF9500&color=fff" alt="Mike Johnson">
-                                                <span>Mike Johnson</span>
-                                            </div>
-                                        </td>
-                                        <td>mike.johnson@example.com</td>
-                                        <td>+1 234 567 8902</td>
-                                        <td>2022</td>
-                                        <td>CS-A</td>
-                                        <td>2nd Year</td>
-                                        <td>
-                                            <button class="btn-icon edit-btn" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-icon view-btn" title="View Details">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr data-class="CS-A" data-year="3">
-                                        <td><span class="student-id">EN2021001</span></td>
-                                        <td>
-                                            <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=John+Doe&background=5856D6&color=fff" alt="John Doe">
-                                                <span>John Doe</span>
-                                            </div>
-                                        </td>
-                                        <td>john.doe@example.com</td>
-                                        <td>+1 234 567 8903</td>
-                                        <td>2021</td>
-                                        <td>CS-A</td>
-                                        <td>3rd Year</td>
-                                        <td>
-                                            <button class="btn-icon edit-btn" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-icon view-btn" title="View Details">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr data-class="CS-A" data-year="4">
-                                        <td><span class="student-id">EN2020001</span></td>
-                                        <td>
-                                            <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=Sarah+Williams&background=FF3B30&color=fff" alt="Sarah Williams">
-                                                <span>Sarah Williams</span>
-                                            </div>
-                                        </td>
-                                        <td>sarah.williams@example.com</td>
-                                        <td>+1 234 567 8904</td>
-                                        <td>2020</td>
-                                        <td>CS-A</td>
-                                        <td>4th Year</td>
-                                        <td>
-                                            <button class="btn-icon edit-btn" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn-icon view-btn" title="View Details">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -1065,6 +955,7 @@
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="../static/js/mentor.js"></script>
 </body>
 </html>

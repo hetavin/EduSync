@@ -34,6 +34,19 @@ def register():
         "show_login": True,
         "message": "Account already exists. Please login."
         }), 409
+        
+    # Check existed in institute
+    cursor.execute(
+        "SELECT * FROM students WHERE enrollment_no=%s AND email=%s",
+        (enrollment, email)
+    )
+    institute_student = cursor.fetchone()
+    
+    if not institute_student:
+        return jsonify({
+        "success": False,
+        "message": "You are not registered in our institute database."
+        }), 401
 
     # Insert user
     cursor.execute(

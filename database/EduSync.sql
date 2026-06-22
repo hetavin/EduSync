@@ -21,13 +21,16 @@ CREATE TABLE students (
     name VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     phone_number VARCHAR(15) UNIQUE DEFAULT NULL,
-    batch VARCHAR(50) NOT NULL,
+    batch VARCHAR(50) DEFAULT NULL,
     class VARCHAR(50) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+drop table students
+
 UPDATE users role SET role = 'admin' WHERE id = 1
 
+UPDATE students SET batch = '23-27' WHERE enrollment_no = '23BECE30291';
 
 CREATE TABLE faculty (
     id INT AUTO_INCREMENT PRIMARY KEY,

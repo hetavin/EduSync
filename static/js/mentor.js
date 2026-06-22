@@ -74,6 +74,25 @@ navItems.forEach(item => {
     });
 });
 
+
+$(document).ready(function () {
+
+    console.log("Loading mentor profile...");
+
+    $.get("/profile", function (data) {
+
+        console.log(data);
+
+        $("#mentorName").text(data.name);
+
+    }).fail(function (xhr) {
+
+        console.log(xhr);
+    });
+
+});
+
+
 // ===== Modal Management =====
 const addStudentModal = document.getElementById('addStudentModal');
 const editStudentModal = document.getElementById('editStudentModal');
@@ -376,9 +395,8 @@ function addStudentToTable(data) {
         </td>
         <td>${data.email}</td>
         <td>${data.phone}</td>
-        <td>${batch}</td>
+        <td>${data.batch}</td>
         <td>${data.class}</td>
-        <td>${yearText}</td>
         <td>
             <button class="btn-icon edit-btn" title="Edit">
                 <i class="fas fa-edit"></i>
@@ -434,6 +452,79 @@ function attachRowEventListeners(row) {
             const studentName = row.querySelector('.student-info span').textContent;
             showToast(`Viewing details for ${studentName}`, 'info');
         });
+    }
+}
+
+$(document).ready(function () {
+    loadStudents();
+});
+
+async function loadStudents() {
+
+    try {
+
+        const response = await fetch("/displayStudents");
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch students");
+        }
+
+        const data = await response.json();
+
+        // Students Table
+        const tbody = document.getElementById("studentsTableBody");
+        tbody.innerHTML = "";
+
+        // Face ID Dropdown
+        if (faceStudentSelect) {
+            faceStudentSelect.innerHTML =
+                '<option value="">Select Student</option>';
+        }
+
+        data.students.forEach(student => {
+
+            // Add to Table
+            addStudentToTable({
+                roll: student.enrollment_no,
+                name: student.name,
+                email: student.email,
+                phone: student.phone_number,
+                class: student.class,
+                batch: student.batch
+            });
+
+            // Add to Face ID Dropdown
+            if (faceStudentSelect) {
+
+                const option = document.createElement("option");
+
+                option.value = student.enrollment_no;
+
+                option.textContent =
+                    `${student.enrollment_no} - ${student.name} (${student.class})`;
+
+                faceStudentSelect.appendChild(option);
+            }
+
+        });
+
+        // Student Count
+        document.getElementById("studentCount").textContent = data.count;
+
+        // No Students Found
+        if (data.count === 0) {
+            showToast("No students found", "warning");
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        showToast(
+            "Unable to load students. Please try again later.",
+            "error"
+        );
+
     }
 }
 
@@ -498,7 +589,7 @@ if (logoutBtn) {
         if (confirm('Are you sure you want to logout?')) {
             showToast('Logging out...', 'info');
             setTimeout(() => {
-                window.location.href = '/login';
+                window.location.href = '/logout';
             }, 1000);
         }
     });
@@ -540,14 +631,12 @@ if (faceStudentSelect) {
             
             selectedStudent = {
                 enrollment: enrollment,
-                name: name,
-                year: year
+                name: name
             };
             
             selectedStudentAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=007AFF&color=fff&size=128`;
             selectedStudentName.textContent = name;
             selectedStudentEnrollment.textContent = `Enrollment: ${enrollment}`;
-            selectedStudentYear.textContent = `Year: ${year}`;
             selectedStudentInfo.style.display = 'block';
             
             if (faceUploadDropzone) {
