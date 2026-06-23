@@ -9,7 +9,7 @@ if (savedTheme === 'dark') {
     themeToggle.checked = true;
 }
 
-themeToggle.addEventListener('change', function() {
+themeToggle.addEventListener('change', function () {
     if (this.checked) {
         body.classList.add('dark');
         localStorage.setItem('theme', 'dark');
@@ -23,14 +23,14 @@ themeToggle.addEventListener('change', function() {
 const hamburger = document.querySelector('.hamburger');
 const sidebar = document.querySelector('.sidebar');
 
-hamburger.addEventListener('click', function(e) {
+hamburger.addEventListener('click', function (e) {
     e.stopPropagation();
     sidebar.classList.toggle('active');
     mobileOverlay.classList.toggle('active');
     this.classList.toggle('active');
 });
 
-mobileOverlay.addEventListener('click', function() {
+mobileOverlay.addEventListener('click', function () {
     sidebar.classList.remove('active');
     mobileOverlay.classList.remove('active');
     hamburger.classList.remove('active');
@@ -41,19 +41,19 @@ const navItems = document.querySelectorAll('.nav-item');
 const tabContents = document.querySelectorAll('.tab-content');
 
 navItems.forEach(item => {
-    item.addEventListener('click', function(e) {
+    item.addEventListener('click', function (e) {
         e.preventDefault();
-        
+
         const targetTab = this.getAttribute('data-tab');
-        
+
         navItems.forEach(nav => nav.classList.remove('active'));
         this.classList.add('active');
-        
+
         tabContents.forEach(tab => tab.classList.remove('active'));
         const targetContent = document.getElementById(targetTab);
         if (targetContent) {
             targetContent.classList.add('active');
-            
+
             targetContent.style.opacity = '0';
             targetContent.style.transform = 'translateY(10px)';
             setTimeout(() => {
@@ -62,10 +62,10 @@ navItems.forEach(item => {
                 targetContent.style.transform = 'translateY(0)';
             }, 10);
         }
-        
+
         const navText = this.querySelector('span').textContent;
         document.querySelector('.page-title').textContent = navText;
-        
+
         if (window.innerWidth <= 768) {
             sidebar.classList.remove('active');
             mobileOverlay.classList.remove('active');
@@ -113,32 +113,32 @@ function closeModal(modal) {
 }
 
 closeModalBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
         closeModal(this.closest('.modal'));
     });
 });
 
 if (cancelBtn) {
-    cancelBtn.addEventListener('click', function() {
+    cancelBtn.addEventListener('click', function () {
         closeModal(addStudentModal);
     });
 }
 
 if (cancelEditBtn) {
-    cancelEditBtn.addEventListener('click', function() {
+    cancelEditBtn.addEventListener('click', function () {
         closeModal(editStudentModal);
     });
 }
 
 // Close modal on outside click
-window.addEventListener('click', function(e) {
+window.addEventListener('click', function (e) {
     if (e.target.classList.contains('modal')) {
         closeModal(e.target);
     }
 });
 
 // Close modal on Escape key
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
         const activeModal = document.querySelector('.modal.active');
         if (activeModal) {
@@ -155,9 +155,9 @@ document.addEventListener('keydown', function(e) {
 // ===== Add Student Form =====
 const addStudentForm = document.getElementById('addStudentForm');
 
-addStudentForm.addEventListener('submit', function(e) {
+addStudentForm.addEventListener('submit', function (e) {
     e.preventDefault();
-    
+
     const formData = {
         name: document.getElementById('studentName').value,
         id: document.getElementById('studentId').value,
@@ -170,15 +170,15 @@ addStudentForm.addEventListener('submit', function(e) {
         address: document.getElementById('studentAddress').value,
         emergencyContact: document.getElementById('emergencyContact').value
     };
-    
+
     console.log('Adding new student:', formData);
-    
+
     // Add student to table
     addStudentToTable(formData);
-    
+
     // Show success message
     showToast('Student added successfully!', 'success');
-    
+
     // Close modal and reset form
     closeModal(addStudentModal);
     addStudentForm.reset();
@@ -188,7 +188,7 @@ addStudentForm.addEventListener('submit', function(e) {
 const viewBtns = document.querySelectorAll('.view-btn');
 
 viewBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
         const row = this.closest('tr');
         const studentName = row.querySelector('.student-info span').textContent;
         console.log('Viewing details for:', studentName);
@@ -200,7 +200,7 @@ viewBtns.forEach(btn => {
 const editBtns = document.querySelectorAll('.edit-btn');
 
 editBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
         const row = this.closest('tr');
         const cells = row.querySelectorAll('td');
         const studentId = cells[0].querySelector('.student-id').textContent;
@@ -209,18 +209,18 @@ editBtns.forEach(btn => {
         const studentPhone = cells[3].textContent;
         const studentClass = cells[5].textContent;
         const studentYear = cells[6].textContent;
-        
+
         // Populate edit form
         document.getElementById('editStudentName').value = studentName;
         document.getElementById('editStudentId').value = studentId;
         document.getElementById('editStudentEmail').value = studentEmail;
         document.getElementById('editStudentPhone').value = studentPhone;
         document.getElementById('editStudentClass').value = studentClass;
-        
+
         // Map year text to value
-        const yearMap = {'1st Year': '1', '2nd Year': '2', '3rd Year': '3', '4th Year': '4'};
+        const yearMap = { '1st Year': '1', '2nd Year': '2', '3rd Year': '3', '4th Year': '4' };
         document.getElementById('editStudentYear').value = yearMap[studentYear] || '1';
-        
+
         editStudentModal.classList.add('active');
         document.body.style.overflow = 'hidden';
     });
@@ -230,9 +230,9 @@ editBtns.forEach(btn => {
 const editStudentForm = document.getElementById('editStudentForm');
 
 if (editStudentForm) {
-    editStudentForm.addEventListener('submit', function(e) {
+    editStudentForm.addEventListener('submit', function (e) {
         e.preventDefault();
-        
+
         const studentId = document.getElementById('editStudentId').value;
         const updatedData = {
             name: document.getElementById('editStudentName').value,
@@ -241,7 +241,7 @@ if (editStudentForm) {
             class: document.getElementById('editStudentClass').value,
             year: document.getElementById('editStudentYear').value
         };
-        
+
         // Find and update the row
         const rows = document.querySelectorAll('#studentsTableBody tr');
         rows.forEach(row => {
@@ -249,7 +249,7 @@ if (editStudentForm) {
             if (rowId === studentId) {
                 const cells = row.querySelectorAll('td');
                 const yearText = ['', '1st Year', '2nd Year', '3rd Year', '4th Year'][parseInt(updatedData.year)];
-                
+
                 // Update cells
                 cells[1].querySelector('.student-info span').textContent = updatedData.name;
                 cells[1].querySelector('img').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(updatedData.name)}&background=random&color=fff`;
@@ -258,12 +258,12 @@ if (editStudentForm) {
                 cells[3].textContent = updatedData.phone;
                 cells[5].textContent = updatedData.class;
                 cells[6].textContent = yearText;
-                
+
                 row.setAttribute('data-class', updatedData.class);
                 row.setAttribute('data-year', updatedData.year);
             }
         });
-        
+
         showToast('Student updated successfully!', 'success');
         closeModal(editStudentModal);
     });
@@ -285,14 +285,14 @@ function filterStudents() {
     const selectedClass = classFilter ? classFilter.value : 'all';
     const selectedBatch = yearFilter ? yearFilter.value : 'all';
     const rows = document.querySelectorAll('#studentsTableBody tr');
-    
+
     rows.forEach(row => {
         const rowClass = row.getAttribute('data-class');
         const rowBatch = row.querySelector('td:nth-child(5)').textContent.trim(); // Get batch from table
-        
+
         const classMatch = selectedClass === 'all' || rowClass === selectedClass;
         const batchMatch = selectedBatch === 'all' || rowBatch === selectedBatch;
-        
+
         if (classMatch && batchMatch) {
             row.style.display = '';
             row.style.animation = 'fadeIn 0.3s ease';
@@ -307,10 +307,10 @@ const searchInput = document.querySelector('.search-container input');
 const studentTableSearch = document.getElementById('studentTableSearch');
 
 if (searchInput) {
-    searchInput.addEventListener('input', function(e) {
+    searchInput.addEventListener('input', function (e) {
         const searchTerm = e.target.value.toLowerCase();
         const rows = document.querySelectorAll('#studentsTableBody tr');
-        
+
         rows.forEach(row => {
             const text = row.textContent.toLowerCase();
             if (text.includes(searchTerm)) {
@@ -324,10 +324,10 @@ if (searchInput) {
 
 // Student table search
 if (studentTableSearch) {
-    studentTableSearch.addEventListener('input', function(e) {
+    studentTableSearch.addEventListener('input', function (e) {
         const searchTerm = e.target.value.toLowerCase();
         const rows = document.querySelectorAll('#studentsTableBody tr');
-        
+
         let visibleCount = 0;
         rows.forEach(row => {
             const text = row.textContent.toLowerCase();
@@ -342,15 +342,15 @@ if (studentTableSearch) {
 const exportStudentsBtn = document.getElementById('exportStudents');
 
 if (exportStudentsBtn) {
-    exportStudentsBtn.addEventListener('click', function() {
+    exportStudentsBtn.addEventListener('click', function () {
         const rows = document.querySelectorAll('#studentsTableBody tr');
         if (rows.length === 0) {
             showToast('No students to export', 'warning');
             return;
         }
-        
+
         let csvContent = 'Enrollment Number,Name,Email,Phone Number,Batch,Class,Year\n';
-        
+
         rows.forEach(row => {
             if (row.style.display !== 'none') {
                 const cells = row.querySelectorAll('td');
@@ -361,11 +361,11 @@ if (exportStudentsBtn) {
                 const batch = cells[4].textContent.trim();
                 const classInfo = cells[5].textContent.trim();
                 const year = cells[6].textContent.trim();
-                
+
                 csvContent += `${enrollment},${name},${email},${phone},${batch},${classInfo},${year}\n`;
             }
         });
-        
+
         const blob = new Blob([csvContent], { type: 'text/csv' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -375,7 +375,7 @@ if (exportStudentsBtn) {
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
-        
+
         showToast('Students exported successfully!', 'success');
     });
 }
@@ -386,11 +386,11 @@ function addStudentToTable(data) {
     const row = document.createElement('tr');
     row.setAttribute('data-class', data.class);
     row.setAttribute('data-year', data.year);
-    
+
     const yearText = ['', '1st Year', '2nd Year', '3rd Year', '4th Year'][parseInt(data.year)];
     const currentYear = new Date().getFullYear();
     const batch = currentYear - parseInt(data.year) + 1;
-    
+
     row.innerHTML = `
         <td><span class="student-id">${data.roll || data.id}</span></td>
         <td>
@@ -413,15 +413,15 @@ function addStudentToTable(data) {
             </button>
         </td>
     `;
-    
+
     row.style.opacity = '0';
     tbody.insertBefore(row, tbody.firstChild);
-    
+
     setTimeout(() => {
         row.style.transition = 'opacity 0.5s ease';
         row.style.opacity = '1';
     }, 10);
-    
+
     attachRowEventListeners(row);
 }
 
@@ -429,9 +429,9 @@ function addStudentToTable(data) {
 function attachRowEventListeners(row) {
     const editBtn = row.querySelector('.edit-btn');
     const viewBtn = row.querySelector('.view-btn');
-    
+
     if (editBtn) {
-        editBtn.addEventListener('click', function() {
+        editBtn.addEventListener('click', function () {
             const cells = row.querySelectorAll('td');
             const studentId = cells[0].querySelector('.student-id').textContent;
             const studentName = cells[1].querySelector('.student-info span').textContent;
@@ -439,7 +439,7 @@ function attachRowEventListeners(row) {
             const studentPhone = cells[3].textContent;
             const studentBatch = cells[4].textContent;
             const studentDepartment = cells[6].textContent;
-            
+
             document.getElementById('editStudentName').value = studentName;
             document.getElementById('editStudentId').value = studentId;
             document.getElementById('editStudentEmail').value = studentEmail;
@@ -447,14 +447,14 @@ function attachRowEventListeners(row) {
             document.getElementById('editStudentClass').value = studentClass;
             document.getElementById('editStudentBatch').value = studentBatch;
             document.getElementById('editStudentClass').value = studentDepartment;
-            
+
             editStudentModal.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
     }
-    
+
     if (viewBtn) {
-        viewBtn.addEventListener('click', function() {
+        viewBtn.addEventListener('click', function () {
             const studentName = row.querySelector('.student-info span').textContent;
             showToast(`Viewing details for ${studentName}`, 'info');
         });
@@ -517,7 +517,7 @@ async function loadStudents() {
 
         // Student Count
         document.getElementById("studentCount").textContent = data.count;
-        
+
         document.getElementById("totalstudentCount").textContent = data.totalcount;
 
         // No Students Found
@@ -558,14 +558,14 @@ function showToast(message, type = 'info') {
         max-width: 400px;
     `;
     toast.textContent = message;
-    
+
     document.body.appendChild(toast);
-    
+
     setTimeout(() => {
         toast.style.opacity = '1';
         toast.style.transform = 'translateY(0)';
     }, 10);
-    
+
     setTimeout(() => {
         toast.style.opacity = '0';
         toast.style.transform = 'translateY(20px)';
@@ -576,12 +576,12 @@ function showToast(message, type = 'info') {
 }
 
 // ===== Animations on Load =====
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     const statCards = document.querySelectorAll('.stat-card');
     statCards.forEach((card, index) => {
         card.style.opacity = '0';
         card.style.transform = 'translateY(20px)';
-        
+
         setTimeout(() => {
             card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
             card.style.opacity = '1';
@@ -593,7 +593,7 @@ window.addEventListener('load', function() {
 // ===== Logout =====
 const logoutBtn = document.querySelector('.logout-btn');
 if (logoutBtn) {
-    logoutBtn.addEventListener('click', function(e) {
+    logoutBtn.addEventListener('click', function (e) {
         e.preventDefault();
         if (confirm('Are you sure you want to logout?')) {
             showToast('Logging out...', 'info');
@@ -610,7 +610,7 @@ const selectedStudentInfo = document.getElementById('selectedStudentInfo');
 const selectedStudentAvatar = document.getElementById('selectedStudentAvatar');
 const selectedStudentName = document.getElementById('selectedStudentName');
 const selectedStudentEnrollment = document.getElementById('selectedStudentEnrollment');
-const selectedStudentYear = document.getElementById('selectedStudentYear');
+const selectedStudentClass = document.getElementById('selectedStudentClass');
 const faceUploadDropzone = document.getElementById('faceUploadDropzone');
 const faceImageInput = document.getElementById('faceImageInput');
 const uploadCard = document.getElementById('uploadCard');
@@ -628,7 +628,7 @@ let registeredStudents = [];
 
 // Student selection
 if (faceStudentSelect) {
-    faceStudentSelect.addEventListener('change', function() {
+    faceStudentSelect.addEventListener('change', function () {
         const selectedValue = this.value;
         if (selectedValue) {
             const selectedText = this.options[this.selectedIndex].text;
@@ -637,21 +637,21 @@ if (faceStudentSelect) {
             const nameYear = parts[1].split(' (');
             const name = nameYear[0];
             const year = nameYear[1].replace(')', '');
-            
+
             selectedStudent = {
                 enrollment: enrollment,
                 name: name
             };
-            
+
             selectedStudentAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=007AFF&color=fff&size=128`;
             selectedStudentName.textContent = name;
             selectedStudentEnrollment.textContent = `Enrollment: ${enrollment}`;
             selectedStudentInfo.style.display = 'block';
-            
+
             if (faceUploadDropzone) {
                 faceUploadDropzone.classList.remove('disabled');
             }
-            
+
             showToast(`Student ${name} selected`, 'info');
         } else {
             selectedStudentInfo.style.display = 'none';
@@ -664,7 +664,7 @@ if (faceStudentSelect) {
 
 // Upload dropzone click
 if (faceUploadDropzone) {
-    faceUploadDropzone.addEventListener('click', function() {
+    faceUploadDropzone.addEventListener('click', function () {
         if (!selectedStudent) {
             showToast('Please select a student first', 'warning');
             return;
@@ -675,28 +675,28 @@ if (faceUploadDropzone) {
         }
         faceImageInput.click();
     });
-    
+
     // Drag and drop
-    faceUploadDropzone.addEventListener('dragover', function(e) {
+    faceUploadDropzone.addEventListener('dragover', function (e) {
         e.preventDefault();
         if (selectedStudent && uploadedImages.length < 5) {
             this.classList.add('dragover');
         }
     });
-    
-    faceUploadDropzone.addEventListener('dragleave', function() {
+
+    faceUploadDropzone.addEventListener('dragleave', function () {
         this.classList.remove('dragover');
     });
-    
-    faceUploadDropzone.addEventListener('drop', function(e) {
+
+    faceUploadDropzone.addEventListener('drop', function (e) {
         e.preventDefault();
         this.classList.remove('dragover');
-        
+
         if (!selectedStudent) {
             showToast('Please select a student first', 'warning');
             return;
         }
-        
+
         const files = e.dataTransfer.files;
         handleImageFiles(files);
     });
@@ -704,7 +704,7 @@ if (faceUploadDropzone) {
 
 // File input change
 if (faceImageInput) {
-    faceImageInput.addEventListener('change', function(e) {
+    faceImageInput.addEventListener('change', function (e) {
         const files = e.target.files;
         handleImageFiles(files);
         this.value = ''; // Reset input
@@ -713,7 +713,7 @@ if (faceImageInput) {
 
 // Add more images button
 if (addMoreImagesBtn) {
-    addMoreImagesBtn.addEventListener('click', function() {
+    addMoreImagesBtn.addEventListener('click', function () {
         if (uploadedImages.length >= 5) {
             showToast('Maximum 5 images allowed', 'warning');
             return;
@@ -724,51 +724,80 @@ if (addMoreImagesBtn) {
 
 // Handle image files
 function handleImageFiles(files) {
+
     const remainingSlots = 5 - uploadedImages.length;
-    const filesToProcess = Math.min(files.length, remainingSlots);
-    
+    const filesToProcess = Math.min(
+        files.length,
+        remainingSlots
+    );
+
     if (files.length > remainingSlots) {
-        showToast(`Only ${remainingSlots} more image(s) can be added (max 5 total)`, 'warning');
+
+        showToast(
+            `Only ${remainingSlots} more image(s) can be added (max 5 total)`,
+            "warning"
+        );
     }
-    
+
     for (let i = 0; i < filesToProcess; i++) {
+
         const file = files[i];
-        
+
         // Validate file type
-        if (!file.type.startsWith('image/')) {
-            showToast(`${file.name} is not a valid image file`, 'error');
+        if (!file.type.startsWith("image/")) {
+
+            showToast(
+                `${file.name} is not a valid image file`,
+                "error"
+            );
+
             continue;
         }
-        
-        // Read file
+
         const reader = new FileReader();
-        reader.onload = function(e) {
+
+        reader.onload = function (e) {
+
+            // IMPORTANT:
+            // Save both preview data AND original file
             uploadedImages.push({
+                file: file,
                 name: file.name,
                 data: e.target.result
             });
-            
+
             // Switch to uploaded images view
             if (uploadCard && uploadedImagesCard) {
-                uploadCard.style.display = 'none';
-                uploadedImagesCard.style.display = 'block';
+
+                uploadCard.style.display = "none";
+                uploadedImagesCard.style.display = "block";
             }
-            
+
             displayUploadedImages();
             updateValidation();
+
+            console.log(
+                "Uploaded Images:",
+                uploadedImages
+            );
         };
+
         reader.readAsDataURL(file);
     }
-    
+
     if (filesToProcess > 0) {
-        showToast(`${filesToProcess} image(s) added successfully`, 'success');
+
+        showToast(
+            `${filesToProcess} image(s) added successfully`,
+            "success"
+        );
     }
 }
 
 // Display uploaded images
 function displayUploadedImages() {
     uploadedImagesGrid.innerHTML = '';
-    
+
     uploadedImages.forEach((img, index) => {
         const imageItem = document.createElement('div');
         imageItem.className = 'captured-image-item';
@@ -780,9 +809,9 @@ function displayUploadedImages() {
         `;
         uploadedImagesGrid.appendChild(imageItem);
     });
-    
+
     uploadedCount.textContent = uploadedImages.length;
-    
+
     // Update add more button state
     if (uploadedImages.length >= 5 && addMoreImagesBtn) {
         addMoreImagesBtn.disabled = true;
@@ -796,7 +825,7 @@ function displayUploadedImages() {
 // Update validation message
 function updateValidation() {
     const count = uploadedImages.length;
-    
+
     if (count < 2) {
         validationMessage.className = 'validation-alert warning';
         validationMessage.innerHTML = `
@@ -817,9 +846,9 @@ function updateValidation() {
 }
 
 // Remove uploaded image
-window.removeUploadedImage = function(index) {
+window.removeUploadedImage = function (index) {
     uploadedImages.splice(index, 1);
-    
+
     if (uploadedImages.length === 0) {
         // Switch back to upload view
         if (uploadCard && uploadedImagesCard) {
@@ -830,27 +859,27 @@ window.removeUploadedImage = function(index) {
         displayUploadedImages();
         updateValidation();
     }
-    
+
     showToast('Image removed', 'info');
 };
 
 // Clear all uploads
 if (clearAllImagesBtn) {
-    clearAllImagesBtn.addEventListener('click', function() {
+    clearAllImagesBtn.addEventListener('click', function () {
         if (uploadedImages.length === 0) {
             showToast('No images to clear', 'info');
             return;
         }
-        
+
         if (confirm('Are you sure you want to clear all uploaded images?')) {
             uploadedImages = [];
-            
+
             // Switch back to upload view
             if (uploadCard && uploadedImagesCard) {
                 uploadCard.style.display = 'block';
                 uploadedImagesCard.style.display = 'none';
             }
-            
+
             showToast('All images cleared', 'success');
         }
     });
@@ -858,70 +887,150 @@ if (clearAllImagesBtn) {
 
 // Register face ID
 if (registerFaceBtn) {
-    registerFaceBtn.addEventListener('click', function() {
+
+    registerFaceBtn.addEventListener('click', async function () {
+
+        if (!selectedStudent) {
+            showToast("Please select student", "warning");
+            return;
+        }
+
         if (uploadedImages.length < 2) {
-            showToast('Please upload at least 2 images', 'warning');
+            showToast("Minimum 2 images required", "warning");
             return;
         }
-        
+
         if (uploadedImages.length > 5) {
-            showToast('Maximum 5 images allowed', 'warning');
+            showToast("Maximum 5 images allowed", "warning");
             return;
         }
-        
-        this.disabled = true;
-        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering Face ID...';
-        
-        setTimeout(() => {
-            // Add to registered students
-            const registeredStudent = {
-                enrollment: selectedStudent.enrollment,
-                name: selectedStudent.name,
-                year: selectedStudent.year,
-                images: [...uploadedImages],
-                imageCount: uploadedImages.length,
-                registeredDate: new Date().toLocaleDateString()
-            };
-            
-            registeredStudents.push(registeredStudent);
-            displayRegisteredStudents();
-            
-            // Remove registered student from selection dropdown
-            removeStudentFromSelection(selectedStudent.enrollment);
-            
-            showToast(`Face ID registered successfully for ${selectedStudent.name} with ${uploadedImages.length} images!`, 'success');
-            
-            uploadedImages = [];
-            selectedStudent = null;
-            faceStudentSelect.value = '';
-            selectedStudentInfo.style.display = 'none';
-            
-            // Switch back to upload view
-            if (uploadCard && uploadedImagesCard) {
-                uploadCard.style.display = 'block';
-                uploadedImagesCard.style.display = 'none';
+
+        const formData = new FormData();
+
+        formData.append(
+            "enrollment_no",
+            selectedStudent.enrollment
+        );
+
+        uploadedImages.forEach(img => {
+
+            formData.append(
+                "images",
+                img.file
+            );
+
+        });
+
+        try {
+
+            registerFaceBtn.disabled = true;
+
+            registerFaceBtn.innerHTML =
+                '<i class="fas fa-spinner fa-spin"></i> Registering...';
+
+            console.log(
+                "Enrollment:",
+                selectedStudent.enrollment
+            );
+
+            console.log(
+                "Images:",
+                uploadedImages.length
+            );
+
+            const response = await fetch(
+                "/mentor/registerFace",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+            const result = await response.json();
+
+            if (result.success) {
+
+                showToast(
+                    result.message,
+                    "success"
+                );
+
+                // Add student immediately to registered list
+                registeredStudents.unshift({
+                    enrollment: selectedStudent.enrollment,
+                    name: selectedStudent.name,
+                    year: selectedStudent.class || "",
+                    imageCount: uploadedImages.length,
+                    registeredDate: new Date().toLocaleDateString(),
+                    images: uploadedImages.map(img => ({
+                        data: img.data
+                    }))
+                });
+
+                displayRegisteredStudents();
+
+                // Remove from dropdown
+                removeStudentFromSelection(
+                    selectedStudent.enrollment
+                );
+
+                // Reset form
+                uploadedImages = [];
+
+                uploadedImagesGrid.innerHTML = "";
+
+                uploadedCount.textContent = "0";
+
+                validationMessage.style.display = "none";
+
+                uploadCard.style.display = "block";
+                uploadedImagesCard.style.display = "none";
+
+                faceStudentSelect.value = "";
+
+                selectedStudentInfo.style.display = "none";
+
+                selectedStudent = null;
+            } else {
+
+                showToast(
+                    result.message,
+                    "error"
+                );
             }
-            
-            if (faceUploadDropzone) {
-                faceUploadDropzone.classList.add('disabled');
-            }
-            
-            this.disabled = false;
-            this.innerHTML = '<i class="fas fa-check-circle"></i> Register Face ID';
-        }, 2000);
+
+        } catch (error) {
+
+            console.error(error);
+
+            showToast(
+                "Upload failed",
+                "error"
+            );
+
+        } finally {
+
+            registerFaceBtn.disabled = false;
+
+            registerFaceBtn.innerHTML =
+                '<i class="fas fa-check-circle"></i> Register Face ID';
+        }
     });
 }
+
+
+
 
 // Display registered students
 function displayRegisteredStudents() {
     const registeredStudentsSection = document.getElementById('registeredStudentsSection');
     const registeredStudentsTable = document.getElementById('registeredStudentsTable');
     const registeredCount = document.getElementById('registeredCount');
-    
+
     if (!registeredStudentsSection || !registeredStudentsTable) return;
-    
+
     registeredStudentsSection.style.display = 'block';
-    
+
     if (registeredStudents.length === 0) {
         registeredStudentsTable.innerHTML = `
             <tr class="no-data-row">
@@ -945,7 +1054,7 @@ function displayRegisteredStudents() {
                         <span>${student.name}</span>
                     </div>
                 </td>
-                <td>${student.year}</td>
+                <td>${student.class}</td>
                 <td>
                     <span class="image-count-badge">
                         <i class="fas fa-images"></i>
@@ -972,24 +1081,24 @@ function showStudentImages(index) {
     const modalStudentName = document.getElementById('modalStudentName');
     const modalStudentInfo = document.getElementById('modalStudentInfo');
     const modalImagesGrid = document.getElementById('modalImagesGrid');
-    
+
     if (!modal) return;
-    
+
     modalStudentName.textContent = `${student.name} - Face ID Images`;
-    
+
     modalStudentInfo.innerHTML = `
         <div class="modal-student-info">
             <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=007AFF&color=fff&size=160" alt="${student.name}">
             <div class="modal-student-details">
                 <h3>${student.name}</h3>
                 <p><i class="fas fa-id-card"></i> ${student.enrollment}</p>
-                <p><i class="fas fa-graduation-cap"></i> ${student.year}</p>
+                <p><i class="fas fa-graduation-cap"></i> ${student.class}</p>
                 <p><i class="fas fa-images"></i> ${student.imageCount} images registered</p>
                 <p><i class="fas fa-calendar"></i> Registered on ${student.registeredDate}</p>
             </div>
         </div>
     `;
-    
+
     modalImagesGrid.innerHTML = '';
     student.images.forEach((img, imgIndex) => {
         const imageItem = document.createElement('div');
@@ -1000,31 +1109,82 @@ function showStudentImages(index) {
         `;
         modalImagesGrid.appendChild(imageItem);
     });
-    
+
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
 
 // Delete registered student
-window.deleteRegisteredStudent = function(index) {
+window.deleteRegisteredStudent = async function (index) {
+
     const student = registeredStudents[index];
-    if (confirm(`Are you sure you want to delete Face ID registration for ${student.name}?`)) {
-        // Add student back to selection dropdown
-        addStudentBackToSelection(student);
-        
-        registeredStudents.splice(index, 1);
-        displayRegisteredStudents();
-        showToast('Face ID registration deleted', 'success');
+
+    if (!confirm(
+        `Are you sure you want to delete Face ID registration for ${student.name}?`
+    )) {
+        return;
     }
+
+    try {
+
+        const response = await fetch(
+            "/mentor/deleteFaceRegistration",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    enrollment_no: student.enrollment
+                })
+            }
+        );
+
+        const result = await response.json();
+
+        if (result.success) {
+
+            registeredStudents.splice(index, 1);
+
+            displayRegisteredStudents();
+
+            // Add student back to dropdown
+            addStudentBackToSelection(student);
+
+            showToast(
+                result.message,
+                "success"
+            );
+
+        } else {
+
+            showToast(
+                result.message,
+                "error"
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        showToast(
+            "Failed to delete registration",
+            "error"
+        );
+
+    }
+
 };
 
 // Search registered students
 const registeredSearch = document.getElementById('registeredSearch');
 if (registeredSearch) {
-    registeredSearch.addEventListener('input', function(e) {
+    registeredSearch.addEventListener('input', function (e) {
         const searchTerm = e.target.value.toLowerCase();
         const rows = document.querySelectorAll('#registeredStudentsTable tr:not(.no-data-row)');
-        
+
         rows.forEach(row => {
             const text = row.textContent.toLowerCase();
             row.style.display = text.includes(searchTerm) ? '' : 'none';
@@ -1046,12 +1206,12 @@ function removeStudentFromSelection(enrollment) {
 function addStudentBackToSelection(student) {
     const option = document.createElement('option');
     option.value = student.enrollment;
-    option.textContent = `${student.enrollment} - ${student.name} (${student.year})`;
-    
+    option.textContent = `${student.enrollment} - ${student.name} (${student.class})`;
+
     // Insert in sorted order (optional, for better UX)
     const options = Array.from(faceStudentSelect.options).slice(1); // Skip first "Select Student" option
     let inserted = false;
-    
+
     for (let i = 0; i < options.length; i++) {
         if (options[i].value > student.enrollment) {
             faceStudentSelect.insertBefore(option, options[i]);
@@ -1059,11 +1219,61 @@ function addStudentBackToSelection(student) {
             break;
         }
     }
-    
+
     if (!inserted) {
         faceStudentSelect.appendChild(option);
     }
 }
+
+async function loadRegisteredStudents() {
+
+    try {
+
+        const response = await fetch(
+            "/mentor/getRegisteredFaces"
+        );
+
+        const result = await response.json();
+
+        console.log("Registered Students:", result);
+
+        if (result.success) {
+
+            registeredStudents =
+                result.students;
+
+            displayRegisteredStudents();
+
+        } else {
+
+            showToast(
+                result.message,
+                "error"
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        showToast(
+            "Failed to load registered students",
+            "error"
+        );
+
+    }
+
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        loadRegisteredStudents();
+
+    }
+);
 
 // ===== Initialize =====
 console.log('EduSync Mentor Portal loaded! 👨‍🏫');
@@ -1085,7 +1295,7 @@ let selectedImportFile = null;
 
 // Open import modal
 if (importStudentsBtn) {
-    importStudentsBtn.addEventListener('click', function() {
+    importStudentsBtn.addEventListener('click', function () {
         importStudentsModal.classList.add('active');
         document.body.style.overflow = 'hidden';
     });
@@ -1093,7 +1303,7 @@ if (importStudentsBtn) {
 
 // Cancel import
 if (cancelImportBtn) {
-    cancelImportBtn.addEventListener('click', function() {
+    cancelImportBtn.addEventListener('click', function () {
         closeModal(importStudentsModal);
         resetImportForm();
     });
@@ -1101,21 +1311,21 @@ if (cancelImportBtn) {
 
 // Upload area click
 if (importUploadArea) {
-    importUploadArea.addEventListener('click', function() {
+    importUploadArea.addEventListener('click', function () {
         importFileInput.click();
     });
-    
+
     // Drag and drop
-    importUploadArea.addEventListener('dragover', function(e) {
+    importUploadArea.addEventListener('dragover', function (e) {
         e.preventDefault();
         this.classList.add('dragover');
     });
-    
-    importUploadArea.addEventListener('dragleave', function() {
+
+    importUploadArea.addEventListener('dragleave', function () {
         this.classList.remove('dragover');
     });
-    
-    importUploadArea.addEventListener('drop', function(e) {
+
+    importUploadArea.addEventListener('drop', function (e) {
         e.preventDefault();
         this.classList.remove('dragover');
         const files = e.dataTransfer.files;
@@ -1127,7 +1337,7 @@ if (importUploadArea) {
 
 // File input change
 if (importFileInput) {
-    importFileInput.addEventListener('change', function(e) {
+    importFileInput.addEventListener('change', function (e) {
         if (e.target.files.length > 0) {
             handleImportFile(e.target.files[0]);
         }
@@ -1138,25 +1348,25 @@ if (importFileInput) {
 function handleImportFile(file) {
     const validExtensions = ['.csv', '.xlsx', '.xls'];
     const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
-    
+
     if (!validExtensions.includes(fileExtension)) {
         showToast('Please upload a valid CSV or Excel file', 'error');
         return;
     }
-    
+
     selectedImportFile = file;
     importFileName.textContent = file.name;
     importFileSize.textContent = formatFileSize(file.size);
     importUploadArea.style.display = 'none';
     importFileInfo.style.display = 'flex';
     processImportBtn.disabled = false;
-    
+
     showToast('File selected successfully', 'success');
 }
 
 // Remove import file
 if (removeImportFile) {
-    removeImportFile.addEventListener('click', function(e) {
+    removeImportFile.addEventListener('click', function (e) {
         e.stopPropagation();
         resetImportForm();
     });
@@ -1251,12 +1461,12 @@ if (processImportBtn) {
 //             showToast('Please select a file first', 'warning');
 //             return;
 //         }
-        
+
 //         this.disabled = true;
 //         this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-        
+
 //         const fileExtension = '.' + selectedImportFile.name.split('.').pop().toLowerCase();
-        
+
 //         if (fileExtension === '.csv') {
 //             processCSVFile(selectedImportFile);
 //         } else {
@@ -1270,42 +1480,42 @@ if (processImportBtn) {
 // // Process CSV file
 // function processCSVFile(file) {
 //     const reader = new FileReader();
-    
+
 //     reader.onload = function(e) {
 //         const text = e.target.result;
 //         const lines = text.split('\n').filter(line => line.trim());
-        
+
 //         if (lines.length < 2) {
 //             showToast('File is empty or has no data', 'error');
 //             processImportBtn.disabled = false;
 //             processImportBtn.innerHTML = '<i class="fas fa-check"></i> Import Students';
 //             return;
 //         }
-        
+
 //         const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
 //         const requiredFields = ['name', 'email', 'phone', 'class', 'year'];
 //         const missingFields = requiredFields.filter(field => 
 //             !headers.some(h => h.includes(field.replace(' ', '')))
 //         );
-        
+
 //         if (missingFields.length > 0) {
 //             showToast(`Missing required columns: ${missingFields.join(', ')}`, 'error');
 //             processImportBtn.disabled = false;
 //             processImportBtn.innerHTML = '<i class="fas fa-check"></i> Import Students';
 //             return;
 //         }
-        
+
 //         let importedCount = 0;
-        
+
 //         for (let i = 1; i < lines.length; i++) {
 //             const values = parseCSVLine(lines[i]);
 //             if (values.length < headers.length) continue;
-            
+
 //             const studentData = {};
 //             headers.forEach((header, index) => {
 //                 studentData[header] = values[index]?.trim() || '';
 //             });
-            
+
 //             // Map CSV data to student object
 //             const student = {
 //                 name: studentData.name || studentData['student name'] || '',
@@ -1318,26 +1528,26 @@ if (processImportBtn) {
 //                 dob: studentData['date of birth'] || studentData.dob || '',
 //                 emergencyContact: studentData['emergency contact'] || studentData.emergencycontact || ''
 //             };
-            
+
 //             if (student.name && student.email) {
 //                 addStudentToTable(student);
 //                 importedCount++;
 //             }
 //         }
-        
+
 //         showToast(`Successfully imported ${importedCount} student(s)!`, 'success');
 //         closeModal(importStudentsModal);
 //         resetImportForm();
 //         processImportBtn.disabled = false;
 //         processImportBtn.innerHTML = '<i class="fas fa-check"></i> Import Students';
 //     };
-    
+
 //     reader.onerror = function() {
 //         showToast('Error reading file', 'error');
 //         processImportBtn.disabled = false;
 //         processImportBtn.innerHTML = '<i class="fas fa-check"></i> Import Students';
 //     };
-    
+
 //     reader.readAsText(file);
 // }
 
@@ -1346,10 +1556,10 @@ if (processImportBtn) {
 //     const result = [];
 //     let current = '';
 //     let inQuotes = false;
-    
+
 //     for (let i = 0; i < line.length; i++) {
 //         const char = line[i];
-        
+
 //         if (char === '"') {
 //             inQuotes = !inQuotes;
 //         } else if (char === ',' && !inQuotes) {
@@ -1359,7 +1569,7 @@ if (processImportBtn) {
 //             current += char;
 //         }
 //     }
-    
+
 //     result.push(current);
 //     return result;
 // }
@@ -1369,10 +1579,10 @@ if (processImportBtn) {
 // Attendance Search
 const attendanceSearch = document.getElementById('attendanceSearch');
 if (attendanceSearch) {
-    attendanceSearch.addEventListener('input', function(e) {
+    attendanceSearch.addEventListener('input', function (e) {
         const searchTerm = e.target.value.toLowerCase();
         const rows = document.querySelectorAll('#attendanceTableBody tr');
-        
+
         let visibleCount = 0;
         rows.forEach(row => {
             const text = row.textContent.toLowerCase();
@@ -1380,7 +1590,7 @@ if (attendanceSearch) {
             row.style.display = shouldShow ? '' : 'none';
             if (shouldShow) visibleCount++;
         });
-        
+
         updateAttendanceSummary();
     });
 }
@@ -1388,7 +1598,7 @@ if (attendanceSearch) {
 // Attendance Class Filter
 const attendanceClassFilter = document.getElementById('attendanceClassFilter');
 if (attendanceClassFilter) {
-    attendanceClassFilter.addEventListener('change', function() {
+    attendanceClassFilter.addEventListener('change', function () {
         filterAttendanceTable();
     });
 }
@@ -1396,7 +1606,7 @@ if (attendanceClassFilter) {
 // Attendance Month Filter
 const attendanceMonthFilter = document.getElementById('attendanceMonthFilter');
 if (attendanceMonthFilter) {
-    attendanceMonthFilter.addEventListener('change', function() {
+    attendanceMonthFilter.addEventListener('change', function () {
         filterAttendanceTable();
         // Clear date range when month is selected
         document.getElementById('attendanceDateFrom').value = '';
@@ -1411,32 +1621,32 @@ const applyDateRangeBtn = document.getElementById('applyDateRangeBtn');
 const clearDateRangeBtn = document.getElementById('clearDateRangeBtn');
 
 if (applyDateRangeBtn) {
-    applyDateRangeBtn.addEventListener('click', function() {
+    applyDateRangeBtn.addEventListener('click', function () {
         const fromDate = attendanceDateFrom.value;
         const toDate = attendanceDateTo.value;
-        
+
         if (!fromDate || !toDate) {
             showToast('Please select both from and to dates', 'warning');
             return;
         }
-        
+
         if (new Date(fromDate) > new Date(toDate)) {
             showToast('From date cannot be after to date', 'error');
             return;
         }
-        
+
         // Clear month filter when date range is applied
         if (attendanceMonthFilter) {
             attendanceMonthFilter.value = '';
         }
-        
+
         filterAttendanceTable();
         showToast(`Showing attendance from ${fromDate} to ${toDate}`, 'success');
     });
 }
 
 if (clearDateRangeBtn) {
-    clearDateRangeBtn.addEventListener('click', function() {
+    clearDateRangeBtn.addEventListener('click', function () {
         attendanceDateFrom.value = '';
         attendanceDateTo.value = '';
         filterAttendanceTable();
@@ -1451,12 +1661,12 @@ function filterAttendanceTable() {
     const fromDate = attendanceDateFrom ? attendanceDateFrom.value : '';
     const toDate = attendanceDateTo ? attendanceDateTo.value : '';
     const rows = document.querySelectorAll('#attendanceTableBody tr');
-    
+
     rows.forEach(row => {
         const rowClass = row.querySelector('td:nth-child(3)').textContent.trim();
-        
+
         const classMatch = selectedClass === 'all' || rowClass === selectedClass;
-        
+
         // For now, we'll show all rows since we're showing monthly summary
         // In a real app, you'd filter based on actual date data
         if (classMatch) {
@@ -1465,7 +1675,7 @@ function filterAttendanceTable() {
             row.style.display = 'none';
         }
     });
-    
+
     updateAttendanceSummary();
 }
 
@@ -1473,29 +1683,29 @@ function filterAttendanceTable() {
 function updateAttendanceSummary() {
     const visibleRows = Array.from(document.querySelectorAll('#attendanceTableBody tr'))
         .filter(row => row.style.display !== 'none');
-    
+
     let totalPresent = 0;
     let totalAbsent = 0;
     let totalLate = 0;
-    
+
     visibleRows.forEach(row => {
         const presentCell = row.querySelector('td:nth-child(6)');
         const absentCell = row.querySelector('td:nth-child(7)');
         const lateCell = row.querySelector('td:nth-child(8)');
-        
+
         if (presentCell) totalPresent += parseInt(presentCell.textContent) || 0;
         if (absentCell) totalAbsent += parseInt(absentCell.textContent) || 0;
         if (lateCell) totalLate += parseInt(lateCell.textContent) || 0;
     });
-    
+
     const total = totalPresent + totalAbsent;
     const percentage = total > 0 ? ((totalPresent / total) * 100).toFixed(1) : 0;
-    
+
     const totalPresentCount = document.getElementById('totalPresentCount');
     const totalAbsentCount = document.getElementById('totalAbsentCount');
     const totalLateCount = document.getElementById('totalLateCount');
     const attendancePercentage = document.getElementById('attendancePercentage');
-    
+
     if (totalPresentCount) totalPresentCount.textContent = totalPresent;
     if (totalAbsentCount) totalAbsentCount.textContent = totalAbsent;
     if (totalLateCount) totalLateCount.textContent = totalLate;
@@ -1505,17 +1715,17 @@ function updateAttendanceSummary() {
 // Export Attendance
 const exportAttendance = document.getElementById('exportAttendance');
 if (exportAttendance) {
-    exportAttendance.addEventListener('click', function() {
+    exportAttendance.addEventListener('click', function () {
         const rows = document.querySelectorAll('#attendanceTableBody tr');
         let visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
-        
+
         if (visibleRows.length === 0) {
             showToast('No attendance data to export', 'warning');
             return;
         }
-        
+
         let csvContent = 'Enrollment No,Student Name,Class,Month,Total Days,Present,Absent,Late,Attendance %\\n';
-        
+
         visibleRows.forEach(row => {
             const cells = row.querySelectorAll('td');
             const enrollment = cells[0].textContent.trim();
@@ -1527,10 +1737,10 @@ if (exportAttendance) {
             const absent = cells[6].textContent.trim();
             const late = cells[7].textContent.trim();
             const percentage = cells[8].textContent.trim();
-            
+
             csvContent += `${enrollment},${name},${classInfo},${month},${totalDays},${present},${absent},${late},${percentage}\\n`;
         });
-        
+
         const blob = new Blob([csvContent], { type: 'text/csv' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1540,7 +1750,7 @@ if (exportAttendance) {
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
-        
+
         showToast('Attendance data exported successfully!', 'success');
     });
 }
@@ -1553,7 +1763,7 @@ const detailsStudentInfo = document.getElementById('detailsStudentInfo');
 const detailsAttendanceTable = document.getElementById('detailsAttendanceTable');
 
 // Attach event listeners to view details buttons
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     if (e.target.closest('.view-details-btn')) {
         const btn = e.target.closest('.view-details-btn');
         const studentId = btn.getAttribute('data-student');
@@ -1561,21 +1771,21 @@ document.addEventListener('click', function(e) {
         const studentName = row.querySelector('.student-info span').textContent;
         const classInfo = row.querySelector('td:nth-child(3)').textContent;
         const month = row.querySelector('td:nth-child(4)').textContent;
-        
+
         showAttendanceDetails(studentId, studentName, classInfo, month);
     }
 });
 
 function showAttendanceDetails(studentId, studentName, classInfo, month) {
     if (!viewAttendanceDetailsModal) return;
-    
+
     detailsStudentName.textContent = `${studentName} - Attendance Details`;
     detailsStudentInfo.textContent = `${studentId} | ${classInfo} | ${month}`;
-    
+
     // In a real app, you'd fetch actual day-by-day data
     // For now, we'll show sample data
     detailsAttendanceTable.innerHTML = generateSampleAttendanceDetails();
-    
+
     viewAttendanceDetailsModal.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
@@ -1584,7 +1794,7 @@ function generateSampleAttendanceDetails() {
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const statuses = ['present', 'present', 'late', 'absent', 'present'];
     const times = ['09:15 AM', '09:10 AM', '09:35 AM', '-', '09:08 AM'];
-    
+
     let html = '';
     for (let i = 0; i < 5; i++) {
         const date = new Date();
@@ -1593,7 +1803,7 @@ function generateSampleAttendanceDetails() {
         const dayOfWeek = days[date.getDay()];
         const status = statuses[i];
         const time = times[i];
-        
+
         html += `
             <tr>
                 <td>${dateStr}</td>
@@ -1611,7 +1821,7 @@ function generateSampleAttendanceDetails() {
             </tr>
         `;
     }
-    
+
     return html;
 }
 
@@ -1628,35 +1838,35 @@ const cancelAttendanceEdit = document.getElementById('cancelAttendanceEdit');
 let currentEditingRow = null;
 
 // Open edit attendance modal
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     if (e.target.closest('.edit-attendance-btn')) {
         e.stopPropagation();
         const btn = e.target.closest('.edit-attendance-btn');
         currentEditingRow = btn.closest('tr');
-        
+
         const date = btn.getAttribute('data-date');
         const status = btn.getAttribute('data-status');
         const time = btn.getAttribute('data-time');
-        
+
         // Get student name from details modal title or from parent row
         let studentName = 'Student';
         if (detailsStudentName) {
             studentName = detailsStudentName.textContent.split(' - ')[0];
         }
-        
+
         editAttendanceStudent.value = studentName;
         editAttendanceDate.value = date;
         editAttendanceStatus.value = status;
         editAttendanceTime.value = time && time !== '-' ? time : '';
         editAttendanceNotes.value = '';
-        
+
         editAttendanceModal.classList.add('active');
     }
 });
 
 // Cancel edit attendance
 if (cancelAttendanceEdit) {
-    cancelAttendanceEdit.addEventListener('click', function() {
+    cancelAttendanceEdit.addEventListener('click', function () {
         closeModal(editAttendanceModal);
         currentEditingRow = null;
     });
@@ -1664,26 +1874,26 @@ if (cancelAttendanceEdit) {
 
 // Submit edit attendance form
 if (editAttendanceForm) {
-    editAttendanceForm.addEventListener('submit', function(e) {
+    editAttendanceForm.addEventListener('submit', function (e) {
         e.preventDefault();
-        
+
         const newStatus = editAttendanceStatus.value;
         const newTime = editAttendanceTime.value;
         const notes = editAttendanceNotes.value;
-        
+
         if (currentEditingRow) {
             // Update the row
             const statusCell = currentEditingRow.querySelector('td:nth-child(3)');
             const timeCell = currentEditingRow.querySelector('td:nth-child(4)');
-            
+
             if (statusCell) {
                 statusCell.innerHTML = `<span class="status-badge ${newStatus}">${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}</span>`;
             }
-            
+
             if (timeCell) {
                 timeCell.textContent = newTime && newStatus !== 'absent' ? formatTime(newTime) : '-';
             }
-            
+
             // Update button data attributes
             const editBtn = currentEditingRow.querySelector('.edit-attendance-btn');
             if (editBtn) {
@@ -1691,11 +1901,11 @@ if (editAttendanceForm) {
                 editBtn.setAttribute('data-time', newTime);
             }
         }
-        
+
         showToast('Attendance updated successfully!', 'success');
         closeModal(editAttendanceModal);
         currentEditingRow = null;
-        
+
         // Update summary
         updateAttendanceSummary();
     });
@@ -1721,24 +1931,24 @@ console.log('Attendance Details functionality loaded! 📊');
 // ===== All Students Tab - Add Student Button =====
 const addStudentBtn = document.getElementById('addStudentBtn');
 if (addStudentBtn) {
-    addStudentBtn.addEventListener('click', function() {
+    addStudentBtn.addEventListener('click', function () {
         addStudentModal.classList.add('active');
         document.body.style.overflow = 'hidden';
     });
 }
 
 // ===== Delete Student Functionality =====
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     if (e.target.closest('.delete-btn')) {
         const btn = e.target.closest('.delete-btn');
         const row = btn.closest('tr');
         const studentName = row.querySelector('.student-info span').textContent;
         const studentId = row.querySelector('.student-id').textContent;
-        
+
         if (confirm(`Are you sure you want to delete ${studentName} (${studentId})?\n\nThis action cannot be undone.`)) {
             row.style.opacity = '0';
             row.style.transform = 'translateX(-20px)';
-            
+
             setTimeout(() => {
                 row.remove();
                 showToast(`${studentName} has been deleted successfully`, 'success');
@@ -1762,9 +1972,9 @@ function attachRowEventListeners(row) {
     const editBtn = row.querySelector('.edit-btn');
     const viewBtn = row.querySelector('.view-btn');
     const deleteBtn = row.querySelector('.delete-btn');
-    
+
     if (editBtn) {
-        editBtn.addEventListener('click', function() {
+        editBtn.addEventListener('click', function () {
             const cells = row.querySelectorAll('td');
             const studentId = cells[0].querySelector('.student-id').textContent;
             const studentName = cells[1].querySelector('.student-info span').textContent;
@@ -1773,7 +1983,7 @@ function attachRowEventListeners(row) {
             const studentBatch = cells[4].textContent;
             const studentClass = cells[5].textContent;
             const studentDepartment = cells[6].textContent;
-            
+
             document.getElementById('editStudentName').value = studentName;
             document.getElementById('editStudentId').value = studentId;
             document.getElementById('editStudentEmail').value = studentEmail;
@@ -1781,15 +1991,15 @@ function attachRowEventListeners(row) {
             document.getElementById('editStudentClass').value = studentClass;
             document.getElementById('editStudentBatch').value = studentBatch;
             document.getElementById('editStudentDepartment').value = studentDepartment;
-                    
-            
+
+
             editStudentModal.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
     }
-    
+
     if (viewBtn) {
-        viewBtn.addEventListener('click', function() {
+        viewBtn.addEventListener('click', function () {
             const studentName = row.querySelector('.student-info span').textContent;
             const studentId = row.querySelector('.student-id').textContent;
             const studentEmail = row.querySelector('td:nth-child(3)').textContent;
@@ -1797,7 +2007,7 @@ function attachRowEventListeners(row) {
             const studentBatch = row.querySelector('td:nth-child(5)').textContent;
             const studentClass = row.querySelector('td:nth-child(6)').textContent;
             const studentDepartment = row.querySelector('td:nth-child(7)').textContent;
-            
+
             const detailsHTML = `
                 <div style="padding: 20px; background: var(--fill-tertiary); border-radius: 12px;">
                     <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
@@ -1833,7 +2043,7 @@ function attachRowEventListeners(row) {
                     </div>
                 </div>
             `;
-            
+
             // Create a temporary modal for viewing details
             const viewModal = document.createElement('div');
             viewModal.className = 'modal active';
@@ -1852,8 +2062,8 @@ function attachRowEventListeners(row) {
             `;
             document.body.appendChild(viewModal);
             document.body.style.overflow = 'hidden';
-            
-            viewModal.addEventListener('click', function(e) {
+
+            viewModal.addEventListener('click', function (e) {
                 if (e.target === viewModal) {
                     viewModal.remove();
                     document.body.style.overflow = '';

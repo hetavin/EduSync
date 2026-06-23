@@ -27,6 +27,17 @@ CREATE TABLE students (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE student_face (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    enrollment_no VARCHAR(30) NOT NULL,
+    face_image LONGBLOB NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (enrollment_no)
+    REFERENCES students(enrollment_no)
+    ON DELETE CASCADE
+);
+
 drop table students
 
 UPDATE users role SET role = 'admin' WHERE id = 1
