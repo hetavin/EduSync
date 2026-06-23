@@ -150,7 +150,7 @@ if (searchInput) {
 // ===== Logout Confirmation =====
 const logoutBtn = document.querySelector('.logout-btn');
 if (logoutBtn) {
-    logoutBtn.addEventListener('click', function(e) {
+    logoutBtn.addEventListener('click', function (e) {
         e.preventDefault();
         if (confirm('Are you sure you want to logout?')) {
             window.location.href = '/logout';
@@ -564,6 +564,9 @@ async function processFile(file) {
                     console.log(
                         `Inserted: ${result.inserted}, Skipped: ${result.skipped}`
                     );
+
+                    // Reload student list
+                    loadStudentsFromServer();
 
                     resetFileUpload();
                     resolve(true);

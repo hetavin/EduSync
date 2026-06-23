@@ -506,6 +506,9 @@ async function loadStudents() {
                 const option = document.createElement("option");
 
                 option.value = student.enrollment_no;
+                option.dataset.name = student.name;
+                option.dataset.class = student.class;
+                option.dataset.department = student.department;
 
                 option.textContent =
                     `${student.enrollment_no} - ${student.name} (${student.department})`;
@@ -640,10 +643,10 @@ if (faceStudentSelect) {
 
             selectedStudent = {
                 enrollment: enrollment,
-                name: name
+                name: name,
             };
 
-            selectedStudentAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=007AFF&color=fff&size=128`;
+            selectedStudentAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name.trim().split(/\s+/).slice(0, 2).map(word => word.charAt(0).toUpperCase()).join(''))}&background=007AFF&color=fff&size=128`;
             selectedStudentName.textContent = name;
             selectedStudentEnrollment.textContent = `Enrollment: ${enrollment}`;
             selectedStudentInfo.style.display = 'block';
@@ -959,7 +962,7 @@ if (registerFaceBtn) {
                 registeredStudents.unshift({
                     enrollment: selectedStudent.enrollment,
                     name: selectedStudent.name,
-                    year: selectedStudent.class || "",
+                    class: selectedStudent.class || "",
                     imageCount: uploadedImages.length,
                     registeredDate: new Date().toLocaleDateString(),
                     images: uploadedImages.map(img => ({
@@ -1050,11 +1053,9 @@ function displayRegisteredStudents() {
                 <td><span class="student-id">${student.enrollment}</span></td>
                 <td>
                     <div class="student-info">
-                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=007AFF&color=fff" alt="${student.name}">
-                        <span>${student.name}</span>
+                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(student.name.trim().split(/\s+/).slice(0, 2).map(word => word.charAt(0).toUpperCase()).join(''))}&background=007AFF&color=fff" alt="${student.name}"><span>${student.name}</span>
                     </div>
                 </td>
-                <td>${student.class}</td>
                 <td>
                     <span class="image-count-badge">
                         <i class="fas fa-images"></i>
