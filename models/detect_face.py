@@ -1,6 +1,8 @@
 from scrfd import SCRFD, Threshold
 from PIL import Image
 from io import BytesIO
+from models.image_slicer import slice_image_with_overlap
+from models.duplicate_remover import remove_duplicate_faces
 
 detector = SCRFD.from_path(
     r"D:\Projects\EduSync\models\scrfd_2.5g_bnkps.onnx"
@@ -58,3 +60,79 @@ def extract_faces(file_stream):
     )
 
     return face_images
+
+def detect_faces_from_tiles(image):
+
+    tiles = slice_image_with_overlap(
+        image=image,
+        tile_size=512,
+        overlap=256
+    )
+
+    detections = []
+
+    for tile_info in tiles:
+
+        tile = tile_info["tile"]
+
+        faces = detector.detect(
+            tile,
+            threshold=threshold
+        )
+
+        for face in faces:
+
+            try:
+
+                x1 = int(
+                    face.bbox.upper_left.x +
+                    tile_info["x_offset"]
+                )
+
+                y1 = int(
+                    face.bbox.upper_left.y +
+                    tile_info["y_offset"]
+                )
+
+                x2 = int(
+                    face.bbox.lower_right.x +
+                    tile_info["x_offset"]
+                )
+
+                y2 = int(
+                    face.bbox.lower_right.y +
+                    tile_info["y_offset"]
+                )
+
+                detections.append({
+                    "bbox": (
+                        x1,
+                        y1,
+                        x2,
+                        y2
+                    )
+                })
+
+            except Exception as e:
+
+                print(
+                    "Face Detection Error:",
+                    e
+                )
+
+    print(
+        "Faces Before Duplicate Removal:",
+        len(detections)
+    )
+
+    detections = remove_duplicate_faces(
+        detections,
+        iou_threshold=0.4
+    )
+
+    print(
+        "Faces After Duplicate Removal:",
+        len(detections)
+    )
+
+    return detections

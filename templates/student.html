@@ -24,9 +24,9 @@
             
             <!-- Student Profile Preview -->
             <div class="sidebar-profile">
-                <img src="https://ui-avatars.com/api/?name=John+Doe&background=007AFF&color=fff&size=128" alt="Student">
-                <h3>John Doe</h3>
-                <p>STU001</p>
+                <img id="studentAvatar" src="" alt="Student">
+                <h3 id="studentName">Loading...</h3>
+                <p id="studentId">---</p>
             </div>
             
             <!-- Navigation -->
@@ -83,7 +83,7 @@
                 </button>
                 <div>
                     <h1 class="page-title">Dashboard</h1>
-                    <p class="page-subtitle">Welcome back, John!</p>
+                    <p class="page-subtitle" id="welcomeMessage">Welcome back!</p>
                 </div>
             </div>
             
@@ -110,7 +110,7 @@
                             <i class="fas fa-percentage"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>92.5%</h3>
+                            <h3 id="overallAttendance">0%</h3>
                             <p>Overall Attendance</p>
                         </div>
                     </div>
@@ -119,7 +119,7 @@
                             <i class="fas fa-calendar-day"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>37 Days</h3>
+                            <h3 id="presentDays">0 Days</h3>
                             <p>Present This Month</p>
                         </div>
                     </div>
@@ -128,7 +128,7 @@
                             <i class="fas fa-calendar-times"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>3 Days</h3>
+                            <h3 id="absentDays">0 Days</h3>
                             <p>Absent This Month</p>
                         </div>
                     </div>
@@ -137,7 +137,7 @@
                             <i class="fas fa-clock"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>08:45 AM</h3>
+                            <h3 id="avgCheckin">--:-- --</h3>
                             <p>Avg. Check-in Time</p>
                         </div>
                     </div>
@@ -158,61 +158,10 @@
                             </button>
                         </div>
                         <div class="card-body">
-                            <div class="attendance-list">
-                                <div class="attendance-item">
-                                    <div class="attendance-date">
-                                        <span class="day">Mon</span>
-                                        <span class="date">Jan 15</span>
-                                    </div>
-                                    <div class="attendance-details">
-                                        <p class="attendance-time">08:45 AM</p>
-                                        <p class="attendance-status">Check-in</p>
-                                    </div>
-                                    <span class="status-badge success">Present</span>
-                                </div>
-                                <div class="attendance-item">
-                                    <div class="attendance-date">
-                                        <span class="day">Tue</span>
-                                        <span class="date">Jan 16</span>
-                                    </div>
-                                    <div class="attendance-details">
-                                        <p class="attendance-time">08:50 AM</p>
-                                        <p class="attendance-status">Check-in</p>
-                                    </div>
-                                    <span class="status-badge success">Present</span>
-                                </div>
-                                <div class="attendance-item">
-                                    <div class="attendance-date">
-                                        <span class="day">Wed</span>
-                                        <span class="date">Jan 17</span>
-                                    </div>
-                                    <div class="attendance-details">
-                                        <p class="attendance-time">09:15 AM</p>
-                                        <p class="attendance-status">Check-in</p>
-                                    </div>
-                                    <span class="status-badge warning">Late</span>
-                                </div>
-                                <div class="attendance-item">
-                                    <div class="attendance-date">
-                                        <span class="day">Thu</span>
-                                        <span class="date">Jan 18</span>
-                                    </div>
-                                    <div class="attendance-details">
-                                        <p class="attendance-time">--:-- --</p>
-                                        <p class="attendance-status">No record</p>
-                                    </div>
-                                    <span class="status-badge error">Absent</span>
-                                </div>
-                                <div class="attendance-item">
-                                    <div class="attendance-date">
-                                        <span class="day">Fri</span>
-                                        <span class="date">Jan 19</span>
-                                    </div>
-                                    <div class="attendance-details">
-                                        <p class="attendance-time">08:42 AM</p>
-                                        <p class="attendance-status">Check-in</p>
-                                    </div>
-                                    <span class="status-badge success">Present</span>
+                            <div class="attendance-list" id="recentAttendanceList">
+                                <div class="empty-state" style="text-align: center; padding: 48px;">
+                                    <i class="fas fa-calendar-alt" style="font-size: 48px; opacity: 0.3; margin-bottom: 16px; display: block;"></i>
+                                    <p style="color: var(--text-secondary);">No recent attendance records</p>
                                 </div>
                             </div>
                         </div>
@@ -225,29 +174,29 @@
                             <div class="card-header">
                                 <div>
                                     <h2 class="card-title">Monthly Overview</h2>
-                                    <p class="card-subtitle">January 2024</p>
+                                    <p class="card-subtitle" id="currentMonthYear">Loading...</p>
                                 </div>
                             </div>
                             <div class="card-body">
                                 <div class="progress-ring">
                                     <svg viewBox="0 0 120 120">
                                         <circle class="progress-ring-bg" cx="60" cy="60" r="50"></circle>
-                                        <circle class="progress-ring-fill" cx="60" cy="60" r="50" 
-                                                style="stroke-dasharray: 314; stroke-dashoffset: 23.55;"></circle>
+                                        <circle class="progress-ring-fill" id="progressCircle" cx="60" cy="60" r="50" 
+                                                style="stroke-dasharray: 314; stroke-dashoffset: 314;"></circle>
                                     </svg>
                                     <div class="progress-value">
-                                        <h3>92.5%</h3>
+                                        <h3 id="monthlyAttendance">0%</h3>
                                         <p>Attendance</p>
                                     </div>
                                 </div>
                                 <div class="progress-stats">
                                     <div class="progress-stat-item">
                                         <span class="stat-color green"></span>
-                                        <span>Present: 37</span>
+                                        <span id="monthlyPresent">Present: 0</span>
                                     </div>
                                     <div class="progress-stat-item">
                                         <span class="stat-color red"></span>
-                                        <span>Absent: 3</span>
+                                        <span id="monthlyAbsent">Absent: 0</span>
                                     </div>
                                 </div>
                             </div>
@@ -258,40 +207,14 @@
                             <div class="card-header">
                                 <div>
                                     <h2 class="card-title">Today's Classes</h2>
-                                    <p class="card-subtitle">5 classes scheduled</p>
+                                    <p class="card-subtitle" id="todayClassCount">0 classes scheduled</p>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <div class="class-list">
-                                    <div class="class-item">
-                                        <div class="class-time">
-                                            <i class="fas fa-clock"></i>
-                                            <span>09:00 AM</span>
-                                        </div>
-                                        <div class="class-info">
-                                            <h4>Data Structures</h4>
-                                            <p>Prof. Sarah Johnson</p>
-                                        </div>
-                                    </div>
-                                    <div class="class-item">
-                                        <div class="class-time">
-                                            <i class="fas fa-clock"></i>
-                                            <span>11:00 AM</span>
-                                        </div>
-                                        <div class="class-info">
-                                            <h4>Web Development</h4>
-                                            <p>Prof. Michael Brown</p>
-                                        </div>
-                                    </div>
-                                    <div class="class-item">
-                                        <div class="class-time">
-                                            <i class="fas fa-clock"></i>
-                                            <span>02:00 PM</span>
-                                        </div>
-                                        <div class="class-info">
-                                            <h4>Database Systems</h4>
-                                            <p>Dr. Emily Davis</p>
-                                        </div>
+                                <div class="class-list" id="todayClassList">
+                                    <div class="empty-state" style="text-align: center; padding: 32px;">
+                                        <i class="fas fa-chalkboard-teacher" style="font-size: 36px; opacity: 0.3; margin-bottom: 12px; display: block;"></i>
+                                        <p style="color: var(--text-secondary); font-size: 14px;">No classes scheduled for today</p>
                                     </div>
                                 </div>
                             </div>
@@ -306,10 +229,10 @@
                     <div class="profile-header-card">
                         <div class="profile-cover"></div>
                         <div class="profile-main">
-                            <img src="https://ui-avatars.com/api/?name=John+Doe&background=007AFF&color=fff&size=256" alt="John Doe" class="profile-avatar">
+                            <img id="profileAvatar" src="" alt="Student" class="profile-avatar">
                             <div class="profile-info-header">
-                                <h2>John Doe</h2>
-                                <p>Student ID: STU001</p>
+                                <h2 id="profileName">Loading...</h2>
+                                <p id="profileStudentId">Student ID: ---</p>
                                 <span class="status-badge success">Active</span>
                             </div>
                         </div>
@@ -323,28 +246,20 @@
                             <div class="card-body">
                                 <div class="info-grid">
                                     <div class="info-item">
-                                        <label>Full Name</label>
-                                        <p>John Doe</p>
+                                        <label><i class="fas fa-user"></i> Full Name</label>
+                                        <p id="infoName">---</p>
                                     </div>
                                     <div class="info-item">
-                                        <label>Email</label>
-                                        <p>john.doe@example.com</p>
+                                        <label><i class="fas fa-envelope"></i> Email</label>
+                                        <p id="infoEmail">---</p>
                                     </div>
                                     <div class="info-item">
-                                        <label>Phone Number</label>
-                                        <p>+1 234 567 8900</p>
+                                        <label><i class="fas fa-phone"></i> Phone Number</label>
+                                        <p id="infoPhone">---</p>
                                     </div>
                                     <div class="info-item">
-                                        <label>Date of Birth</label>
-                                        <p>January 15, 2002</p>
-                                    </div>
-                                    <div class="info-item">
-                                        <label>Address</label>
-                                        <p>123 Main Street, City, State 12345</p>
-                                    </div>
-                                    <div class="info-item">
-                                        <label>Emergency Contact</label>
-                                        <p>+1 234 567 8901</p>
+                                        <label><i class="fas fa-id-card"></i> Enrollment Number</label>
+                                        <p id="infoEnrollment">---</p>
                                     </div>
                                 </div>
                             </div>
@@ -357,28 +272,20 @@
                             <div class="card-body">
                                 <div class="info-grid">
                                     <div class="info-item">
-                                        <label>Department</label>
-                                        <p>Computer Science</p>
+                                        <label><i class="fas fa-building"></i> Department</label>
+                                        <p id="infoDepartment">---</p>
                                     </div>
                                     <div class="info-item">
-                                        <label>Year</label>
-                                        <p>3rd Year</p>
+                                        <label><i class="fas fa-calendar"></i> Batch</label>
+                                        <p id="infoYear">---</p>
                                     </div>
                                     <div class="info-item">
-                                        <label>Enrollment Date</label>
-                                        <p>September 1, 2021</p>
+                                        <label><i class="fas fa-chalkboard"></i> Class</label>
+                                        <p id="infoSection">---</p>
                                     </div>
                                     <div class="info-item">
-                                        <label>Roll Number</label>
-                                        <p>CS2021001</p>
-                                    </div>
-                                    <div class="info-item">
-                                        <label>Section</label>
-                                        <p>A</p>
-                                    </div>
-                                    <div class="info-item">
-                                        <label>GPA</label>
-                                        <p>3.8 / 4.0</p>
+                                        <label><i class="fas fa-graduation-cap"></i> Enrollment Status</label>
+                                        <p><span class="status-badge success">Active</span></p>
                                     </div>
                                 </div>
                             </div>
@@ -420,46 +327,12 @@
                                         <th>Status</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="attendanceHistoryBody">
                                     <tr>
-                                        <td>Jan 19, 2024</td>
-                                        <td>Friday</td>
-                                        <td>08:42 AM</td>
-                                        <td>Data Structures</td>
-                                        <td>Prof. Sarah Johnson</td>
-                                        <td><span class="status-badge success">Present</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Jan 18, 2024</td>
-                                        <td>Thursday</td>
-                                        <td>--:-- --</td>
-                                        <td>Web Development</td>
-                                        <td>Prof. Michael Brown</td>
-                                        <td><span class="status-badge error">Absent</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Jan 17, 2024</td>
-                                        <td>Wednesday</td>
-                                        <td>09:15 AM</td>
-                                        <td>Database Systems</td>
-                                        <td>Dr. Emily Davis</td>
-                                        <td><span class="status-badge warning">Late</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Jan 16, 2024</td>
-                                        <td>Tuesday</td>
-                                        <td>08:50 AM</td>
-                                        <td>Data Structures</td>
-                                        <td>Prof. Sarah Johnson</td>
-                                        <td><span class="status-badge success">Present</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Jan 15, 2024</td>
-                                        <td>Monday</td>
-                                        <td>08:45 AM</td>
-                                        <td>Web Development</td>
-                                        <td>Prof. Michael Brown</td>
-                                        <td><span class="status-badge success">Present</span></td>
+                                        <td colspan="6" style="text-align: center; padding: 48px;">
+                                            <i class="fas fa-calendar-check" style="font-size: 48px; opacity: 0.3; margin-bottom: 16px; display: block;"></i>
+                                            <p style="color: var(--text-secondary);">No attendance history available</p>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -478,73 +351,10 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="schedule-grid">
-                            <div class="schedule-day">
-                                <h3>Monday</h3>
-                                <div class="schedule-classes">
-                                    <div class="schedule-class">
-                                        <span class="class-time">09:00 - 10:30</span>
-                                        <h4>Data Structures</h4>
-                                        <p>Prof. Sarah Johnson</p>
-                                        <span class="class-room">Room 201</span>
-                                    </div>
-                                    <div class="schedule-class">
-                                        <span class="class-time">11:00 - 12:30</span>
-                                        <h4>Web Development</h4>
-                                        <p>Prof. Michael Brown</p>
-                                        <span class="class-room">Lab 101</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="schedule-day">
-                                <h3>Tuesday</h3>
-                                <div class="schedule-classes">
-                                    <div class="schedule-class">
-                                        <span class="class-time">10:00 - 11:30</span>
-                                        <h4>Database Systems</h4>
-                                        <p>Dr. Emily Davis</p>
-                                        <span class="class-room">Room 305</span>
-                                    </div>
-                                    <div class="schedule-class">
-                                        <span class="class-time">02:00 - 03:30</span>
-                                        <h4>Algorithms</h4>
-                                        <p>Prof. James Wilson</p>
-                                        <span class="class-room">Room 202</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="schedule-day">
-                                <h3>Wednesday</h3>
-                                <div class="schedule-classes">
-                                    <div class="schedule-class">
-                                        <span class="class-time">09:00 - 10:30</span>
-                                        <h4>Data Structures</h4>
-                                        <p>Prof. Sarah Johnson</p>
-                                        <span class="class-room">Room 201</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="schedule-day">
-                                <h3>Thursday</h3>
-                                <div class="schedule-classes">
-                                    <div class="schedule-class">
-                                        <span class="class-time">11:00 - 12:30</span>
-                                        <h4>Web Development</h4>
-                                        <p>Prof. Michael Brown</p>
-                                        <span class="class-room">Lab 101</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="schedule-day">
-                                <h3>Friday</h3>
-                                <div class="schedule-classes">
-                                    <div class="schedule-class">
-                                        <span class="class-time">10:00 - 11:30</span>
-                                        <h4>Database Systems</h4>
-                                        <p>Dr. Emily Davis</p>
-                                        <span class="class-room">Room 305</span>
-                                    </div>
-                                </div>
+                        <div class="schedule-grid" id="weeklyScheduleGrid">
+                            <div class="empty-state" style="text-align: center; padding: 64px; grid-column: 1 / -1;">
+                                <i class="fas fa-calendar-week" style="font-size: 48px; opacity: 0.3; margin-bottom: 16px; display: block;"></i>
+                                <p style="color: var(--text-secondary);">No schedule available</p>
                             </div>
                         </div>
                     </div>

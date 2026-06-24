@@ -250,3 +250,194 @@ window.addEventListener('resize', function() {
 // ===== Initialize =====
 console.log('EduSync Student Portal loaded! 🎓');
 console.log('Welcome, Student!');
+
+// ===== Load Student Data =====
+const timeSlotLabels = {
+    'slot1': '9:00 AM - 9:55 AM',
+    'slot2': '9:55 AM - 10:50 AM',
+    'slot3': '11:00 AM - 11:55 AM',
+    'slot4': '11:55 AM - 12:50 PM',
+    'slot5': '1:20 PM - 2:15 PM',
+    'slot6': '2:15 PM - 3:10 PM',
+    'lab1': '9:00 AM - 10:50 AM (Lab)',
+    'lab2': '11:00 AM - 12:50 PM (Lab)',
+    'lab3': '1:20 PM - 3:10 PM (Lab)'
+};
+
+function loadStudentProfile() {
+    fetch('/api/student/profile')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.student) {
+                const student = data.student;
+                
+                // Update sidebar profile
+                document.getElementById('studentName').textContent = student.name;
+                document.getElementById('studentId').textContent = student.enrollment_no;
+                
+                // Update avatar
+                const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=007AFF&color=fff&size=128`;
+                document.getElementById('studentAvatar').src = avatarUrl;
+                
+                // Update welcome message
+                const firstName = student.name.split(' ')[0];
+                document.getElementById('welcomeMessage').textContent = `Welcome back, ${firstName}!`;
+                
+                // Update profile tab - Header
+                document.getElementById('profileAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=007AFF&color=fff&size=256`;
+                document.getElementById('profileName').textContent = student.name;
+                document.getElementById('profileStudentId').textContent = `Student ID: ${student.enrollment_no}`;
+                
+                // Update personal information
+                document.getElementById('infoName').textContent = student.name;
+                document.getElementById('infoEmail').textContent = student.email;
+                document.getElementById('infoPhone').textContent = student.phone_number;
+                document.getElementById('infoEnrollment').textContent = student.enrollment_no;
+                
+                // Update academic information
+                document.getElementById('infoDepartment').textContent = student.department;
+                document.getElementById('infoYear').textContent = student.batch;
+                document.getElementById('infoSection').textContent = student.class;
+            }
+        })
+        .catch(error => console.error('Error loading profile:', error));
+}
+
+function loadAttendanceStats() {
+    fetch('/api/student/attendance/stats')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.stats) {
+                const stats = data.stats;
+                
+                // Update dashboard stats
+                document.getElementById('overallAttendance').textContent = `${stats.overall_percentage}%`;
+                document.getElementById('presentDays').textContent = `${stats.monthly_present} Days`;
+                document.getElementById('absentDays').textContent = `${stats.monthly_absent} Days`;
+                
+                // Update monthly overview
+                const now = new Date();
+                const monthYear = now.toLocaleString('default', { month: 'long', year: 'numeric' });
+                document.getElementById('currentMonthYear').textContent = monthYear;
+                document.getElementById('monthlyAttendance').textContent = `${stats.monthly_percentage}%`;
+                document.getElementById('monthlyPresent').textContent = `Present: ${stats.monthly_present}`;
+                document.getElementById('monthlyAbsent').textContent = `Absent: ${stats.monthly_absent}`;
+                
+                // Update progress circle
+                const circumference = 314;
+                const offset = circumference - (stats.monthly_percentage / 100) * circumference;
+                const progressCircle = document.getElementById('progressCircle');
+                if (progressCircle) {
+                    progressCircle.style.strokeDashoffset = offset;
+                }
+            }
+        })
+        .catch(error => console.error('Error loading stats:', error));
+}
+
+function loadRecentAttendance() {
+    fetch('/api/student/attendance/recent')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.attendance) {
+                const container = document.getElementById('recentAttendanceList');
+                
+                if (data.attendance.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state" style="text-align: center; padding: 48px;">
+                            <i class="fas fa-calendar-alt" style="font-size: 48px; opacity: 0.3; margin-bottom: 16px; display: block;"></i>
+                            <p style="color: var(--text-secondary);">No recent attendance records</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '';
+                data.attendance.forEach(record => {
+                    const statusClass = record.status === 'present' ? 'success' : 'error';
+                    const statusText = record.status === 'present' ? 'Present' : 'Absent';
+                    const timeLabel = timeSlotLabels[record.time_slot] || record.time_slot;
+                    
+                    html += `
+                        <div class="attendance-item">
+                            <div class="attendance-date">
+                                <span class="day">${record.day}</span>
+                                <span class="date">${record.display_date}</span>
+                            </div>
+                            <div class="attendance-details">
+                                <p class="attendance-time">${timeLabel}</p>
+                                <p class="attendance-status">Check-in</p>
+                            </div>
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+                
+                // Animate items
+                const items = container.querySelectorAll('.attendance-item');
+                items.forEach((item, index) => {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateX(-20px)';
+                    setTimeout(() => {
+                        item.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateX(0)';
+                    }, index * 80);
+                });
+            }
+        })
+        .catch(error => console.error('Error loading recent attendance:', error));
+}
+
+function loadAttendanceHistory() {
+    fetch('/api/student/attendance/history')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.history) {
+                const tbody = document.getElementById('attendanceHistoryBody');
+                
+                if (data.history.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 48px;">
+                                <i class="fas fa-calendar-check" style="font-size: 48px; opacity: 0.3; margin-bottom: 16px; display: block;"></i>
+                                <p style="color: var(--text-secondary);">No attendance history available</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                let html = '';
+                data.history.forEach(record => {
+                    const statusClass = record.status === 'present' ? 'success' : 'error';
+                    const statusText = record.status === 'present' ? 'Present' : 'Absent';
+                    const timeLabel = timeSlotLabels[record.time_slot] || record.time_slot;
+                    
+                    html += `
+                        <tr>
+                            <td>${record.date}</td>
+                            <td>${record.day}</td>
+                            <td>${timeLabel}</td>
+                            <td>N/A</td>
+                            <td>N/A</td>
+                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = html;
+            }
+        })
+        .catch(error => console.error('Error loading attendance history:', error));
+}
+
+// Load all data on page load
+window.addEventListener('DOMContentLoaded', function() {
+    loadStudentProfile();
+    loadAttendanceStats();
+    loadRecentAttendance();
+    loadAttendanceHistory();
+});

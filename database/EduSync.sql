@@ -70,3 +70,26 @@ CREATE TABLE faculty (
 );
 
 DROP Table faculty
+
+-- Attendance Table
+CREATE TABLE IF NOT EXISTS attendance (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    enrollment_no VARCHAR(30) NOT NULL,
+    faculty_id INT NOT NULL,
+    batch VARCHAR(50) NOT NULL,
+    class VARCHAR(50) NOT NULL,
+    date DATE NOT NULL,
+    time_slot ENUM('slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6', 'lab1', 'lab2', 'lab3') NOT NULL,
+    status ENUM('present', 'absent') NOT NULL DEFAULT 'absent',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (enrollment_no) REFERENCES students(enrollment_no) ON DELETE CASCADE,
+    FOREIGN KEY (faculty_id) REFERENCES users(id) ON DELETE CASCADE,
+    
+    UNIQUE KEY unique_attendance (enrollment_no, date, time_slot)
+);
+
+CREATE INDEX idx_attendance_date ON attendance(date);
+CREATE INDEX idx_attendance_batch_class ON attendance(batch, class);
+CREATE INDEX idx_attendance_faculty ON attendance(faculty_id);

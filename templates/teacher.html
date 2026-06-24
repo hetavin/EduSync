@@ -92,7 +92,7 @@
                             </div>
                         </div>
                         <div class="stat-body">
-                            <div class="stat-value">48</div>
+                            <div class="stat-value" id="totalStudents">0</div>
                             <div class="stat-label">Total Students</div>
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                             </div>
                         </div>
                         <div class="stat-body">
-                            <div class="stat-value">42</div>
+                            <div class="stat-value" id="presentToday">0</div>
                             <div class="stat-label">Present Today</div>
                         </div>
                     </div>
@@ -114,7 +114,7 @@
                             </div>
                         </div>
                         <div class="stat-body">
-                            <div class="stat-value">6</div>
+                            <div class="stat-value" id="absentToday">0</div>
                             <div class="stat-label">Absent Today</div>
                         </div>
                     </div>
@@ -125,7 +125,7 @@
                             </div>
                         </div>
                         <div class="stat-body">
-                            <div class="stat-value">87.5%</div>
+                            <div class="stat-value" id="avgAttendance">0%</div>
                             <div class="stat-label">Avg. Attendance</div>
                         </div>
                     </div>
@@ -161,26 +161,10 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="activity-list">
-                                <div class="activity-item">
-                                    <div class="activity-icon green">
-                                        <i class="fas fa-clipboard-check"></i>
-                                    </div>
-                                    <div class="activity-details">
-                                        <h4>Attendance Marked</h4>
-                                        <p>Database Systems - 42/48 present</p>
-                                        <span class="activity-time">2 hours ago</span>
-                                    </div>
-                                </div>
-                                <div class="activity-item">
-                                    <div class="activity-icon blue">
-                                        <i class="fas fa-camera"></i>
-                                    </div>
-                                    <div class="activity-details">
-                                        <h4>Session Started</h4>
-                                        <p>Morning session attendance</p>
-                                        <span class="activity-time">3 hours ago</span>
-                                    </div>
+                            <div class="activity-list" id="recentActivity">
+                                <div class="empty-state">
+                                    <i class="fas fa-clock" style="font-size: 48px; opacity: 0.3; margin-bottom: 16px;"></i>
+                                    <p style="color: var(--text-secondary);">No recent activity</p>
                                 </div>
                             </div>
                         </div>
@@ -191,20 +175,38 @@
             <div class="tab-content" id="attendance">
                 <div class="content-header">
                     <h2 class="section-title">Take Attendance</h2>
-                    <p class="section-subtitle">Select date, time slot and upload group images</p>
+                    <p class="section-subtitle">Select batch, class, date, time slot and upload group images</p>
                 </div>
 
                 <div class="attendance-container">
-                    <!-- Step 1: Select Date & Time -->
+                    <!-- Step 1: Select Batch, Class, Date & Time -->
                     <div class="attendance-card">
                         <div class="card-header-section">
                             <div class="step-badge">Step 1</div>
                             <h3 class="card-title-text">
                                 <i class="fas fa-calendar-alt"></i>
-                                Select Date & Time Slot
+                                Select Batch, Class, Date & Time Slot
                             </h3>
                         </div>
                         <div class="card-content">
+                            <div class="input-group">
+                                <label class="input-label">
+                                    <i class="fas fa-layer-group"></i>
+                                    Batch
+                                </label>
+                                <select id="attendanceBatch" class="styled-input" required>
+                                    <option value="">Select batch</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label class="input-label">
+                                    <i class="fas fa-chalkboard"></i>
+                                    Class
+                                </label>
+                                <select id="attendanceClass" class="styled-input" required>
+                                    <option value="">Select class</option>
+                                </select>
+                            </div>
                             <div class="input-group">
                                 <label class="input-label">
                                     <i class="fas fa-calendar"></i>
@@ -219,9 +221,19 @@
                                 </label>
                                 <select id="attendanceSlot" class="styled-input" required>
                                     <option value="">Choose time slot</option>
-                                    <option value="morning">Morning (09:00 AM - 12:00 PM)</option>
-                                    <option value="afternoon">Afternoon (01:00 PM - 04:00 PM)</option>
-                                    <option value="evening">Evening (05:00 PM - 08:00 PM)</option>
+                                    <optgroup label="Regular Classes">
+                                        <option value="slot1">9:00 AM - 9:55 AM</option>
+                                        <option value="slot2">9:55 AM - 10:50 AM</option>
+                                        <option value="slot3">11:00 AM - 11:55 AM</option>
+                                        <option value="slot4">11:55 AM - 12:50 PM</option>
+                                        <option value="slot5">1:20 PM - 2:15 PM</option>
+                                        <option value="slot6">2:15 PM - 3:10 PM</option>
+                                    </optgroup>
+                                    <optgroup label="Lab Sessions">
+                                        <option value="lab1">9:00 AM - 10:50 AM (Lab)</option>
+                                        <option value="lab2">11:00 AM - 12:50 PM (Lab)</option>
+                                        <option value="lab3">1:20 PM - 3:10 PM (Lab)</option>
+                                    </optgroup>
                                 </select>
                             </div>
                         </div>
@@ -348,118 +360,12 @@
                                         <th>Attendance %</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="studentsTableBody">
                                     <tr>
-                                        <td>
-                                            <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=John+Doe&background=007AFF&color=fff" alt="John Doe">
-                                                <span>John Doe</span>
-                                            </div>
+                                        <td colspan="7" style="text-align: center; padding: 48px;">
+                                            <i class="fas fa-users" style="font-size: 48px; opacity: 0.3; margin-bottom: 16px; display: block;"></i>
+                                            <p style="color: var(--text-secondary);">No student records available</p>
                                         </td>
-                                        <td><span class="student-id">STU001</span></td>
-                                        <td>CS-A (3rd Year)</td>
-                                        <td>40</td>
-                                        <td>37</td>
-                                        <td>3</td>
-                                        <td><span class="status-badge success">92.5%</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=Jane+Smith&background=34C759&color=fff" alt="Jane Smith">
-                                                <span>Jane Smith</span>
-                                            </div>
-                                        </td>
-                                        <td><span class="student-id">STU002</span></td>
-                                        <td>CS-A (3rd Year)</td>
-                                        <td>40</td>
-                                        <td>38</td>
-                                        <td>2</td>
-                                        <td><span class="status-badge success">95.0%</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=Mike+Johnson&background=FF9500&color=fff" alt="Mike Johnson">
-                                                <span>Mike Johnson</span>
-                                            </div>
-                                        </td>
-                                        <td><span class="student-id">STU003</span></td>
-                                        <td>CS-B (2nd Year)</td>
-                                        <td>38</td>
-                                        <td>30</td>
-                                        <td>8</td>
-                                        <td><span class="status-badge warning">78.9%</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=Emily+Brown&background=FF2D55&color=fff" alt="Emily Brown">
-                                                <span>Emily Brown</span>
-                                            </div>
-                                        </td>
-                                        <td><span class="student-id">STU004</span></td>
-                                        <td>CS-A (3rd Year)</td>
-                                        <td>40</td>
-                                        <td>35</td>
-                                        <td>5</td>
-                                        <td><span class="status-badge success">87.5%</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=David+Lee&background=5856D6&color=fff" alt="David Lee">
-                                                <span>David Lee</span>
-                                            </div>
-                                        </td>
-                                        <td><span class="student-id">STU005</span></td>
-                                        <td>CS-A (3rd Year)</td>
-                                        <td>40</td>
-                                        <td>39</td>
-                                        <td>1</td>
-                                        <td><span class="status-badge success">97.5%</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=Sarah+Davis&background=FF9500&color=fff" alt="Sarah Davis">
-                                                <span>Sarah Davis</span>
-                                            </div>
-                                        </td>
-                                        <td><span class="student-id">STU006</span></td>
-                                        <td>CS-A (3rd Year)</td>
-                                        <td>40</td>
-                                        <td>36</td>
-                                        <td>4</td>
-                                        <td><span class="status-badge success">90.0%</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=Tom+Martin&background=007AFF&color=fff" alt="Tom Martin">
-                                                <span>Tom Martin</span>
-                                            </div>
-                                        </td>
-                                        <td><span class="student-id">STU007</span></td>
-                                        <td>CS-B (2nd Year)</td>
-                                        <td>38</td>
-                                        <td>32</td>
-                                        <td>6</td>
-                                        <td><span class="status-badge success">84.2%</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="student-info">
-                                                <img src="https://ui-avatars.com/api/?name=Lisa+Anderson&background=34C759&color=fff" alt="Lisa Anderson">
-                                                <span>Lisa Anderson</span>
-                                            </div>
-                                        </td>
-                                        <td><span class="student-id">STU008</span></td>
-                                        <td>CS-B (2nd Year)</td>
-                                        <td>38</td>
-                                        <td>25</td>
-                                        <td>13</td>
-                                        <td><span class="status-badge danger">65.8%</span></td>
                                     </tr>
                                 </tbody>
                             </table>
