@@ -29,8 +29,21 @@ CREATE TABLE students (
 
 CREATE TABLE student_face (
     id INT AUTO_INCREMENT PRIMARY KEY,
+
     enrollment_no VARCHAR(30) NOT NULL,
+
     face_image LONGBLOB NOT NULL,
+
+    face_embedding LONGBLOB DEFAULT NULL,
+
+    embedding_status ENUM(
+        'PENDING',
+        'SUCCESS',
+        'FAILED'
+    ) DEFAULT 'PENDING',
+
+    embedding_error TEXT DEFAULT NULL,
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (enrollment_no)

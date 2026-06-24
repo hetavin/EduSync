@@ -1022,6 +1022,57 @@ if (registerFaceBtn) {
 }
 
 
+embeddingStatusInterval = setInterval(async () => {
+
+    try {
+
+        const response = await fetch(
+            `/mentor/checkEmbeddingStatus/${enrollment}`
+        );
+
+        const result = await response.json();
+
+        if (result.status === "SUCCESS") {
+
+            clearInterval(
+                embeddingStatusInterval
+            );
+
+            embeddingStatusInterval = null;
+        }
+
+        if (result.status === "FAILED") {
+
+            clearInterval(
+                embeddingStatusInterval
+            );
+
+            embeddingStatusInterval = null;
+
+            showToast(
+                "Face registration failed",
+                "error"
+            );
+
+            registeredStudents =
+                registeredStudents.filter(
+                    s => s.enrollment !== enrollment
+                );
+
+            displayRegisteredStudents();
+        }
+
+    } catch (error) {
+
+        clearInterval(
+            embeddingStatusInterval
+        );
+
+        embeddingStatusInterval = null;
+    }
+
+}, 3000);
+
 
 
 // Display registered students

@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, session, redirect, url_for, jsonify, request
 from models.read_excel import extract_student_data
 from models.detect_face import extract_faces
+from models.generate_embeddings import generate_embeddings
 from connect import db_connection
 import base64
 import pandas as pd
@@ -239,12 +240,14 @@ def register_face():
                     INSERT INTO student_face
                     (
                         enrollment_no,
-                        face_image
+                        face_image,
+                        embedding_status
                     )
                     VALUES
                     (
                         %s,
-                        %s
+                        %s,
+                        'PENDING'
                     )
                 """, (
                     enrollment_no,
@@ -254,6 +257,14 @@ def register_face():
                 saved_faces += 1
 
         conn.commit()
+        
+        from threading import Thread
+
+        Thread(
+            target=generate_embeddings,
+            args=(enrollment_no,),
+            daemon=True
+        ).start()
 
         cursor.close()
         conn.close()
@@ -271,6 +282,51 @@ def register_face():
             "success": False,
             "message": str(e)
         }), 500
+        
+
+@mentor_bp.route(
+    "/mentor/checkEmbeddingStatus/<enrollment>"
+)
+def check_embedding_status(enrollment):
+
+    conn = db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            COUNT(*) total,
+            SUM(
+                embedding_status='SUCCESS'
+            ) success_count,
+            SUM(
+                embedding_status='FAILED'
+            ) failed_count
+        FROM student_face
+        WHERE enrollment_no=%s
+    """, (
+        enrollment,
+    ))
+
+    result = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    if result[2] > 0:
+
+        return jsonify({
+            "status": "FAILED"
+        })
+
+    if result[1] == result[0]:
+
+        return jsonify({
+            "status": "SUCCESS"
+        })
+
+    return jsonify({
+        "status": "PENDING"
+    })
         
 
 @mentor_bp.route("/mentor/getRegisteredFaces")
@@ -322,7 +378,7 @@ def get_registered_faces():
                 s.enrollment_no,
                 s.name,
                 s.class
-            ORDER BY s.enrollment_no
+            ORDER BY s.enrollment_no ASC
         """, (mentor_class,))
 
         students = cursor.fetchall()
