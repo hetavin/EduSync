@@ -1,135 +1,185 @@
 # 🎓 EduSync
 
-> **EduSync** is a Smart Educational Management System designed to streamline student, faculty, mentor, and attendance management within educational institutions. Built using Flask, MySQL, JavaScript, and Pandas, EduSync provides a centralized platform for managing academic operations efficiently.
+### AI-Powered Smart Attendance Management System
 
-![Python](https://img.shields.io/badge/Python-3.x-blue?style=for-the-badge\&logo=python)
-![Flask](https://img.shields.io/badge/Flask-Web_Framework-black?style=for-the-badge\&logo=flask)
-![MySQL](https://img.shields.io/badge/MySQL-Database-orange?style=for-the-badge\&logo=mysql)
-![JavaScript](https://img.shields.io/badge/JavaScript-Frontend-yellow?style=for-the-badge\&logo=javascript)
+<p align="center">
+  <img src="docs/images/logo.png" width="200">
+</p>
 
----
-
-# 📖 Overview
-
-EduSync simplifies educational administration by providing role-based access for administrators and mentors. The system supports student management, faculty management, attendance tracking, Excel-based data import, automated email notifications, and mentor-class assignments.
+<p align="center">
+  <b>Automated Attendance • Face Recognition • Role-Based Management</b>
+</p>
 
 ---
 
-# ✨ Key Features
+## 🚀 Overview
 
-## 👨‍💼 Admin Panel
+EduSync is an intelligent attendance management platform designed for educational institutions. It automates attendance marking using AI-powered face recognition and provides dedicated dashboards for administrators, mentors, teachers, and students.
 
-* 🔐 Secure Authentication System
-* 👨‍🏫 Faculty Management
-* 🎓 Student Management
-* 📤 Bulk Student Import via Excel
-* 📧 Automatic Faculty Credential Emailing
-* 📊 Dashboard Analytics
-* 🏫 Mentor-Class Assignment
-* 📝 Attendance Management
-* 👥 User Role Management
+The system reduces manual attendance work, improves accuracy, and enables institutions to manage users, classes, and attendance records from a centralized platform.
 
 ---
 
-## 👨‍🏫 Mentor Panel
+## ✨ Key Features
 
-* 🔐 Mentor Authentication
-* 👥 View Assigned Students
-* 📋 Student Information Tracking
-* 📊 Attendance Monitoring
-* 📁 Excel-Based Student Assignment
-* 🏫 Manage Assigned Classes
+### 👨‍💼 Admin Panel
+
+* Create and manage departments
+* Create batches and classes
+* Manage students, mentors, and faculties
+* Activate or deactivate user accounts
+* Monitor attendance records
+* System-wide control panel
+
+### 🧑‍🏫 Mentor Panel
+
+* Register student face data
+* Upload multiple student images
+* Manage student information
+* View attendance reports
+* Track student attendance statistics
+
+### 👨‍🏫 Teacher Panel
+
+* Upload classroom images
+* Automatic attendance generation
+* Batch-wise attendance
+* Class-wise attendance
+* Date-wise attendance records
+* Slot-wise attendance management
+
+### 🎓 Student Panel
+
+* View attendance history
+* Track attendance percentage
+* Access personal profile
+* Attendance status monitoring
 
 ---
 
-## 🎓 Student Management
+# 🔐 Automatic Faculty & Mentor Account Generation
 
-* Enrollment Number Management
-* Student Profile Management
-* Department Detection
-* Automatic Batch Generation
-* Class Assignment
-* Bulk Import Support
-* Student Search & Filtering
+EduSync automatically creates login credentials for:
 
----
+* Mentors
+* Faculties
 
-## 📧 Automated Email System
-
-When a new faculty member is added, EduSync automatically sends login credentials via email.
-
-### Included in Email
-
-* Faculty Name
-* Email Address
-* Login ID
-* Temporary Password
-* Login Portal URL
-
-### Example Email
+### Workflow
 
 ```text
-Welcome to EduSync 🎉
+Admin Creates Faculty/Mentor
+          │
+          ▼
+System Generates
+Unique User ID
+&
+Secure Password
+          │
+          ▼
+Credentials Stored
+In Database
+          │
+          ▼
+Automatic Email Delivery
+To User
+```
 
-Dear Faculty Member,
+### Benefits
 
-Your account has been successfully created.
+✅ No manual credential creation
 
-Email: faculty@example.com
-Password: ********
+✅ Unique login credentials
 
-Login Portal:
-http://localhost:5000
+✅ Faster onboarding process
 
-Regards,
-EduSync Team
+✅ Reduced administrative workload
+
+---
+
+# 🤖 AI Attendance Engine
+
+EduSync uses Deep Learning-based face recognition to identify students from classroom images.
+
+---
+
+## Face Detection
+
+### SCRFD
+
+Model:
+
+```text
+scrfd_2.5g_bnkps.onnx
+```
+
+Used For:
+
+* Multi-face detection
+* Group image processing
+* Classroom attendance
+
+---
+
+## Face Recognition
+
+### ArcFace
+
+Model:
+
+```text
+w600k_mbf.onnx
+```
+
+Used For:
+
+* Face embedding generation
+* Student identification
+* Attendance verification
+
+---
+
+# 🔄 Attendance Processing Pipeline
+
+```text
+Teacher Uploads Classroom Image
+                │
+                ▼
+Image Slicing With Overlap
+                │
+                ▼
+SCRFD Face Detection
+                │
+                ▼
+Face Cropping
+                │
+                ▼
+ArcFace Embedding Generation
+                │
+                ▼
+Database Matching
+                │
+                ▼
+Present Student Detection
+                │
+                ▼
+Attendance Saved
 ```
 
 ---
 
-## 📁 Excel Import System
+# 🖼️ Crowd Image Optimization
 
-Supported File Formats:
+Large classroom images often contain dozens of students.
 
-* XLSX
-* XLS
-* CSV
+EduSync improves detection accuracy by:
 
-### Automatically Processes
+* Splitting images into overlapping tiles
+* Detecting faces in each tile
+* Merging detections
+* Removing duplicates
+* Processing all detected faces
 
-* Enrollment Number
-* Student Name
-* Email Address
-* Phone Number
-* Department
-* Batch
-* Class
-
----
-
-# 🛠️ Technology Stack
-
-## Backend
-
-| Technology | Purpose                   |
-| ---------- | ------------------------- |
-| Python     | Core Programming Language |
-| Flask      | Web Framework             |
-| Pandas     | Excel/CSV Processing      |
-| MySQL      | Database Management       |
-
----
-
-## Frontend
-
-| Technology   | Purpose           |
-| ------------ | ----------------- |
-| HTML5        | Structure         |
-| CSS3         | Styling           |
-| JavaScript   | Client-Side Logic |
-| jQuery       | DOM Manipulation  |
-| Bootstrap    | Responsive UI     |
-| Font Awesome | Icons             |
+This improves performance in crowded classrooms.
 
 ---
 
@@ -138,260 +188,208 @@ Supported File Formats:
 ```text
 EduSync/
 │
-├── app.py                       # Application Entry Point
-├── connect.py                   # Database Connection
-├── requirements.txt             # Project Dependencies
+├── app.py
+├── connect.py
 │
 ├── routes/
-│   ├── auth.py                  # Authentication Routes
-│   ├── admin.py                 # Admin Routes
-│   └── mentor.py                # Mentor Routes
+│   ├── auth.py
+│   ├── admin.py
+│   ├── mentor.py
+│   ├── teacher.py
+│   └── student.py
 │
-├── services/
-│   └──auth_service.py           # Authentication Logic
-│   
-│  
-│   
-│   
+├── utils/
+│   ├── image_slicing.py
+│   ├── face_detection.py
+│   ├── face_embedding.py
+│   ├── face_matching.py
+│   └── attendance_processor.py
 │
 ├── models/
-│   └── read_excel.py            # Excel Processing Module
+│   ├── scrfd_2.5g_bnkps.onnx
+│   └── w600k_mbf.onnx
 │
 ├── templates/
-│   ├── auth.html                # Login Page
-│   ├── dashboard.html           # Admin Dashboard
-│   ├── mentor.html              # Mentor Dashboard
-│   ├── students.html            # Student Management
-│   └── faculty.html             # Faculty Management
 │
 ├── static/
 │   ├── css/
-│   │   └── style.css
-│   │
 │   ├── js/
-│   │   ├── auth.js
-│   │   ├── admin.js
-│   │   └── mentor.js
-│   │
-│   ├── images/
-│   └── assets/
+│   ├── uploads/
+│   └── images/
 │
-├── uploads/                     # Uploaded Excel Files
-│
-├── database/
-│   └── schema.sql               # Database Schema
-│
-└── README.md
+└── requirements.txt
 ```
 
 ---
 
-# 🚀 API & Application Routes
+# 🗄️ Database Design
 
-## 🔑 Authentication
+## Users
 
-| Method | Route     | Description |
-| ------ | --------- | ----------- |
-| GET    | `/`       | Login Page  |
-| POST   | `/login`  | User Login  |
-| GET    | `/logout` | User Logout |
+Stores:
 
----
+* User ID
+* Enrollment Number
+* Password
+* Role
+* Status
 
-## 👨‍💼 Admin Routes
+Roles:
 
-| Method | Route             | Description       |
-| ------ | ----------------- | ----------------- |
-| GET    | `/admin`          | Admin Dashboard   |
-| GET    | `/api/students`   | Get Student List  |
-| POST   | `/api/student`    | Import Students   |
-| POST   | `/api/faculty`    | Add Faculty       |
-| GET    | `/api/faculty`    | View Faculty      |
-| POST   | `/api/attendance` | Manage Attendance |
+* Admin
+* Mentor
+* Teacher
+* Student
 
 ---
 
-## 👨‍🏫 Mentor Routes
+## Students
 
-| Method | Route                     | Description                     |
-| ------ | ------------------------- | ------------------------------- |
-| GET    | `/mentor`                 | Mentor Dashboard                |
-| GET    | `/profile`                | Mentor Profile                  |
-| GET    | `/displayStudents`        | Assigned Students               |
-| POST   | `/api/mentor/updateClass` | Upload Student Assignment Excel |
+Stores:
+
+* Student information
+* Academic details
+* Face image data
 
 ---
 
-# 🗄️ Database Schema
+## Student Face
 
-## users
+Stores:
 
-```sql
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100) NOT NULL,
-    email VARCHAR(150) UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    role ENUM('admin','mentor') NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+* Face images
+* Face embeddings
+* Processing status
+
+---
+
+# 📸 Face Registration Workflow
+
+```text
+Mentor Selects Student
+            │
+            ▼
+Upload 2–5 Images
+            │
+            ▼
+Face Detection
+            │
+            ▼
+Store Face Images
+            │
+            ▼
+Generate Embeddings
+            │
+            ▼
+Save To Database
 ```
 
 ---
 
-## faculty
+# ⚙️ Installation
 
-```sql
-CREATE TABLE faculty (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(150),
-    email VARCHAR(150),
-    phone_number VARCHAR(20),
-    class_name VARCHAR(50),
-    department VARCHAR(100)
-);
-```
-
----
-
-## students
-
-```sql
-CREATE TABLE students (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    enrollment_no VARCHAR(20),
-    name VARCHAR(150),
-    email VARCHAR(150),
-    phone_number VARCHAR(20),
-    batch VARCHAR(20),
-    class VARCHAR(50),
-    department VARCHAR(100)
-);
-```
-
----
-
-# 🔐 User Roles
-
-## 👨‍💼 Administrator
-
-### Permissions
-
-* Full System Access
-* Manage Faculty
-* Manage Students
-* Assign Mentors
-* View Dashboard Analytics
-* Manage Attendance
-
----
-
-## 👨‍🏫 Mentor
-
-### Permissions
-
-* View Assigned Students
-* Manage Attendance
-* Access Assigned Classes
-* Update Student Information
-
----
-
-# 📦 Installation Guide
-
-## 1️⃣ Clone Repository
+## Clone Repository
 
 ```bash
 git clone https://github.com/hetavin/EduSync.git
 cd EduSync
 ```
 
-## 2️⃣ Create Virtual Environment
+## Create Virtual Environment
 
 ```bash
 python -m venv venv
 ```
 
-### Windows
+## Activate Environment
+
+Windows:
 
 ```bash
 venv\Scripts\activate
 ```
 
-### Linux/Mac
+Linux/Mac:
 
 ```bash
 source venv/bin/activate
 ```
 
-## 3️⃣ Install Dependencies
+## Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 4️⃣ Configure Database
+## Configure Database
 
-Create MySQL Database:
+Update database credentials in:
 
-```sql
-CREATE DATABASE edusync;
+```python
+connect.py
 ```
 
-Import schema:
+## Add AI Models
 
-```bash
-mysql -u root -p edusync < database/schema.sql
+Place models inside:
+
+```text
+models/
 ```
 
-## 5️⃣ Run Application
+Required:
+
+```text
+scrfd_2.5g_bnkps.onnx
+w600k_mbf.onnx
+```
+
+## Run Application
 
 ```bash
 python app.py
 ```
 
-Application URL:
+---
 
-```text
-http://localhost:5000
-```
+# 📷 Screenshots
+
+## Login Page
+
+![Login](docs/screenshots/login.png)
+
+## Admin Dashboard
+
+![Admin Dashboard](docs/screenshots/admin-dashboard.png)
+
+## Mentor Panel
+
+![Mentor Panel](docs/screenshots/mentor-panel.png)
+
+## Teacher Attendance
+
+![Teacher Attendance](docs/screenshots/teacher-attendance.png)
 
 ---
 
-# 🚀 Future Enhancements
+# 🔮 Future Enhancements
 
-* 🤖 AI-Based Student Analytics
-* 📷 Face Recognition Attendance
-* 📊 Advanced Performance Reports
-* 📈 Student Performance Prediction
-* 📱 Android & iOS Application
-* ☁️ Cloud Deployment
-* 🔔 Smart Notifications
-* 📧 Email & SMS Integration
-
----
-
-# 👨‍💻 Developer
-
-### Hetavin Pokiya
-
-🐍 Python Developer
-⚡ Flask Developer
-🗄️ MySQL Developer
-🌐 Full Stack Enthusiast
-
-GitHub: https://github.com/hetavin
+* 🚀 FAISS-based ultra-fast matching
+* 📱 Mobile application
+* 🎥 Live camera attendance
+* 📊 Advanced analytics dashboard
+* 📄 PDF/Excel report generation
+* 🛡️ Face anti-spoofing system
+* ☁️ Cloud deployment
 
 ---
 
-# 📄 License
+# 👨‍💻 Author
 
-This project is licensed under the MIT License.
+**Hetavin Pokiya**
 
----
+### EduSync
 
-## ⭐ Support
+AI-Powered Smart Attendance Management System
 
-If you found this project useful, please consider giving it a **Star ⭐** on GitHub.
-
-Your support motivates further development and improvements!
+Built using Flask, MySQL, OpenCV, SCRFD, and ArcFace.
