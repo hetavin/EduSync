@@ -278,23 +278,23 @@ function loadStudentDetailAttendance(enrollment) {
             if (infoDiv) {
                 const initials = student.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                 infoDiv.innerHTML = `
-                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 24px; border-radius: 12px; margin: 24px; color: white; display: flex; gap: 24px; align-items: center;">
-                        <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold;">${initials}</div>
+                    <div style="background: linear-gradient(135deg, rgba(0, 122, 255, 0.08) 0%, rgba(88, 86, 214, 0.08) 100%); padding: 24px; border-radius: 12px; margin: 24px; color: black; display: flex; gap: 24px; align-items: center; border: 2px solid var(--blue); border-top: 7px solid var(--blue)">
+                        <div style="width: 80px; height: 80px; background: var(--fill-secondary); box-shadow: 0 6px 20px rgba(0, 122, 255, 0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; border: 4px solid var(--blue);"><span style="color: var(--blue);">${initials}</span></div>
                         <div style="flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
                             <div>
-                                <div style="opacity: 0.8; font-size: 12px; margin-bottom: 4px;"><i class="fas fa-id-card"></i> Enrollment</div>
+                                <div style="opacity: 0.8; font-size: 12px; margin-bottom: 4px;"><div style="color: var(--blue);"><i class="fas fa-id-card"></i> <span style="color: black;">Enrollment</span></div></div>
                                 <div style="font-weight: 600; font-size: 16px;">${student.enrollment_no}</div>
                             </div>
                             <div>
-                                <div style="opacity: 0.8; font-size: 12px; margin-bottom: 4px;"><i class="fas fa-user"></i> Name</div>
+                                <div style="opacity: 0.8; font-size: 12px; margin-bottom: 4px;"><div style="color: var(--blue);"><i class="fas fa-user"></i> <span style="color: black;">Name</span></div></div>
                                 <div style="font-weight: 600; font-size: 16px;">${student.name}</div>
                             </div>
                             <div>
-                                <div style="opacity: 0.8; font-size: 12px; margin-bottom: 4px;"><i class="fas fa-layer-group"></i> Batch</div>
+                                <div style="opacity: 0.8; font-size: 12px; margin-bottom: 4px;"><div style="color: var(--blue);"><i class="fas fa-layer-group"></i> <span style="color: black;">Batch</span></div></div>
                                 <div style="font-weight: 600; font-size: 16px;">${student.batch}</div>
                             </div>
                             <div>
-                                <div style="opacity: 0.8; font-size: 12px; margin-bottom: 4px;"><i class="fas fa-chalkboard"></i> Class</div>
+                                <div style="opacity: 0.8; font-size: 12px; margin-bottom: 4px;"><div style="color: var(--blue);"><i class="fas fa-chalkboard"></i> <span style="color: black;">Class</span></div></div>
                                 <div style="font-weight: 600; font-size: 16px;">${student.class}</div>
                             </div>
                         </div>
