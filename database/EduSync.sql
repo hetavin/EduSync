@@ -93,3 +93,38 @@ CREATE TABLE IF NOT EXISTS attendance (
 CREATE INDEX idx_attendance_date ON attendance(date);
 CREATE INDEX idx_attendance_batch_class ON attendance(batch, class);
 CREATE INDEX idx_attendance_faculty ON attendance(faculty_id);
+
+INSERT INTO attendance (
+    enrollment_no,
+    faculty_id,
+    batch,
+    class,
+    date,
+    time_slot,
+    status
+) VALUES
+('23BECE30291', 2, '2023-27', '6G', '2026-05-01', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-02', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-04', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-05', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-06', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-07', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-08', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-09', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-11', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-12', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-13', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-14', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-15', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-16', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-18', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-19', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-20', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-21', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-22', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-23', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-25', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-26', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-27', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-28', 'lab3', 'present'),
+('23BECE30291', 2, '2023-27', '6G', '2026-05-29', 'lab3', 'present');

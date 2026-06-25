@@ -43,6 +43,7 @@ def get_batch_classes():
 
     return jsonify(data)
 
+
 @teacher_bp.route(
     "/teacher/processAttendance",
     methods=["POST"]
@@ -290,5 +291,344 @@ def process_attendance():
         if cursor:
             cursor.close()
 
+        if conn:
+            conn.close()
+            
+@teacher_bp.route("/api/teacher/getattendance")
+def get_attendance():
+
+    if "user_id" not in session:
+        return jsonify({
+            "success": False,
+            "message": "Unauthorized"
+        }), 401
+
+    batch = request.args.get("batch", "")
+    class_name = request.args.get("class", "")
+
+    conn = None
+    cursor = None
+
+    try:
+        conn = db_connection()
+        cursor = conn.cursor()
+
+        query = """
+            SELECT
+                a.enrollment_no,
+                s.name,
+                s.email,
+                s.phone_number,
+                a.batch,
+                a.class,
+                COUNT(DISTINCT a.date) AS total_classes,
+                SUM(CASE WHEN a.status='present' THEN 1 ELSE 0 END) AS present_count
+            FROM attendance a
+            LEFT JOIN students s ON a.enrollment_no = s.enrollment_no
+            WHERE a.enrollment_no IS NOT NULL
+        """
+
+        params = []
+        if batch:
+            query += " AND a.batch = %s"
+            params.append(batch)
+        if class_name:
+            query += " AND a.class = %s"
+            params.append(class_name)
+
+        query += """
+            GROUP BY a.enrollment_no, s.name, s.email, s.phone_number, a.batch, a.class
+            ORDER BY s.name
+        """
+
+        if params:
+            cursor.execute(query, tuple(params))
+        else:
+            cursor.execute(query)
+
+        students = cursor.fetchall()
+
+        # Calculate attendance percentage and absent count
+        for student in students:
+            total = student["total_classes"] or 0
+            present = student["present_count"] or 0
+            absent = total - present
+
+            if total > 0:
+                percentage = (present / 156) * 100
+            else:
+                percentage = 0
+
+            student["attendance_percentage"] = round(percentage, 2)
+            student["absent_count"] = absent
+
+        # Get filter options from attendance table
+        cursor.execute("""
+            SELECT DISTINCT batch FROM attendance 
+            WHERE batch IS NOT NULL 
+            ORDER BY batch
+        """)
+        batches = [row['batch'] for row in cursor.fetchall()]
+
+        cursor.execute("""
+            SELECT DISTINCT class FROM attendance 
+            WHERE class IS NOT NULL 
+            ORDER BY class
+        """)
+        classes = [row['class'] for row in cursor.fetchall()]
+
+        return jsonify({
+            "success": True,
+            "students": students,
+            "batches": batches,
+            "classes": classes
+        })
+
+    except Exception as e:
+        print(f"\n=== Get Attendance Error ===")
+        print(f"Error: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        print("===========================\n")
+        
+        return jsonify({
+            "success": False, 
+            "message": f"Error: {str(e)}"
+        }), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+
+@teacher_bp.route("/api/teacher/attendance/daily")
+def get_daily_attendance():
+    if "user_id" not in session:
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
+
+    date = request.args.get("date", "")
+    batch = request.args.get("batch", "")
+    class_name = request.args.get("class", "")
+    search = request.args.get("search", "")
+
+    conn = None
+    cursor = None
+
+    try:
+        conn = db_connection()
+        cursor = conn.cursor()
+
+        query = """
+            SELECT 
+                s.enrollment_no,
+                s.name,
+                s.batch,
+                s.class,
+                MAX(CASE WHEN a.time_slot = 'slot1' THEN a.status END) as slot1,
+                MAX(CASE WHEN a.time_slot = 'slot2' THEN a.status END) as slot2,
+                MAX(CASE WHEN a.time_slot = 'slot3' THEN a.status END) as slot3,
+                MAX(CASE WHEN a.time_slot = 'slot4' THEN a.status END) as slot4,
+                MAX(CASE WHEN a.time_slot = 'slot5' THEN a.status END) as slot5,
+                MAX(CASE WHEN a.time_slot = 'slot6' THEN a.status END) as slot6,
+                MAX(CASE WHEN a.time_slot = 'lab1' THEN a.status END) as lab1,
+                MAX(CASE WHEN a.time_slot = 'lab2' THEN a.status END) as lab2,
+                MAX(CASE WHEN a.time_slot = 'lab3' THEN a.status END) as lab3
+            FROM students s
+            LEFT JOIN attendance a ON s.enrollment_no = a.enrollment_no AND a.date = %s
+            WHERE 1=1
+        """
+
+        params = [date]
+        
+        if batch:
+            query += " AND s.batch = %s"
+            params.append(batch)
+        if class_name:
+            query += " AND s.class = %s"
+            params.append(class_name)
+        if search:
+            query += " AND (s.enrollment_no LIKE %s OR s.name LIKE %s)"
+            params.extend([f"%{search}%", f"%{search}%"])
+
+        query += " GROUP BY s.enrollment_no, s.name, s.batch, s.class ORDER BY s.enrollment_no"
+
+        cursor.execute(query, tuple(params))
+        students = cursor.fetchall()
+
+        cursor.execute("SELECT DISTINCT batch FROM students WHERE batch IS NOT NULL ORDER BY batch")
+        batches = [row['batch'] for row in cursor.fetchall()]
+
+        cursor.execute("SELECT DISTINCT class FROM students WHERE class IS NOT NULL ORDER BY class")
+        classes = [row['class'] for row in cursor.fetchall()]
+
+        return jsonify({
+            "success": True,
+            "students": students,
+            "batches": batches,
+            "classes": classes
+        })
+
+    except Exception as e:
+        print(f"Daily Attendance Error: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+
+@teacher_bp.route("/api/teacher/attendance/monthly")
+def get_monthly_attendance():
+    if "user_id" not in session:
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
+
+    year = request.args.get("year", "2025")
+
+    conn = None
+    cursor = None
+
+    try:
+        conn = db_connection()
+        cursor = conn.cursor()
+
+        query = """
+            SELECT
+                s.enrollment_no,
+                s.name,
+                s.batch,
+                s.class,
+
+                ROUND(SUM(CASE WHEN MONTH(a.date)=1  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS jan,
+                ROUND(SUM(CASE WHEN MONTH(a.date)=2  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS feb,
+                ROUND(SUM(CASE WHEN MONTH(a.date)=3  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS mar,
+                ROUND(SUM(CASE WHEN MONTH(a.date)=4  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS apr,
+                ROUND(SUM(CASE WHEN MONTH(a.date)=5  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS may,
+                ROUND(SUM(CASE WHEN MONTH(a.date)=6  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS jun,
+                ROUND(SUM(CASE WHEN MONTH(a.date)=7  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS jul,
+                ROUND(SUM(CASE WHEN MONTH(a.date)=8  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS aug,
+                ROUND(SUM(CASE WHEN MONTH(a.date)=9  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS sep,
+                ROUND(SUM(CASE WHEN MONTH(a.date)=10 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS oct,
+                ROUND(SUM(CASE WHEN MONTH(a.date)=11 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS nov,
+                ROUND(SUM(CASE WHEN MONTH(a.date)=12 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS `dec`,
+
+                ROUND(
+                    (
+                        ROUND(SUM(CASE WHEN MONTH(a.date)=1  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
+                        ROUND(SUM(CASE WHEN MONTH(a.date)=2  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
+                        ROUND(SUM(CASE WHEN MONTH(a.date)=3  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
+                        ROUND(SUM(CASE WHEN MONTH(a.date)=4  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
+                        ROUND(SUM(CASE WHEN MONTH(a.date)=5  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
+                        ROUND(SUM(CASE WHEN MONTH(a.date)=6  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
+                        ROUND(SUM(CASE WHEN MONTH(a.date)=7  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
+                        ROUND(SUM(CASE WHEN MONTH(a.date)=8  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
+                        ROUND(SUM(CASE WHEN MONTH(a.date)=9  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
+                        ROUND(SUM(CASE WHEN MONTH(a.date)=10 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
+                        ROUND(SUM(CASE WHEN MONTH(a.date)=11 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
+                        ROUND(SUM(CASE WHEN MONTH(a.date)=12 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2)
+                    ) / 12,
+                2) AS avg_attendance
+
+            FROM students s
+
+            LEFT JOIN attendance a
+            ON s.enrollment_no = a.enrollment_no
+            AND YEAR(a.date) = %s
+
+            GROUP BY
+                s.enrollment_no,
+                s.name,
+                s.batch,
+                s.class
+
+            ORDER BY s.enrollment_no
+            """
+
+        cursor.execute(query, (year,))
+        students = cursor.fetchall()
+
+        return jsonify({
+            "success": True,
+            "students": students
+        })
+
+    except Exception as e:
+        print(f"Monthly Attendance Error: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+
+@teacher_bp.route("/api/teacher/attendance/student-detail")
+def get_student_detail_attendance():
+    if "user_id" not in session:
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
+
+    enrollment = request.args.get("enrollment")
+    month = request.args.get("month")
+    year = request.args.get("year")
+
+    if not all([enrollment, month, year]):
+        return jsonify({"success": False, "message": "Missing parameters"}), 400
+
+    conn = None
+    cursor = None
+
+    try:
+        conn = db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT enrollment_no, name, batch, class, department
+            FROM students
+            WHERE enrollment_no = %s
+        """, (enrollment,))
+
+        student = cursor.fetchone()
+        if not student:
+            return jsonify({"success": False, "message": "Student not found"}), 404
+
+        cursor.execute("""
+            SELECT 
+                DATE(date) as date,
+                MAX(CASE WHEN time_slot = 'slot1' THEN status END) as slot1,
+                MAX(CASE WHEN time_slot = 'slot2' THEN status END) as slot2,
+                MAX(CASE WHEN time_slot = 'slot3' THEN status END) as slot3,
+                MAX(CASE WHEN time_slot = 'slot4' THEN status END) as slot4,
+                MAX(CASE WHEN time_slot = 'slot5' THEN status END) as slot5,
+                MAX(CASE WHEN time_slot = 'slot6' THEN status END) as slot6,
+                MAX(CASE WHEN time_slot = 'lab1' THEN status END) as lab1,
+                MAX(CASE WHEN time_slot = 'lab2' THEN status END) as lab2,
+                MAX(CASE WHEN time_slot = 'lab3' THEN status END) as lab3
+            FROM attendance
+            WHERE enrollment_no = %s 
+                AND MONTH(date) = %s 
+                AND YEAR(date) = %s
+            GROUP BY DATE(date)
+            ORDER BY date
+        """, (enrollment, month, year))
+
+        attendance = cursor.fetchall()
+
+        return jsonify({
+            "success": True,
+            "student": student,
+            "attendance": attendance
+        })
+
+    except Exception as e:
+        print(f"Student Detail Error: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
         if conn:
             conn.close()

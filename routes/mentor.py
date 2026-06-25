@@ -479,3 +479,288 @@ def delete_face_registration():
             "success": False,
             "message": str(e)
         }), 500
+
+
+
+# ===== ATTENDANCE APIs =====
+
+@mentor_bp.route("/api/mentor/attendance/daily")
+def get_daily_attendance():
+    if "user_id" not in session:
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
+
+    date = request.args.get("date")
+    batch = request.args.get("batch", "")
+    search = request.args.get("search", "")
+
+    if not date:
+        return jsonify({"success": False, "message": "Date required"}), 400
+
+    conn = None
+    cursor = None
+
+    try:
+        conn = db_connection()
+        cursor = conn.cursor()
+
+        # Get mentor class
+        cursor.execute("""
+            SELECT f.class_name
+            FROM users u
+            JOIN faculty f ON u.email = f.email
+            WHERE u.id = %s
+        """, (session["user_id"],))
+
+        mentor = cursor.fetchone()
+        if not mentor:
+            return jsonify({"success": False, "message": "Mentor not found"}), 404
+
+        mentor_class = mentor["class_name"]
+
+        # Query students from mentor's class only
+        query = """
+            SELECT 
+                s.enrollment_no,
+                s.name,
+                s.batch,
+                s.class,
+                MAX(CASE WHEN a.time_slot = 'slot1' THEN a.status END) as slot1,
+                MAX(CASE WHEN a.time_slot = 'slot2' THEN a.status END) as slot2,
+                MAX(CASE WHEN a.time_slot = 'slot3' THEN a.status END) as slot3,
+                MAX(CASE WHEN a.time_slot = 'slot4' THEN a.status END) as slot4,
+                MAX(CASE WHEN a.time_slot = 'slot5' THEN a.status END) as slot5,
+                MAX(CASE WHEN a.time_slot = 'slot6' THEN a.status END) as slot6,
+                MAX(CASE WHEN a.time_slot = 'lab1' THEN a.status END) as lab1,
+                MAX(CASE WHEN a.time_slot = 'lab2' THEN a.status END) as lab2,
+                MAX(CASE WHEN a.time_slot = 'lab3' THEN a.status END) as lab3
+            FROM students s
+            LEFT JOIN attendance a ON s.enrollment_no = a.enrollment_no AND a.date = %s
+            WHERE s.class = %s
+        """
+
+        params = [date, mentor_class]
+        
+        if batch:
+            query += " AND s.batch = %s"
+            params.append(batch)
+        if search:
+            query += " AND (s.enrollment_no LIKE %s OR s.name LIKE %s)"
+            params.extend([f"%{search}%", f"%{search}%"])
+
+        query += " GROUP BY s.enrollment_no, s.name, s.batch, s.class ORDER BY s.enrollment_no"
+
+        cursor.execute(query, tuple(params))
+        students = cursor.fetchall()
+
+        # Get filters for mentor's class
+        cursor.execute("SELECT DISTINCT batch FROM students WHERE batch IS NOT NULL AND class = %s ORDER BY batch", (mentor_class,))
+        batches = [row['batch'] for row in cursor.fetchall()]
+
+        cursor.execute("SELECT DISTINCT class FROM students WHERE class IS NOT NULL AND class = %s ORDER BY class", (mentor_class,))
+        classes = [row['class'] for row in cursor.fetchall()]
+
+        return jsonify({
+            "success": True,
+            "students": students,
+            "batches": batches,
+            "classes": classes
+        })
+
+    except Exception as e:
+        print(f"Daily Attendance Error: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"success": False, "message": str(e)}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+
+@mentor_bp.route("/api/mentor/attendance/monthly")
+def get_monthly_attendance():
+    if "user_id" not in session:
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
+
+    year = request.args.get("year", "2025")
+
+    conn = None
+    cursor = None
+
+    try:
+        conn = db_connection()
+        cursor = conn.cursor()
+
+        # Get mentor class
+        cursor.execute("""
+            SELECT f.class_name
+            FROM users u
+            JOIN faculty f ON u.email = f.email
+            WHERE u.id = %s
+        """, (session["user_id"],))
+
+        mentor = cursor.fetchone()
+        if not mentor:
+            return jsonify({"success": False, "message": "Mentor not found"}), 404
+
+        mentor_class = mentor["class_name"]
+
+        query = """
+SELECT
+    s.enrollment_no,
+    s.name,
+    s.batch,
+    s.class,
+
+    ROUND(SUM(CASE WHEN MONTH(a.date)=1  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS jan,
+    ROUND(SUM(CASE WHEN MONTH(a.date)=2  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS feb,
+    ROUND(SUM(CASE WHEN MONTH(a.date)=3  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS mar,
+    ROUND(SUM(CASE WHEN MONTH(a.date)=4  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS apr,
+    ROUND(SUM(CASE WHEN MONTH(a.date)=5  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS may,
+    ROUND(SUM(CASE WHEN MONTH(a.date)=6  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS jun,
+    ROUND(SUM(CASE WHEN MONTH(a.date)=7  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS jul,
+    ROUND(SUM(CASE WHEN MONTH(a.date)=8  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS aug,
+    ROUND(SUM(CASE WHEN MONTH(a.date)=9  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS sep,
+    ROUND(SUM(CASE WHEN MONTH(a.date)=10 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS oct,
+    ROUND(SUM(CASE WHEN MONTH(a.date)=11 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS nov,
+    ROUND(SUM(CASE WHEN MONTH(a.date)=12 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS `dec`,
+
+    ROUND(
+        (
+            SUM(CASE WHEN MONTH(a.date)=1  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
+            SUM(CASE WHEN MONTH(a.date)=2  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
+            SUM(CASE WHEN MONTH(a.date)=3  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
+            SUM(CASE WHEN MONTH(a.date)=4  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
+            SUM(CASE WHEN MONTH(a.date)=5  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
+            SUM(CASE WHEN MONTH(a.date)=6  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
+            SUM(CASE WHEN MONTH(a.date)=7  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
+            SUM(CASE WHEN MONTH(a.date)=8  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
+            SUM(CASE WHEN MONTH(a.date)=9  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
+            SUM(CASE WHEN MONTH(a.date)=10 AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
+            SUM(CASE WHEN MONTH(a.date)=11 AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
+            SUM(CASE WHEN MONTH(a.date)=12 AND a.status='present' THEN 1 ELSE 0 END)*100/120
+        ) / 12,
+    2) AS avg_attendance
+
+FROM students s
+
+LEFT JOIN attendance a
+    ON s.enrollment_no = a.enrollment_no
+    AND YEAR(a.date) = %s
+
+WHERE s.class = %s
+
+GROUP BY
+    s.enrollment_no,
+    s.name,
+    s.batch,
+    s.class
+
+ORDER BY s.enrollment_no
+"""
+
+        cursor.execute(query, (year, mentor_class))
+        students = cursor.fetchall()
+
+        return jsonify({
+            "success": True,
+            "students": students
+        })
+
+    except Exception as e:
+        print(f"Monthly Attendance Error: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"success": False, "message": str(e)}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+
+@mentor_bp.route("/api/mentor/attendance/student-detail")
+def get_student_detail_attendance():
+    if "user_id" not in session:
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
+
+    enrollment = request.args.get("enrollment")
+    month = request.args.get("month")
+    year = request.args.get("year")
+
+    if not all([enrollment, month, year]):
+        return jsonify({"success": False, "message": "Missing parameters"}), 400
+
+    conn = None
+    cursor = None
+
+    try:
+        conn = db_connection()
+        cursor = conn.cursor()
+
+        # Verify mentor has access to this student
+        cursor.execute("""
+            SELECT f.class_name
+            FROM users u
+            JOIN faculty f ON u.email = f.email
+            WHERE u.id = %s
+        """, (session["user_id"],))
+
+        mentor = cursor.fetchone()
+        if not mentor:
+            return jsonify({"success": False, "message": "Mentor not found"}), 404
+
+        # Get student info and verify belongs to mentor's class
+        cursor.execute("""
+            SELECT enrollment_no, name, batch, class, department
+            FROM students
+            WHERE enrollment_no = %s AND class = %s
+        """, (enrollment, mentor["class_name"]))
+
+        student = cursor.fetchone()
+        if not student:
+            return jsonify({"success": False, "message": "Student not found or not in your class"}), 404
+
+        # Get attendance for the month
+        cursor.execute("""
+            SELECT 
+                DATE(date) as date,
+                MAX(CASE WHEN time_slot = 'slot1' THEN status END) as slot1,
+                MAX(CASE WHEN time_slot = 'slot2' THEN status END) as slot2,
+                MAX(CASE WHEN time_slot = 'slot3' THEN status END) as slot3,
+                MAX(CASE WHEN time_slot = 'slot4' THEN status END) as slot4,
+                MAX(CASE WHEN time_slot = 'slot5' THEN status END) as slot5,
+                MAX(CASE WHEN time_slot = 'slot6' THEN status END) as slot6,
+                MAX(CASE WHEN time_slot = 'lab1' THEN status END) as lab1,
+                MAX(CASE WHEN time_slot = 'lab2' THEN status END) as lab2,
+                MAX(CASE WHEN time_slot = 'lab3' THEN status END) as lab3
+            FROM attendance
+            WHERE enrollment_no = %s 
+                AND MONTH(date) = %s 
+                AND YEAR(date) = %s
+            GROUP BY DATE(date)
+            ORDER BY date
+        """, (enrollment, month, year))
+
+        attendance = cursor.fetchall()
+
+        return jsonify({
+            "success": True,
+            "student": student,
+            "attendance": attendance
+        })
+
+    except Exception as e:
+        print(f"Student Detail Error: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"success": False, "message": str(e)}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()

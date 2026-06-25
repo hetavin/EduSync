@@ -387,21 +387,31 @@
 }
 
 .filter-select {
-    padding: 8px 16px;
-    background: var(--fill-tertiary);
-    border: none;
-    border-radius: 8px;
+    padding: 10px 14px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--separator);
+    border-radius: 10px;
     color: var(--text-primary);
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     outline: none;
     font-family: inherit;
-    min-height: 36px;
+    min-height: 42px;
+    width: 100%;
+    transition: all 0.3s ease;
 }
 
 .filter-select:hover {
-    background: var(--fill-secondary);
+    border-color: var(--blue);
+    background: var(--bg-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.filter-select:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
 }
 
 /* Classes Grid */
@@ -1262,33 +1272,104 @@
 
 /* ===== Attendance Details Styles ===== */
 
-/* Status Badges */
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 14px;
-    border-radius: 100px;
-    font-size: 13px;
-    font-weight: 700;
-    text-transform: capitalize;
+/* Tab Navigation Styles */
+.nav-tabs {
+    display: flex;
+    gap: 8px;
+    border-bottom: 2px solid var(--separator);
+    padding-bottom: 0;
+    list-style: none;
+    margin: 0 0 24px 0;
 }
 
-.status-badge.present {
+.nav-tabs li {
+    margin: 0;
+}
+
+.tab-btn {
+    padding: 12px 24px;
+    background: var(--fill-secondary);
+    color: var(--text-primary);
+    border: none;
+    border-radius: 8px 8px 0 0;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tab-btn:hover {
+    background: var(--fill-tertiary);
+    transform: translateY(-2px);
+}
+
+.tab-btn.active,
+.tab-btn[style*="background: var(--blue)"] {
+    background: var(--blue);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+}
+
+.tab-btn i {
+    font-size: 16px;
+}
+
+/* Status Badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    min-width: 32px;
+}
+
+.badge.bg-success {
     background: rgba(52, 199, 89, 0.15);
     color: var(--green);
     border: 1.5px solid var(--green);
 }
 
-.status-badge.absent {
+.badge.bg-danger {
     background: rgba(255, 59, 48, 0.15);
     color: var(--red);
     border: 1.5px solid var(--red);
 }
 
-.status-badge.late {
+.badge.bg-primary {
+    background: rgba(0, 122, 255, 0.15);
+    color: var(--blue);
+    border: 1.5px solid var(--blue);
+}
+
+.badge.bg-secondary {
+    background: rgba(142, 142, 147, 0.15);
+    color: var(--text-tertiary);
+    border: 1.5px solid var(--text-tertiary);
+}
+
+.badge.bg-warning {
     background: rgba(255, 149, 0, 0.15);
     color: var(--orange);
     border: 1.5px solid var(--orange);
+}
+
+.badge.bg-info {
+    background: rgba(0, 122, 255, 0.1);
+    color: var(--blue);
+    border: 1.5px solid rgba(0, 122, 255, 0.3);
+}
+
+.badge.bg-light {
+    background: var(--fill-tertiary);
+    color: var(--text-primary);
+    border: 1.5px solid var(--separator);
 }
 
 /* Stats for Attendance */
@@ -1296,37 +1377,76 @@
     background: var(--red);
 }
 
-/* Date Range Filter Styling */
+/* Attendance Section Styling */
+.mb-3 {
+    margin-bottom: 24px;
+}
+
+.row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Enhanced Filter Styling */
+.card-body .row {
+    background: var(--fill-tertiary);
+    padding: 20px;
+    border-radius: 12px;
+    margin: 24px;
+    border: 1px solid var(--separator);
+}
+
+.filter-wrapper {
+    flex: 1;
+    min-width: 180px;
+}
+
 .filter-group label {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
     white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-group label i {
+    color: var(--blue);
+    font-size: 14px;
 }
 
 .filter-group input[type="date"] {
-    padding: 8px 16px;
-    background: var(--fill-tertiary);
-    border: none;
-    border-radius: 8px;
+    padding: 10px 14px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--separator);
+    border-radius: 10px;
     color: var(--text-primary);
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     outline: none;
     font-family: inherit;
-    min-height: 36px;
-    width: 160px;
+    min-height: 42px;
+    width: 100%;
+    transition: all 0.3s ease;
 }
 
 .filter-group input[type="date"]:hover {
-    background: var(--fill-secondary);
+    border-color: var(--blue);
+    background: var(--bg-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .filter-group input[type="date"]:focus {
     background: var(--bg-primary);
-    border: 1px solid var(--blue);
-    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
 }
 
 /* Card Actions in Header */
@@ -1346,9 +1466,264 @@
 }
 
 /* Attendance Table Enhancements */
+.data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.data-table th {
+    background: var(--fill-secondary);
+    color: var(--text-primary);
+    font-weight: 700;
+    text-align: center;
+    padding: 12px 8px;
+    font-size: 13px;
+    white-space: nowrap;
+    border-bottom: 2px solid var(--separator);
+}
+
+.data-table td {
+    padding: 12px 8px;
+    text-align: center;
+    border-bottom: 1px solid var(--separator);
+    font-size: 13px;
+    color: var(--text-primary);
+}
+
+.data-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.data-table tbody tr:hover {
+    background: var(--fill-tertiary);
+}
+
 .data-table td strong {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Hide Summary Sections */
+#dailySummary,
+#studentSummary {
+    display: none !important;
+}
+
+/* Enhanced Student Info Display */
+#studentInfo .card {
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.08) 0%, rgba(88, 86, 214, 0.08) 100%);
+    border: 2px solid var(--blue);
+    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.15);
+    margin-bottom: 24px;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+}
+
+#studentInfo .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--blue) 0%, var(--purple) 100%);
+}
+
+#studentInfo .card-body {
+    padding: 24px;
+}
+
+#studentInfo .row {
+    background: transparent;
+    padding: 0;
+    border: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 0;
+}
+
+#studentInfo .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+#studentInfo .info-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#studentInfo .info-label i {
+    color: var(--blue);
+    font-size: 14px;
+}
+
+#studentInfo .info-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* Student Avatar in Info */
+.student-info-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px;
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.08) 0%, rgba(88, 86, 214, 0.08) 100%);
+    border: 2px solid var(--blue);
+    border-radius: 16px;
+    margin: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.student-info-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--blue) 0%, var(--purple) 100%);
+}
+
+.student-info-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 4px solid var(--blue);
+    background: var(--fill-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    color: var(--blue);
+    font-weight: 700;
+    box-shadow: 0 6px 20px rgba(0, 122, 255, 0.25);
+    flex-shrink: 0;
+}
+
+.student-info-details {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.student-info-details .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.student-info-details .info-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.student-info-details .info-label i {
+    color: var(--blue);
+    font-size: 12px;
+}
+
+.student-info-details .info-value {
     font-size: 15px;
     font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* View Button Styling */
+.btn-view {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--purple) 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+}
+
+.btn-view:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+}
+
+.btn-view i {
+    font-size: 12px;
+}
+
+/* Enhanced Search Container in Filters */
+.card-body .row .search-container {
+    background: var(--bg-secondary);
+    border: 2px solid var(--separator);
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    height: 42px;
+}
+
+.card-body .row .search-container:hover {
+    border-color: var(--blue);
+    background: var(--bg-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.card-body .row .search-container:focus-within {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
+    background: var(--bg-primary);
+}
+
+.card-body .row .search-container i {
+    color: var(--blue);
+    font-size: 16px;
+}
+
+.card-body .row .search-container input {
+    border: none;
+    background: transparent;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
+    flex: 1;
+    padding: 0;
+}
+
+.card-body .row .search-container input::placeholder {
+    color: var(--text-tertiary);
+    font-weight: 500;
 }
 
 /* Modal Large Size */
@@ -1449,6 +1824,16 @@
     .card-header .card-actions .search-container {
         width: 100%;
         min-width: auto;
+    }
+    
+    .nav-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .tab-btn {
+        flex: 1;
+        min-width: 150px;
+        justify-content: center;
     }
 }
 

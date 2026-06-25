@@ -114,6 +114,16 @@ navItems.forEach(item => {
         if (targetTab === 'attendance') {
             setTimeout(initAttendanceSystem, 100);
         }
+
+        // Load students when students tab is opened
+        if (targetTab === 'students') {
+            // Load daily attendance by default
+            setTimeout(() => {
+                if (typeof loadTeacherDailyAttendance === 'function') {
+                    loadTeacherDailyAttendance();
+                }
+            }, 100);
+        }
     });
 });
 
@@ -770,3 +780,198 @@ document.addEventListener('keydown', function (e) {
 });
 
 console.log('EduSync Teacher Portal loaded! 👨🏫');
+
+// ===== Load Students Attendance =====
+function loadStudentsAttendance() {
+
+    const tableBody = document.getElementById("studentsTableBody");
+    const batchFilter = document.getElementById("batchFilter");
+    const classFilter = document.getElementById("classFilter");
+
+    if (!tableBody) {
+        console.error("studentsTableBody not found");
+        return;
+    }
+
+    const batch = batchFilter?.value || "";
+    const className = classFilter?.value || "";
+
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="7" style="text-align:center;padding:40px;">
+                <i class="fas fa-spinner fa-spin"></i><br><br>
+                Loading attendance...
+            </td>
+        </tr>
+    `;
+
+    let url = '/api/teacher/getattendance';
+    const params = [];
+    if (batch) params.push(`batch=${encodeURIComponent(batch)}`);
+    if (className) params.push(`class=${encodeURIComponent(className)}`);
+    if (params.length > 0) url += '?' + params.join('&');
+
+    fetch(url)
+        .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Response URL:', response.url);
+            
+            // Clone response to read it twice
+            return response.clone().text().then(text => {
+                console.log('Response text:', text.substring(0, 200));
+                
+                // Try to parse as JSON
+                try {
+                    const data = JSON.parse(text);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${data.message || 'Error'}`);
+                    }
+                    return data;
+                } catch (e) {
+                    if (text.startsWith('<!DOCTYPE') || text.startsWith('<html')) {
+                        throw new Error('Received HTML instead of JSON. You may need to log in.');
+                    }
+                    throw new Error('Invalid JSON response');
+                }
+            });
+        })
+        .then(data => {
+            console.log('Received data:', data);
+
+            if (!data.success) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align:center;">
+                            ${data.message}
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            // Populate filters
+            if (data.batches && batchFilter && batchFilter.options.length === 1) {
+                data.batches.forEach(batch => {
+                    const option = document.createElement('option');
+                    option.value = batch;
+                    option.textContent = batch;
+                    batchFilter.appendChild(option);
+                });
+            }
+
+            if (data.classes && classFilter && classFilter.options.length === 1) {
+                data.classes.forEach(cls => {
+                    const option = document.createElement('option');
+                    option.value = cls;
+                    option.textContent = cls;
+                    classFilter.appendChild(option);
+                });
+            }
+
+            if (data.students.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align:center;padding:40px;">
+                            <i class="fas fa-users" style="font-size:48px;opacity:0.3;margin-bottom:16px;display:block;"></i>
+                            <p style="color:var(--text-secondary);">No student records found</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tableBody.innerHTML = "";
+
+            data.students.forEach(student => {
+
+                const percentage = Number(student.attendance_percentage) || 0;
+
+                let percentageClass = "low";
+
+                if (percentage >= 75)
+                    percentageClass = "high";
+                else if (percentage >= 60)
+                    percentageClass = "medium";
+
+                tableBody.innerHTML += `
+                    <tr>
+
+                        <td>
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <img
+                                    src="https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=random&color=fff&size=40"
+                                    width="40"
+                                    height="40"
+                                    style="border-radius:50%;">
+
+                                <strong>${student.name}</strong>
+                            </div>
+                        </td>
+
+                        <td>${student.enrollment_no}</td>
+
+                        <td>
+                            <span class="badge badge-info">
+                                ${student.batch} - ${student.class}
+                            </span>
+                        </td>
+
+                        <td>${student.total_classes}</td>
+
+                        <td>
+                            <span class="badge badge-success">
+                                ${student.present_count}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="badge badge-danger">
+                                ${student.absent_count}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="attendance-percentage ${percentageClass}">
+                                <i class="fas fa-chart-line"></i> ${percentage.toFixed(1)}%
+                            </span>
+                        </td>
+
+                    </tr>
+                `;
+            });
+
+        })
+        .catch(error => {
+
+            console.error('Fetch error:', error);
+
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="7" style="text-align:center;color:var(--red);padding:40px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size:48px;display:block;margin-bottom:16px;opacity:0.3;"></i>
+                        <p style="color:var(--text-secondary);">Failed to load attendance</p>
+                        <p style="color:var(--text-tertiary);font-size:12px;">${error.message}</p>
+                    </td>
+                </tr>
+            `;
+        });
+}
+
+// Export student data
+function exportStudentData() {
+    showToast('Export feature coming soon!', 'info');
+}
+
+// Setup filter listeners
+window.addEventListener('load', function() {
+    const batchFilter = document.getElementById('batchFilter');
+    const classFilter = document.getElementById('classFilter');
+    
+    if (batchFilter) {
+        batchFilter.addEventListener('change', loadStudentsAttendance);
+    }
+    
+    if (classFilter) {
+        classFilter.addEventListener('change', loadStudentsAttendance);
+    }
+});
