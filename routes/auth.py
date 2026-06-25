@@ -13,7 +13,7 @@ def admin_dashboard():
     if session.get("role") != "admin":
         return redirect(url_for("auth.home"))
 
-    return render_template("dashboard.html")
+    return render_template("admin.html")
 
 
 @auth_bp.route("/mentor")

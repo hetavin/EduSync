@@ -632,3 +632,45 @@ def get_student_detail_attendance():
             cursor.close()
         if conn:
             conn.close()
+
+
+
+@teacher_bp.route("/api/teacher/attendance/years")
+def get_attendance_years():
+    if "user_id" not in session:
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
+
+    conn = None
+    cursor = None
+
+    try:
+        conn = db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT DISTINCT YEAR(date) as year
+            FROM attendance
+            WHERE date IS NOT NULL
+            ORDER BY year DESC
+        """)
+
+        years = [row['year'] for row in cursor.fetchall()]
+        
+        if not years:
+            current_year = datetime.now().year
+            years = [current_year]
+
+        return jsonify({
+            "success": True,
+            "years": years
+        })
+
+    except Exception as e:
+        print(f"Get Years Error: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()

@@ -125,7 +125,7 @@ function loadTeacherMonthlyAttendance() {
 
     tbody.innerHTML = `
         <tr>
-            <td colspan="15" style="text-align:center;">
+            <td colspan="17" style="text-align:center;">
                 <i class="fas fa-spinner fa-spin"></i> Loading...
             </td>
         </tr>
@@ -138,7 +138,7 @@ function loadTeacherMonthlyAttendance() {
             if (!data.success) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="15" style="text-align:center;color:var(--red);">
+                        <td colspan="17" style="text-align:center;color:var(--red);">
                             ${data.message}
                         </td>
                     </tr>
@@ -149,7 +149,7 @@ function loadTeacherMonthlyAttendance() {
             if (data.students.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="15" style="text-align:center;">
+                        <td colspan="17" style="text-align:center;">
                             No students found
                         </td>
                     </tr>
@@ -164,19 +164,31 @@ function loadTeacherMonthlyAttendance() {
 
             tbody.innerHTML = data.students.map(s => {
 
+                const avg = parseFloat(s.avg_attendance) || 0;
+                
+                let statusClass = 'danger';
+                let statusText = 'Low';
+                if (avg >= 90) {
+                    statusClass = 'success';
+                    statusText = 'Excellent';
+                } else if (avg >= 75) {
+                    statusClass = 'warning';
+                    statusText = 'Good';
+                }
+
                 const monthColumns = months.map(month => {
 
                     const value = parseFloat(s[month]);
 
-                    if (isNaN(value)) {
-                        return `<td style="color:#999;">-</td>`;
+                    if (isNaN(value) || !s[month]) {
+                        return `<td style="color:var(--text-tertiary);">-</td>`;
                     }
 
                     let color = "var(--red)";
 
-                    if (value >= 90) {
+                    if (value >= 75) {
                         color = "var(--green)";
-                    } else if (value >= 75) {
+                    } else if (value >= 60) {
                         color = "var(--orange)";
                     }
 
@@ -193,9 +205,7 @@ function loadTeacherMonthlyAttendance() {
                     <tr>
                         <td>${s.enrollment_no}</td>
                         <td>${s.name}</td>
-
                         ${monthColumns}
-
                         <td>
                             <button class="btn btn-view"
                                 onclick="viewStudentDetail('${s.enrollment_no}')"
@@ -222,7 +232,7 @@ function loadTeacherMonthlyAttendance() {
 
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="15" style="text-align:center;color:var(--red);">
+                    <td colspan="17" style="text-align:center;color:var(--red);">
                         Error loading data
                     </td>
                 </tr>
@@ -233,7 +243,6 @@ function loadTeacherMonthlyAttendance() {
 // ===== Student Detail Attendance =====
 function viewStudentDetail(enrollment) {
     currentStudentView = 'student-detail';
-    document.getElementById('summarySection').style.display = 'none';
     document.getElementById('dailyAttendanceSection').style.display = 'none';
     document.getElementById('monthlyAttendanceSection').style.display = 'none';
     document.getElementById('studentDetailSection').style.display = 'block';
@@ -356,14 +365,8 @@ window.addEventListener('load', function() {
         dateInput.valueAsDate = new Date();
     }
 
-    const monthlyYearSelect = document.getElementById('monthlyYear');
-    const currentYear = new Date().getFullYear().toString();
-    if (monthlyYearSelect) {
-        const yearExists = Array.from(monthlyYearSelect.options).some(option => option.value === currentYear);
-        if (yearExists) {
-            monthlyYearSelect.value = currentYear;
-        }
-    }
+    // Load years from database
+    loadAvailableYears();
 
     document.getElementById('dailyDate')?.addEventListener('change', loadTeacherDailyAttendance);
     document.getElementById('dailyBatch')?.addEventListener('change', loadTeacherDailyAttendance);
@@ -380,6 +383,48 @@ window.addEventListener('load', function() {
         if (enrollment) loadStudentDetailAttendance(enrollment);
     });
 });
+
+// Load available years from database
+function loadAvailableYears() {
+    fetch('/api/teacher/attendance/years')
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.years) {
+                const monthlyYearSelect = document.getElementById('monthlyYear');
+                const detailYearSelect = document.getElementById('detailYear');
+                const currentYear = new Date().getFullYear();
+
+                if (monthlyYearSelect) {
+                    monthlyYearSelect.innerHTML = '';
+                    data.years.forEach(year => {
+                        const option = document.createElement('option');
+                        option.value = year;
+                        option.textContent = year;
+                        if (year === currentYear) {
+                            option.selected = true;
+                        }
+                        monthlyYearSelect.appendChild(option);
+                    });
+                }
+
+                if (detailYearSelect) {
+                    detailYearSelect.innerHTML = '';
+                    data.years.forEach(year => {
+                        const option = document.createElement('option');
+                        option.value = year;
+                        option.textContent = year;
+                        if (year === currentYear) {
+                            option.selected = true;
+                        }
+                        detailYearSelect.appendChild(option);
+                    });
+                }
+            }
+        })
+        .catch(err => {
+            console.error('Error loading years:', err);
+        });
+}
 
 function debounceTeacher(func, wait) {
     let timeout;

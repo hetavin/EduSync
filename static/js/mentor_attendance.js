@@ -151,9 +151,9 @@ function loadMonthlyAttendance() {
 
                     let color = "var(--red)";
 
-                    if (value >= 90) {
+                    if (value >= 75) {
                         color = "var(--green)";
-                    } else if (value >= 75) {
+                    } else if (value >= 60) {
                         color = "var(--orange)";
                     }
 
@@ -360,16 +360,8 @@ document.addEventListener('DOMContentLoaded', function() {
         dateInput.valueAsDate = new Date();
     }
 
-    // Set current year for monthly view
-    const monthlyYearSelect = document.getElementById('monthlyYear');
-    const currentYear = new Date().getFullYear().toString();
-    if (monthlyYearSelect) {
-        // Check if current year exists in options
-        const yearExists = Array.from(monthlyYearSelect.options).some(option => option.value === currentYear);
-        if (yearExists) {
-            monthlyYearSelect.value = currentYear;
-        }
-    }
+    // Load years from database
+    loadAvailableYears();
 
     // Load default view
     loadDailyAttendance();
@@ -390,6 +382,48 @@ document.addEventListener('DOMContentLoaded', function() {
         if (enrollment) loadStudentDetailAttendance(enrollment);
     });
 });
+
+// Load available years from database
+function loadAvailableYears() {
+    fetch('/api/mentor/attendance/years')
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.years) {
+                const monthlyYearSelect = document.getElementById('monthlyYear');
+                const detailYearSelect = document.getElementById('detailYear');
+                const currentYear = new Date().getFullYear();
+
+                if (monthlyYearSelect) {
+                    monthlyYearSelect.innerHTML = '';
+                    data.years.forEach(year => {
+                        const option = document.createElement('option');
+                        option.value = year;
+                        option.textContent = year;
+                        if (year === currentYear) {
+                            option.selected = true;
+                        }
+                        monthlyYearSelect.appendChild(option);
+                    });
+                }
+
+                if (detailYearSelect) {
+                    detailYearSelect.innerHTML = '';
+                    data.years.forEach(year => {
+                        const option = document.createElement('option');
+                        option.value = year;
+                        option.textContent = year;
+                        if (year === currentYear) {
+                            option.selected = true;
+                        }
+                        detailYearSelect.appendChild(option);
+                    });
+                }
+            }
+        })
+        .catch(err => {
+            console.error('Error loading years:', err);
+        });
+}
 
 // Utility: Debounce function
 function debounce(func, wait) {
