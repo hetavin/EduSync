@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="../static/css/student.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <!-- Mobile Overlay -->
     <div class="mobile-overlay"></div>
@@ -21,14 +23,14 @@
                 </div>
                 <span class="logo-text">EduSync</span>
             </div>
-            
+
             <!-- Student Profile Preview -->
             <div class="sidebar-profile">
                 <img id="studentAvatar" src="" alt="Student">
                 <h3 id="studentName">Loading...</h3>
                 <p id="studentId">---</p>
             </div>
-            
+
             <!-- Navigation -->
             <nav class="nav-menu">
                 <a href="#dashboard" class="nav-item active" data-tab="dashboard">
@@ -48,7 +50,7 @@
                     <span>Schedule</span>
                 </a>
             </nav>
-            
+
             <!-- Theme Toggle -->
             <div class="theme-toggle">
                 <div class="theme-toggle-inner">
@@ -86,7 +88,7 @@
                     <p class="page-subtitle" id="welcomeMessage">Welcome back!</p>
                 </div>
             </div>
-            
+
             <div class="header-right">
                 <button class="notification-btn" aria-label="Notifications">
                     <i class="fas fa-bell"></i>
@@ -106,117 +108,43 @@
                 <!-- Stats Cards -->
                 <section class="stats-section">
                     <div class="stat-card">
-                        <div class="stat-icon green">
-                            <i class="fas fa-percentage"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 id="overallAttendance">0%</h3>
-                            <p>Overall Attendance</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
                         <div class="stat-icon blue">
-                            <i class="fas fa-calendar-day"></i>
+                            <i class="fas fa-chart-pie"></i>
                         </div>
                         <div class="stat-info">
-                            <h3 id="presentDays">0 Days</h3>
-                            <p>Present This Month</p>
+                            <h3 id="currentMonthPercentage">0%</h3>
+                            <p id="currentMonthLabel">Loading...</p>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon red">
-                            <i class="fas fa-calendar-times"></i>
+                        <div class="stat-icon green">
+                            <i class="fas fa-calendar-check"></i>
                         </div>
                         <div class="stat-info">
-                            <h3 id="absentDays">0 Days</h3>
-                            <p>Absent This Month</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon orange">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 id="avgCheckin">--:-- --</h3>
-                            <p>Avg. Check-in Time</p>
+                            <h3 id="presentDays">0</h3>
+                            <p>Present Lectures</p>
                         </div>
                     </div>
                 </section>
 
-                <!-- Main Content Grid -->
-                <div class="dashboard-grid">
-                    <!-- Recent Attendance -->
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <h2 class="card-title">Recent Attendance</h2>
-                                <p class="card-subtitle">Last 7 days</p>
-                            </div>
-                            <button class="btn-secondary">
-                                <i class="fas fa-calendar"></i>
-                                View All
-                            </button>
+                <!-- Recent Attendance -->
+                <div class="card" style="max-width: 100%;">
+                    <div class="card-header">
+                        <div>
+                            <h2 class="card-title">Recent Attendance</h2>
+                            <p class="card-subtitle">Last 7 days</p>
                         </div>
-                        <div class="card-body">
-                            <div class="attendance-list" id="recentAttendanceList">
-                                <div class="empty-state" style="text-align: center; padding: 48px;">
-                                    <i class="fas fa-calendar-alt" style="font-size: 48px; opacity: 0.3; margin-bottom: 16px; display: block;"></i>
-                                    <p style="color: var(--text-secondary);">No recent attendance records</p>
-                                </div>
-                            </div>
-                        </div>
+                        <button class="btn-secondary" id="viewAllAttendanceBtn">
+                            <i class="fas fa-calendar"></i>
+                            View All
+                        </button>
                     </div>
-
-                    <!-- Sidebar Cards -->
-                    <div class="sidebar-cards">
-                        <!-- Attendance Chart -->
-                        <div class="card">
-                            <div class="card-header">
-                                <div>
-                                    <h2 class="card-title">Monthly Overview</h2>
-                                    <p class="card-subtitle" id="currentMonthYear">Loading...</p>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="progress-ring">
-                                    <svg viewBox="0 0 120 120">
-                                        <circle class="progress-ring-bg" cx="60" cy="60" r="50"></circle>
-                                        <circle class="progress-ring-fill" id="progressCircle" cx="60" cy="60" r="50" 
-                                                style="stroke-dasharray: 314; stroke-dashoffset: 314;"></circle>
-                                    </svg>
-                                    <div class="progress-value">
-                                        <h3 id="monthlyAttendance">0%</h3>
-                                        <p>Attendance</p>
-                                    </div>
-                                </div>
-                                <div class="progress-stats">
-                                    <div class="progress-stat-item">
-                                        <span class="stat-color green"></span>
-                                        <span id="monthlyPresent">Present: 0</span>
-                                    </div>
-                                    <div class="progress-stat-item">
-                                        <span class="stat-color red"></span>
-                                        <span id="monthlyAbsent">Absent: 0</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Upcoming Classes -->
-                        <div class="card">
-                            <div class="card-header">
-                                <div>
-                                    <h2 class="card-title">Today's Classes</h2>
-                                    <p class="card-subtitle" id="todayClassCount">0 classes scheduled</p>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="class-list" id="todayClassList">
-                                    <div class="empty-state" style="text-align: center; padding: 32px;">
-                                        <i class="fas fa-chalkboard-teacher" style="font-size: 36px; opacity: 0.3; margin-bottom: 12px; display: block;"></i>
-                                        <p style="color: var(--text-secondary); font-size: 14px;">No classes scheduled for today</p>
-                                    </div>
-                                </div>
+                    <div class="card-body">
+                        <div class="attendance-list" id="recentAttendanceList">
+                            <div class="empty-state" style="text-align: center; padding: 48px;">
+                                <i class="fas fa-calendar-alt"
+                                    style="font-size: 48px; opacity: 0.3; margin-bottom: 16px; display: block;"></i>
+                                <p style="color: var(--text-secondary);">No recent attendance records</p>
                             </div>
                         </div>
                     </div>
@@ -299,43 +227,131 @@
                 <div class="card">
                     <div class="card-header">
                         <div>
-                            <h2 class="card-title">Attendance History</h2>
-                            <p class="card-subtitle">Complete attendance record</p>
+                            <h2 class="card-title">My Attendance</h2>
+                            <p class="card-subtitle" id="attendanceSubtitle">Loading...</p>
                         </div>
-                        <div class="card-actions">
-                            <select class="filter-select">
-                                <option>This Month</option>
-                                <option>Last Month</option>
-                                <option>This Year</option>
-                            </select>
-                            <button class="btn-secondary">
-                                <i class="fas fa-download"></i>
-                                Export
-                            </button>
+                        <div class="card-actions" style="display: flex; gap: 8px; align-items: center;">
+                            <button class="tab-btn" onclick="switchAttendanceView('daily')"
+                                style="padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; background: var(--fill-secondary); color: var(--text-primary);">Daily</button>
+                            <button class="tab-btn" onclick="switchAttendanceView('monthly')"
+                                style="padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; background: var(--blue); color: white;">Monthly</button>
+                            <button class="tab-btn" onclick="switchAttendanceView('yearly')"
+                                style="padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; background: var(--fill-secondary); color: var(--text-primary);">Yearly</button>
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="table-wrapper">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Day</th>
-                                        <th>Check-in Time</th>
-                                        <th>Subject</th>
-                                        <th>Faculty</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="attendanceHistoryBody">
-                                    <tr>
-                                        <td colspan="6" style="text-align: center; padding: 48px;">
-                                            <i class="fas fa-calendar-check" style="font-size: 48px; opacity: 0.3; margin-bottom: 16px; display: block;"></i>
-                                            <p style="color: var(--text-secondary);">No attendance history available</p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <!-- Daily View -->
+                        <div id="dailyView" style="display: none;">
+                            <div style="margin: 16px; display: flex; justify-content: end;">
+                                <input type="date" id="dailyDate"
+                                    style="padding: 8px; border: 1px solid var(--border-primary); border-radius: 6px; background: var(--fill-secondary);" />
+                            </div>
+                            <div class="table-wrapper">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Slot 1</th>
+                                            <th>Slot 2</th>
+                                            <th>Slot 3</th>
+                                            <th>Slot 4</th>
+                                            <th>Slot 5</th>
+                                            <th>Slot 6</th>
+                                            <th>Lab 1</th>
+                                            <th>Lab 2</th>
+                                            <th>Lab 3</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dailyTableBody">
+                                        <tr>
+                                            <td colspan="11" style="text-align: center; padding: 48px;">
+                                                <i class="fas fa-calendar-check"
+                                                    style="font-size: 48px; opacity: 0.3; margin-bottom: 16px; display: block;"></i>
+                                                <p style="color: var(--text-secondary);">No attendance data</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Monthly View -->
+                        <div id="monthlyView" style="display: block;">
+                            <div style="margin: 16px; display: flex; gap: 8px; justify-content: end;">
+                                <select id="monthlyMonth"
+                                    style="padding: 8px; border: 1px solid var(--border-primary); border-radius: 6px; background: var(--fill-secondary);">
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </select>
+                                <select id="monthlyYear"
+                                    style="padding: 8px; border: 1px solid var(--border-primary); border-radius: 6px; background: var(--fill-secondary);"></select>
+                            </div>
+                            <div class="table-wrapper">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Slot 1</th>
+                                            <th>Slot 2</th>
+                                            <th>Slot 3</th>
+                                            <th>Slot 4</th>
+                                            <th>Slot 5</th>
+                                            <th>Slot 6</th>
+                                            <th>Lab 1</th>
+                                            <th>Lab 2</th>
+                                            <th>Lab 3</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="monthlyTableBody">
+                                        <tr>
+                                            <td colspan="11" style="text-align: center; padding: 48px;">
+                                                <i class="fas fa-calendar-check"
+                                                    style="font-size: 48px; opacity: 0.3; margin-bottom: 16px; display: block;"></i>
+                                                <p style="color: var(--text-secondary);">No attendance data</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Yearly View -->
+                        <div id="yearlyView" style="display: none;">
+                            <div style="margin: 16px; display: flex; justify-content: end;">
+                                <select id="yearlyYear"
+                                    style="padding: 8px; border: 1px solid var(--border-primary); border-radius: 6px; background: var(--fill-secondary);"></select>
+                            </div>
+                            <div class="table-wrapper">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Month</th>
+                                            <th>Attendance %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="yearlyTableBody">
+                                        <tr>
+                                            <td colspan="2" style="text-align: center; padding: 48px;">
+                                                <i class="fas fa-calendar-check"
+                                                    style="font-size: 48px; opacity: 0.3; margin-bottom: 16px; display: block;"></i>
+                                                <p style="color: var(--text-secondary);">No attendance data</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -353,8 +369,9 @@
                     <div class="card-body">
                         <div class="schedule-grid" id="weeklyScheduleGrid">
                             <div class="empty-state" style="text-align: center; padding: 64px; grid-column: 1 / -1;">
-                                <i class="fas fa-calendar-week" style="font-size: 48px; opacity: 0.3; margin-bottom: 16px; display: block;"></i>
-                                <p style="color: var(--text-secondary);">No schedule available</p>
+                                <i class="fas fa-calendar-week"
+                                    style="font-size: 48px; opacity: 0.3; margin-bottom: 16px; display: block;"></i>
+                                <p style="color: var(--text-secondary);">Sceduale Tab Under Process</p>
                             </div>
                         </div>
                     </div>
@@ -365,4 +382,5 @@
 
     <script src="../static/js/student.js"></script>
 </body>
+
 </html>

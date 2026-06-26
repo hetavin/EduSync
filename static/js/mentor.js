@@ -150,6 +150,12 @@ document.addEventListener('keydown', function (e) {
             hamburger.classList.remove('active');
         }
     }
+
+    // Ctrl/Cmd + D for dark mode toggle
+    if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+        e.preventDefault();
+        themeToggle.click();
+    }
 });
 
 // ===== Add Student Form =====
