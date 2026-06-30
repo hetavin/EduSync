@@ -20,7 +20,7 @@ body::before {
     position: absolute;
     width: 500px;
     height: 500px;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
     border-radius: 50%;
     top: -100px;
     left: -100px;
@@ -32,7 +32,7 @@ body::after {
     position: absolute;
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
     border-radius: 50%;
     bottom: -50px;
     right: -50px;
@@ -40,8 +40,15 @@ body::after {
 }
 
 @keyframes float {
-    0%, 100% { transform: translate(0, 0); }
-    50% { transform: translate(30px, 30px); }
+
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(30px, 30px);
+    }
 }
 
 .container {
@@ -68,6 +75,7 @@ body::after {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -75,16 +83,24 @@ body::after {
 }
 
 @media (max-width: 768px) {
+
+    body::before,
+    body::after {
+        content: none;
+    }
+
+
     .container {
         flex-direction: column;
         max-width: 90%;
     }
-    
+
     .info-section {
         border-left: none;
+        display: none !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     }
-    
+
     .auth-box {
         border-right: none;
     }
@@ -128,9 +144,11 @@ body::after {
         opacity: 1;
         transform: translateX(0) scale(1);
     }
+
     50% {
         transform: translateX(-20px) scale(0.98);
     }
+
     100% {
         opacity: 0;
         transform: translateX(-50px) scale(0.95);
@@ -142,9 +160,11 @@ body::after {
         opacity: 0;
         transform: translateX(50px) scale(0.95);
     }
+
     50% {
         transform: translateX(20px) scale(0.98);
     }
+
     100% {
         opacity: 1;
         transform: translateX(0) scale(1);
@@ -297,8 +317,8 @@ body::after {
     box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
 }
 
-.input-group input:focus + label,
-.input-group input.has-value + label {
+.input-group input:focus+label,
+.input-group input.has-value+label {
     top: -10px;
     left: 12px;
     font-size: 12px;
@@ -318,9 +338,19 @@ body::after {
 }
 
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    75% { transform: translateX(10px); }
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-10px);
+    }
+
+    75% {
+        transform: translateX(10px);
+    }
 }
 
 .form-options {
@@ -487,6 +517,7 @@ body::after {
         opacity: 0;
         transform: translateY(-30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -498,6 +529,7 @@ body::after {
         opacity: 1;
         transform: translateY(0);
     }
+
     to {
         opacity: 0;
         transform: translateY(-30px);
