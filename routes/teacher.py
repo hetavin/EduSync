@@ -17,8 +17,45 @@ def dashboard():
     if session.get("role") != "faculty":
         return redirect(url_for("auth.home"))
 
-    return render_template("teacher.html")
+    return render_template("teacher.html", name=session.get("name", "Teacher"))
 
+@teacher_bp.route("/api/teacher/profile")
+def get_teacher_profile():
+    try:
+        conn = db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT f.name
+            FROM users u
+            INNER JOIN faculty f ON u.email = f.email
+            WHERE u.id = %s
+        """, (session["user_id"],))
+
+        result = cursor.fetchone()
+        
+        # return jsonify(result)
+        # return jsonify({
+        #     "success": True,
+        #     "name": result[0]
+        # })
+        
+        if not result:
+            print("NO RESULT FOUND")
+            return jsonify({
+                "success": False,
+                "message": "Profile not found"
+            }), 404
+
+        print("RESULT FOUND")
+        return jsonify({
+            "success": True,
+            "name": result["name"]
+        })
+        
+    except Exception as e:
+        print("ERROR:", e)
+        return jsonify({"error": str(e)}), 500        
 
 @teacher_bp.route("/api/teacher/batch-classes")
 def get_batch_classes():
@@ -97,83 +134,6 @@ def process_attendance():
 
     conn = None
     cursor = None
-
-    # try:
-
-    #     present_students = set()
-
-    #     total_faces = 0
-
-    #     for image_file in images:
-
-    #         image_bytes = np.frombuffer(
-    #             image_file.read(),
-    #             np.uint8
-    #         )
-
-    #         image = cv2.imdecode(
-    #             image_bytes,
-    #             cv2.IMREAD_COLOR
-    #         )
-
-    #         if image is None:
-    #             continue
-
-    #         result = slice_image_with_overlap(
-    #             image
-    #         )
-
-    #         total_faces += result[
-    #             "total_faces"
-    #         ]
-
-    #         present_students.update(
-    #             result["present_students"]
-    #         )
-
-    #     conn = db_connection()
-
-    #     cursor = conn.cursor()
-
-    #     cursor.execute("""
-    #         DELETE FROM attendance
-    #         WHERE batch=%s
-    #           AND class=%s
-    #           AND date=%s
-    #           AND time_slot=%s
-    #     """, (
-    #         batch,
-    #         class_name,
-    #         attendance_date,
-    #         slot
-    #     ))
-
-    #     for enrollment_no in present_students:
-
-    #         cursor.execute("""
-    #             INSERT INTO attendance(
-    #                 enrollment_no,
-    #                 faculty_id,
-    #                 batch,
-    #                 class,
-    #                 date,
-    #                 time_slot,
-    #                 status
-    #             )
-    #             VALUES(
-    #                 %s,%s,%s,%s,%s,%s,
-    #                 'present'
-    #             )
-    #         """, (
-    #             enrollment_no,
-    #             faculty_id,
-    #             batch,
-    #             class_name,
-    #             attendance_date,
-    #             slot
-    #         ))
-
-    #     conn.commit()
     
     try:
 

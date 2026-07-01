@@ -128,3 +128,8 @@ INSERT INTO attendance (
 ('23BECE30292', 2, '2023-27', '6g', '2025-05-27', 'Lab1', 'present'),
 ('23BECE30292', 2, '2023-27', '6g', '2025-05-28', 'Lab1', 'present'),
 ('23BECE30292', 2, '2023-27', '6g', '2025-05-29', 'Lab1', 'present');
+
+SELECT f.name
+        FROM users u
+        INNER JOIN faculty f ON u.email = f.email
+        WHERE u.id = 2

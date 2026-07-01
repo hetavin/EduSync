@@ -127,6 +127,36 @@ navItems.forEach(item => {
     });
 });
 
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        const response = await fetch("/api/teacher/profile");
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch profile");
+        }
+
+        const data = await response.json();
+
+        if (!data.name) {
+            throw new Error("Name not found");
+        }
+
+        document.getElementById("Teachername").textContent = data.name;
+
+        const initials = data.name
+            .trim()
+            .split(" ")
+            .map(word => word[0]?.toUpperCase() || "")
+            .join("");
+
+        document.getElementById("mentorAvatar").src =
+            `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=34C759&color=fff&size=128`;
+
+    } catch (error) {
+        console.error("Profile Load Error:", error);
+    }
+});
+
 // ===== Student Database =====
 const studentDatabase = [
     { id: 'STU001', name: 'John Doe', img: 'John+Doe' },
