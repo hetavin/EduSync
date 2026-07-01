@@ -428,6 +428,19 @@ function showToast(message, type = 'info') {
     }, 3000);
 }
 
+// ===== Dashboard Stats =====
+function loadDashboardStats() {
+    $.ajax({
+        url: '/api/dashboard/stats',
+        method: 'GET',
+        dataType: 'json'
+    }).done(function (data) {
+        animateValue(document.getElementById('totalStudents'), 0, data.total_students, 800);
+        animateValue(document.getElementById('totalMentors'), 0, data.total_mentors, 800);
+        animateValue(document.getElementById('totalFaculties'), 0, data.total_faculties, 800);
+    });
+}
+
 // ===== Initialize =====
 console.log('EduSync Dashboard loaded successfully! 🎓');
 console.log('Theme:', body.classList.contains('dark') ? 'Dark' : 'Light');
@@ -567,6 +580,7 @@ async function processFile(file) {
 
                     // Reload student list
                     loadStudentsFromServer();
+                    loadDashboardStats();
 
                     resetFileUpload();
                     resolve(true);
@@ -730,6 +744,7 @@ function loadStudentsFromServer() {
 
 $(document).ready(function () {
     loadStudentsFromServer();
+    loadDashboardStats();
 });
 
 // Filter button toggle
@@ -914,6 +929,7 @@ if (facultyForm) {
 
         facultyData.push(newFaculty);
         displayFaculty(facultyData);
+        loadDashboardStats();
         facultyForm.reset();
         classGroup.style.display = 'none';
         showToast(`${newFaculty.type === 'mentor' ? 'Mentor' : 'Faculty'} added successfully`, 'success');
@@ -1146,6 +1162,7 @@ window.deleteFaculty = function (index) {
         }).done(function (res) {
             facultyData.splice(index, 1);
             displayFaculty(facultyData);
+            loadDashboardStats();
             showToast(res.message || 'Faculty/Mentor deleted successfully', 'success');
         }).fail(function () {
             showToast('Failed to delete on server', 'error');

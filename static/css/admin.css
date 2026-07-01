@@ -567,10 +567,6 @@ input:checked+.slider:before {
     margin-bottom: 4px;
 }
 
-.stat-value.success {
-    color: var(--green);
-}
-
 .stat-value.error {
     color: var(--red);
 }

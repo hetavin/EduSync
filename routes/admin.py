@@ -286,3 +286,27 @@ def delete_faculty(id):
     
 
 # END FACULTY/MENTOR TAB
+
+# Dashboard Stats
+@admin_bp.route('/api/dashboard/stats', methods=['GET'])
+def dashboard_stats():
+    conn = db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT COUNT(*) AS cnt FROM students")
+    total_students = cursor.fetchone()['cnt']
+
+    cursor.execute("SELECT COUNT(*) AS cnt FROM faculty WHERE type='mentor'")
+    total_mentors = cursor.fetchone()['cnt']
+
+    cursor.execute("SELECT COUNT(*) AS cnt FROM faculty WHERE type='faculty'")
+    total_faculties = cursor.fetchone()['cnt']
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "total_students": total_students,
+        "total_mentors": total_mentors,
+        "total_faculties": total_faculties
+    })

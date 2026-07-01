@@ -105,14 +105,11 @@
                 <div class="stat-card">
                     <div class="stat-header">
                         <div class="stat-icon blue">
-                            <i class="fas fa-users"></i>
+                            <i class="fas fa-user-graduate"></i>
                         </div>
-                        <span class="stat-trend positive" aria-hidden="true">
-                            <i class="fas fa-arrow-up"></i>
-                        </span>
                     </div>
                     <div class="stat-body">
-                        <h3 class="stat-value" id="studentCount">0</h3>
+                        <h3 class="stat-value" id="totalStudents">0</h3>
                         <p class="stat-label">Total Students</p>
                     </div>
                 </div>
@@ -120,166 +117,29 @@
                 <div class="stat-card">
                     <div class="stat-header">
                         <div class="stat-icon green">
-                            <i class="fas fa-user-check"></i>
+                            <i class="fas fa-user-friends"></i>
                         </div>
-                        <span class="stat-trend positive" aria-hidden="true">
-                            <i class="fas fa-arrow-up"></i>
-                        </span>
                     </div>
                     <div class="stat-body">
-                        <h3 class="stat-value success" id="presentToday">0</h3>
-                        <p class="stat-label">Present Today</p>
-                        <div class="stat-progress">
-                            <div class="progress-bar" style="width: 0%"></div>
-                        </div>
+                        <h3 class="stat-value success" id="totalMentors">0</h3>
+                        <p class="stat-label">Total Mentors</p>
                     </div>
                 </div>
 
                 <div class="stat-card">
                     <div class="stat-header">
                         <div class="stat-icon red">
-                            <i class="fas fa-user-times"></i>
+                            <i class="fas fa-chalkboard-teacher"></i>
                         </div>
-                        <span class="stat-trend negative" aria-hidden="true">
-                            <i class="fas fa-arrow-down"></i>
-                        </span>
                     </div>
                     <div class="stat-body">
-                        <h3 class="stat-value error" id="absentToday">0</h3>
-                        <p class="stat-label">Absent Today</p>
-                        <div class="stat-progress">
-                            <div class="progress-bar error" style="width: 0%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <div class="stat-icon green">
-                            <i class="fas fa-video"></i>
-                        </div>
-                        <span class="stat-status online">
-                            <i class="fas fa-circle"></i>
-                            Online
-                        </span>
-                    </div>
-                    <div class="stat-body">
-                        <h3 class="stat-value success" id="systemStatus">Active</h3>
-                        <p class="stat-label">System Status</p>
+                        <h3 class="stat-value" id="totalFaculties">0</h3>
+                        <p class="stat-label">Total Faculties</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Main Content Grid -->
-            <div class="content-grid">
-                <!-- Recent Attendance -->
-                <div class="content-main">
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <h2 class="card-title">Recent Attendance</h2>
-                                <p class="card-subtitle">Today's attendance log</p>
-                            </div>
-                            <div class="card-actions">
-                                <button class="btn-icon" aria-label="Filter">
-                                    <i class="fas fa-filter"></i>
-                                </button>
-                                <button class="btn-secondary">
-                                    <i class="fas fa-download"></i>
-                                    Export
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-wrapper">
-                                <table class="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Student Name</th>
-                                            <th>ID</th>
-                                            <th>Time Logged</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="no-data-row">
-                                            <td colspan="5" style="text-align: center; padding: 48px; color: var(--text-secondary);">
-                                                <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 16px; display: block; opacity: 0.3;"></i>
-                                                <p>No recent attendance data</p>
-                                                <p style="font-size: 13px; margin-top: 8px;">Attendance will appear here when students check in</p>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Sidebar Content -->
-                <div class="content-sidebar">
-                    <!-- Camera Feed Card -->
-                    <div class="card camera-card">
-                        <div class="card-header">
-                            <div>
-                                <h2 class="card-title">Live Camera Feed</h2>
-                                <p class="card-subtitle">Facial Recognition</p>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="camera-feed">
-                                <div class="camera-icon">
-                                    <i class="fas fa-camera"></i>
-                                </div>
-                                <p class="camera-status">Awaiting facial recognition...</p>
-                                <div class="camera-info">
-                                    <span><i class="fas fa-circle"></i> Camera Ready</span>
-                                </div>
-                            </div>
-                            <button class="btn-primary">
-                                <i class="fas fa-play"></i>
-                                Start Recognition
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Quick Stats -->
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <h2 class="card-title">Quick Stats</h2>
-                                <p class="card-subtitle">This week</p>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="quick-stats">
-                                <div class="quick-stat-item">
-                                    <div class="quick-stat-label">
-                                        <i class="fas fa-calendar-check"></i>
-                                        Avg. Attendance
-                                    </div>
-                                    <div class="quick-stat-value" id="avgAttendance">—</div>
-                                </div>
-                                <div class="quick-stat-item">
-                                    <div class="quick-stat-label">
-                                        <i class="fas fa-clock"></i>
-                                        Avg. Check-in Time
-                                    </div>
-                                    <div class="quick-stat-value" id="avgCheckin">—</div>
-                                </div>
-                                <div class="quick-stat-item">
-                                    <div class="quick-stat-label">
-                                        <i class="fas fa-user-clock"></i>
-                                        Late Arrivals
-                                    </div>
-                                    <div class="quick-stat-value" id="lateArrivals">0</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             </div>
             <!-- End Dashboard Tab -->
 
