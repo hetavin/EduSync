@@ -210,23 +210,23 @@ def process_attendance():
 
         cursor = conn.cursor()
 
-        cursor.execute("""
-            DELETE FROM attendance
-            WHERE batch=%s
-            AND class=%s
-            AND date=%s
-            AND time_slot=%s
-        """, (
-            batch,
-            class_name,
-            attendance_date,
-            slot
-        ))
+        # cursor.execute("""
+        #     DELETE FROM attendance
+        #     WHERE batch=%s
+        #     AND class=%s
+        #     AND date=%s
+        #     AND time_slot=%s
+        # """, (
+        #     batch,
+        #     class_name,
+        #     attendance_date,
+        #     slot
+        # ))
 
         for enrollment_no in present_students:
 
             cursor.execute("""
-                INSERT INTO attendance(
+                INSERT IGNORE INTO attendance(
                     enrollment_no,
                     faculty_id,
                     batch,
@@ -625,6 +625,49 @@ def get_student_detail_attendance():
 
     except Exception as e:
         print(f"Student Detail Error: {str(e)}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+
+
+@teacher_bp.route("/api/teacher/recent-activity")
+def get_recent_activity():
+    if "user_id" not in session:
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
+
+    conn = None
+    cursor = None
+
+    try:
+        conn = db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT
+                a.enrollment_no,
+                s.name,
+                a.batch,
+                a.class,
+                a.date,
+                a.time_slot,
+                a.status
+            FROM attendance a
+            LEFT JOIN students s ON a.enrollment_no = s.enrollment_no
+            WHERE a.faculty_id = %s
+            ORDER BY a.date DESC, a.id DESC
+            LIMIT 10
+        """, (session["user_id"],))
+
+        rows = cursor.fetchall()
+
+        return jsonify({"success": True, "activities": rows})
+
+    except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
 
     finally:

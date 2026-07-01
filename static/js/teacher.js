@@ -736,6 +736,44 @@ function displayResults(results) {
     resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+// ===== Load Recent Activity =====
+function loadRecentActivity() {
+    const list = document.getElementById('recentActivity');
+    if (!list) return;
+
+    fetch('/api/teacher/recent-activity')
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success || data.activities.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clock" style="font-size: 48px; opacity: 0.3; margin-bottom: 16px;"></i>
+                        <p style="color: var(--text-secondary);">No recent activity</p>
+                    </div>`;
+                return;
+            }
+
+            const slotLabel = s => s.replace('slot', 'Lec ').replace('lab', 'Lab ');
+            const statusColor = s => s === 'present' ? 'var(--green)' : 'var(--red)';
+
+            list.innerHTML = data.activities.map(a => `
+                <div style="display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border-color);">
+                    <div style="width:40px;height:40px;border-radius:50%;background:var(--fill-secondary);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="fas fa-user-check" style="color:${statusColor(a.status)};"></i>
+                    </div>
+                    <div style="flex:1;">
+                        <div style="font-weight:600;font-size:14px;">${a.name || a.enrollment_no}</div>
+                        <div style="font-size:12px;color:var(--text-secondary);">${a.batch}-${a.class} &bull; ${slotLabel(a.time_slot)} &bull; ${a.date}</div>
+                    </div>
+                    <span style="font-size:12px;font-weight:600;color:${statusColor(a.status)};text-transform:uppercase;">${a.status}</span>
+                </div>
+            `).join('');
+        })
+        .catch(() => {
+            list.innerHTML = `<p style="color:var(--red);padding:16px;">Failed to load activity</p>`;
+        });
+}
+
 // ===== Animations on Load =====
 window.addEventListener('load', function () {
     const statCards = document.querySelectorAll('.stat-card');
@@ -752,6 +790,9 @@ window.addEventListener('load', function () {
 
     // Initialize attendance system on load
     initAttendanceSystem();
+
+    // Load recent activity
+    loadRecentActivity();
 });
 
 // ===== Logout =====

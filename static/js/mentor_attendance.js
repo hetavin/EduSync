@@ -43,28 +43,28 @@ function loadDailyAttendance() {
 
             if (data.students.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="14" class="text-center">No students found</td></tr>';
+                const summaryDiv = document.getElementById('dailySummary');
+                if (summaryDiv) summaryDiv.innerHTML = '';
                 return;
             }
 
+            const slots = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6', 'lab1', 'lab2', 'lab3'];
+            const slotCounts = {};
+            slots.forEach(slot => { slotCounts[slot] = { present: 0, absent: 0 }; });
+
+            const getStatusBadge = (status) => {
+                if (!status || status === null) return '<span class="badge bg-secondary">-</span>';
+                if (status === 'present') return '<span class="badge bg-success">P</span>';
+                if (status === 'absent') return '<span class="badge bg-danger">A</span>';
+                if (status === 'holiday') return '<span class="badge bg-primary">H</span>';
+                return '<span class="badge bg-secondary">-</span>';
+            };
+
             tbody.innerHTML = data.students.map(s => {
-                const getStatusBadge = (status) => {
-                    if (!status || status === null) return '<span class="badge bg-secondary">-</span>';
-                    if (status === 'present') return '<span class="badge bg-success">P</span>';
-                    if (status === 'absent') return '<span class="badge bg-danger">A</span>';
-                    if (status === 'holiday') return '<span class="badge bg-primary">H</span>';
-                    return '<span class="badge bg-secondary">-</span>';
-                };
-
-                let presentCount = 0;
-                let conductedCount = 0;
-                
-                ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6', 'lab1', 'lab2', 'lab3'].forEach(slot => {
-                    if (s[slot]) {
-                        conductedCount++;
-                        if (s[slot] === 'present') presentCount++;
-                    }
+                slots.forEach(slot => {
+                    if (s[slot] === 'present') slotCounts[slot].present++;
+                    else if (s[slot] === 'absent') slotCounts[slot].absent++;
                 });
-
                 return `
                     <tr>
                         <td>${s.enrollment_no}</td>
@@ -83,7 +83,15 @@ function loadDailyAttendance() {
                 `;
             }).join('');
 
-            // Summary removed as per requirement
+            tbody.innerHTML += `
+                <tr style="background:var(--fill-secondary); font-weight:600;">
+                    <td colspan="3">Present Count</td>
+                    ${slots.map(s => `<td style="color:var(--green);">${slotCounts[s].present}</td>`).join('')}
+                </tr>
+            `;
+
+            const summaryDiv = document.getElementById('dailySummary');
+            if (summaryDiv) summaryDiv.innerHTML = '';
         })
         .catch(err => {
             console.error(err);
@@ -373,6 +381,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('dailySearch')?.addEventListener('input', debounce(loadDailyAttendance, 500));
     
     document.getElementById('monthlyYear')?.addEventListener('change', loadMonthlyAttendance);
+    document.getElementById('monthlySearch')?.addEventListener('input', function() {
+        const term = this.value.toLowerCase();
+        document.querySelectorAll('#monthlyAttendanceBody tr').forEach(row => {
+            row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+        });
+    });
     document.getElementById('detailMonth')?.addEventListener('change', () => {
         const enrollment = document.getElementById('currentEnrollment')?.value;
         if (enrollment) loadStudentDetailAttendance(enrollment);

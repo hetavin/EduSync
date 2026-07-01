@@ -246,6 +246,7 @@
                 <div class="theme-toggle-inner">
                     <i class="fas fa-moon"></i>
                     <span>Dark Mode</span>
+                    <span class="tooltip">Ctrl + D</span>
                     <label class="toggle-switch">
                         <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode">
                         <span class="slider"></span>
@@ -471,7 +472,7 @@
                         <div class="card-body">
                             <div class="student-selection-form">
                                 <div class="form-group">
-                                    <label class="form-label">
+                                    <label class="form-label" for="faceStudentSelect">
                                         <i class="fas fa-user"></i>
                                         Select Student
                                     </label>
@@ -657,23 +658,23 @@
                             <!-- Filters -->
                             <div class="row" style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
                                 <div class="filter-wrapper" style="flex: 0 0 200px;">
-                                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);"><i class="fas fa-calendar"></i> Date</label>
+                                    <label for="dailyDate" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);"><i class="fas fa-calendar"></i> Date</label>
                                     <input type="date" class="filter-select" id="dailyDate" style="width: 100%;">
                                 </div>
                                 <div class="filter-wrapper" style="flex: 0 0 150px;">
-                                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);"><i class="fas fa-layer-group"></i> Batch</label>
+                                    <label for="dailyBatch" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);"><i class="fas fa-layer-group"></i> Batch</label>
                                     <select class="filter-select" id="dailyBatch" style="width: 100%;">
                                         <option value="">All Batches</option>
                                     </select>
                                 </div>
                                 <div class="filter-wrapper" style="flex: 0 0 150px;">
-                                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);"><i class="fas fa-chalkboard"></i> Class</label>
+                                    <label for="dailyClass" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);"><i class="fas fa-chalkboard"></i> Class</label>
                                     <select class="filter-select" id="dailyClass" style="width: 100%;">
                                         <option value="">All Classes</option>
                                     </select>
                                 </div>
                                 <div class="filter-wrapper" style="flex: 1; min-width: 200px;">
-                                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);"><i class="fas fa-search"></i> Search</label>
+                                    <label for="dailySearch" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);"><i class="fas fa-search"></i> Search</label>
                                     <div class="search-container">
                                         <i class="fas fa-magnifying-glass"></i>
                                         <input type="text" id="dailySearch" placeholder="Enrollment or Name" style="width: 100%;">
@@ -728,12 +729,19 @@
                         </div>
                         <div class="card-body">
                             <!-- Year Filter -->
-                            <div class="row" style="display: flex; gap: 12px; margin-bottom: 24px;">
+                            <div class="row" style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
                                 <div class="filter-wrapper" style="flex: 0 0 150px;">
-                                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);"><i class="fas fa-calendar"></i> Year</label>
+                                    <label for="monthlyYear" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);"><i class="fas fa-calendar"></i> Year</label>
                                     <select class="filter-select" id="monthlyYear" style="width: 100%;">
                                         <option value="">Loading...</option>
                                     </select>
+                                </div>
+                                <div class="filter-wrapper" style="flex: 1; min-width: 200px;">
+                                    <label for="monthlySearch" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);"><i class="fas fa-search"></i> Search</label>
+                                    <div class="search-container">
+                                        <i class="fas fa-magnifying-glass"></i>
+                                        <input type="text" id="monthlySearch" placeholder="Enrollment or Name" style="width: 100%;">
+                                    </div>
                                 </div>
                             </div>
 
@@ -792,7 +800,7 @@
                             <!-- Month Selector -->
                             <div class="row" style="display: flex; gap: 12px; margin-bottom: 24px;">
                                 <div class="filter-wrapper" style="flex: 0 0 150px;">
-                                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);"><i class="fas fa-calendar"></i> Month</label>
+                                    <label for="detailMonth" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);"><i class="fas fa-calendar"></i> Month</label>
                                     <select class="filter-select" id="detailMonth" style="width: 100%;">
                                         <option value="1">January</option>
                                         <option value="2">February</option>
@@ -809,7 +817,7 @@
                                     </select>
                                 </div>
                                 <div class="filter-wrapper" style="flex: 0 0 120px;">
-                                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);"><i class="fas fa-calendar-alt"></i> Year</label>
+                                    <label for="detailYear" style="display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);"><i class="fas fa-calendar-alt"></i> Year</label>
                                     <select class="filter-select" id="detailYear" style="width: 100%;">
                                         <option value="">Loading...</option>
                                     </select>

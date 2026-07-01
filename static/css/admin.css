@@ -215,6 +215,23 @@ body {
     border-top: 0.5px solid var(--separator);
 }
 
+.theme-toggle:hover .tooltip {
+    display: block;
+}
+
+.tooltip {
+    display: none;
+    position: absolute;
+    left: 106%;
+    top: 745px;
+    transform: translateY(-50%);
+    padding: 5px 10px;
+    background: #333;
+    color: white;
+    border-radius: 5px;
+    white-space: nowrap;
+}
+
 .theme-toggle-inner {
     display: flex;
     align-items: center;

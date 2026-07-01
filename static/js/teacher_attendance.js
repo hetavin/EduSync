@@ -70,8 +70,14 @@ function loadTeacherDailyAttendance() {
 
             if (data.students.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="13" style="text-align:center;">No students found</td></tr>';
+                const summaryDiv = document.getElementById('dailySummary');
+                if (summaryDiv) summaryDiv.innerHTML = '';
                 return;
             }
+
+            const slots = ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6', 'lab1', 'lab2', 'lab3'];
+            const slotCounts = {};
+            slots.forEach(slot => { slotCounts[slot] = { present: 0, absent: 0 }; });
 
             tbody.innerHTML = data.students.map(s => {
                 const getStatusBadge = (status) => {
@@ -82,14 +88,9 @@ function loadTeacherDailyAttendance() {
                     return '<span class="badge bg-secondary">-</span>';
                 };
 
-                let presentCount = 0;
-                let conductedCount = 0;
-                
-                ['slot1', 'slot2', 'slot3', 'slot4', 'slot5', 'slot6', 'lab1', 'lab2', 'lab3'].forEach(slot => {
-                    if (s[slot]) {
-                        conductedCount++;
-                        if (s[slot] === 'present') presentCount++;
-                    }
+                slots.forEach(slot => {
+                    if (s[slot] === 'present') slotCounts[slot].present++;
+                    else if (s[slot] === 'absent') slotCounts[slot].absent++;
                 });
 
                 return `
@@ -109,6 +110,16 @@ function loadTeacherDailyAttendance() {
                     </tr>
                 `;
             }).join('');
+
+            tbody.innerHTML += `
+                <tr style="background:var(--fill-secondary); font-weight:600;">
+                    <td colspan="3">Present Count</td>
+                    ${slots.map(s => `<td style="color:var(--green);">${slotCounts[s].present}</td>`).join('')}
+                </tr>
+            `;
+
+            const summaryDiv = document.getElementById('dailySummary');
+            if (summaryDiv) summaryDiv.innerHTML = '';
         })
         .catch(err => {
             console.error(err);
@@ -161,6 +172,7 @@ function loadTeacherMonthlyAttendance() {
                 "jan","feb","mar","apr","may","jun",
                 "jul","aug","sep","oct","nov","dec"
             ];
+            
 
             tbody.innerHTML = data.students.map(s => {
 
@@ -280,21 +292,21 @@ function loadStudentDetailAttendance(enrollment) {
                 infoDiv.innerHTML = `
                     <div style="background: linear-gradient(135deg, rgba(0, 122, 255, 0.08) 0%, rgba(88, 86, 214, 0.08) 100%); padding: 24px; border-radius: 12px; margin: 24px; color: black; display: flex; gap: 24px; align-items: center; border: 2px solid var(--blue); border-top: 7px solid var(--blue)">
                         <div style="width: 80px; height: 80px; background: var(--fill-secondary); box-shadow: 0 6px 20px rgba(0, 122, 255, 0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; border: 4px solid var(--blue);"><span style="color: var(--blue);">${initials}</span></div>
-                        <div style="flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                        <div style="flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; color: var(--text-primary);">
                             <div>
-                                <div style="opacity: 0.8; font-size: 12px; margin-bottom: 4px;"><div style="color: var(--blue);"><i class="fas fa-id-card"></i> <span style="color: black;">Enrollment</span></div></div>
+                                <div style="opacity: 0.8; font-size: 12px; margin-bottom: 4px;"><div style="color: var(--blue);"><i class="fas fa-id-card"></i> <span style="color: var(--text-primary);">Enrollment</span></div></div>
                                 <div style="font-weight: 600; font-size: 16px;">${student.enrollment_no}</div>
                             </div>
                             <div>
-                                <div style="opacity: 0.8; font-size: 12px; margin-bottom: 4px;"><div style="color: var(--blue);"><i class="fas fa-user"></i> <span style="color: black;">Name</span></div></div>
+                                <div style="opacity: 0.8; font-size: 12px; margin-bottom: 4px;"><div style="color: var(--blue);"><i class="fas fa-user"></i> <span style="color: var(--text-primary);">EnrollmentName</span></div></div>
                                 <div style="font-weight: 600; font-size: 16px;">${student.name}</div>
                             </div>
                             <div>
-                                <div style="opacity: 0.8; font-size: 12px; margin-bottom: 4px;"><div style="color: var(--blue);"><i class="fas fa-layer-group"></i> <span style="color: black;">Batch</span></div></div>
+                                <div style="opacity: 0.8; font-size: 12px; margin-bottom: 4px;"><div style="color: var(--blue);"><i class="fas fa-layer-group"></i> <span style="color: var(--text-primary);">Enrollment Batch</span></div></div>
                                 <div style="font-weight: 600; font-size: 16px;">${student.batch}</div>
                             </div>
                             <div>
-                                <div style="opacity: 0.8; font-size: 12px; margin-bottom: 4px;"><div style="color: var(--blue);"><i class="fas fa-chalkboard"></i> <span style="color: black;">Class</span></div></div>
+                                <div style="opacity: 0.8; font-size: 12px; margin-bottom: 4px;"><div style="color: var(--blue);"><i class="fas fa-chalkboard"></i> <span style="color: var(--text-primary);">Class</span></div></div>
                                 <div style="font-weight: 600; font-size: 16px;">${student.class}</div>
                             </div>
                         </div>
@@ -374,6 +386,12 @@ window.addEventListener('load', function() {
     document.getElementById('dailySearch')?.addEventListener('input', debounceTeacher(loadTeacherDailyAttendance, 500));
     
     document.getElementById('monthlyYear')?.addEventListener('change', loadTeacherMonthlyAttendance);
+    document.getElementById('monthlySearch')?.addEventListener('input', function() {
+        const term = this.value.toLowerCase();
+        document.querySelectorAll('#monthlyAttendanceBody tr').forEach(row => {
+            row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+        });
+    });
     document.getElementById('detailMonth')?.addEventListener('change', () => {
         const enrollment = document.getElementById('currentEnrollment')?.value;
         if (enrollment) loadStudentDetailAttendance(enrollment);

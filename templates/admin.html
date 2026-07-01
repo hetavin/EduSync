@@ -47,6 +47,7 @@
                 <div class="theme-toggle-inner">
                     <i class="fas fa-moon"></i>
                     <span>Dark Mode</span>
+                    <span class="tooltip">Ctrl + D</span>
                     <label class="toggle-switch">
                         <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode">
                         <span class="slider"></span>
@@ -202,7 +203,7 @@
                                 </button>
                                 <div class="filter-menu" id="filterMenu">
                                     <div class="filter-section">
-                                        <label class="filter-label">Batch</label>
+                                        <label class="filter-label" for="filterBatch">Batch</label>
                                         <select id="filterBatch" class="filter-select">
                                             <option value="">All Batches</option>
                                         </select>
@@ -275,7 +276,7 @@
                         <form id="facultyForm" class="faculty-form">
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label class="form-label">Type</label>
+                                    <label class="form-label" for="facultyType">Type</label>
                                     <select id="facultyType" class="form-input" required>
                                         <option value="">Select Type</option>
                                         <option value="faculty">Faculty</option>
@@ -283,17 +284,17 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Name</label>
+                                    <label class="form-label" for="facultyName">Name</label>
                                     <input type="text" id="facultyName" class="form-input" placeholder="Full Name" required>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label class="form-label">Email</label>
+                                    <label class="form-label" for="facultyEmail">Email</label>
                                     <input type="email" id="facultyEmail" class="form-input" placeholder="email@example.com" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="form-label">Profession/Role</label>
+                                    <label class="form-label" for="facultyProfession">Profession/Role</label>
                                     <select id="facultyProfession" class="form-input" required>
                                         <option value="">Select Role</option>
                                         <option value="Professor">Professor</option>
@@ -312,7 +313,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group" id="classGroup" style="display: none;">
-                                    <label class="form-label">Class (For Mentors)</label>
+                                    <label class="form-label" for="facultyClass">Class (For Mentors)</label>
                                     <input type="text" id="facultyClass" class="form-input" placeholder="e.g., CS-A, IT-B">
                                 </div>
                             </div>
@@ -342,7 +343,7 @@
                                 </button>
                                 <div class="filter-menu" id="facultyFilterMenu">
                                     <div class="filter-section">
-                                        <label class="filter-label">Type</label>
+                                        <label class="filter-label" for="filterFacultyType">Type</label>
                                         <select id="filterFacultyType" class="filter-select">
                                             <option value="">All Types</option>
                                             <option value="faculty">Faculty Only</option>
