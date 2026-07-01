@@ -26,19 +26,20 @@ def get_teacher_profile():
         cursor = conn.cursor()
 
         cursor.execute("""
-            SELECT f.name
+            SELECT f.name, f.profession
             FROM users u
             INNER JOIN faculty f ON u.email = f.email
             WHERE u.id = %s
         """, (session["user_id"],))
 
-        result = cursor.fetchone()
+        result = cursor.fetchall()
         
         # return jsonify(result)
         # return jsonify({
         #     "success": True,
         #     "name": result[0]
         # })
+        # print(result)
         
         if not result:
             print("NO RESULT FOUND")
@@ -47,15 +48,16 @@ def get_teacher_profile():
                 "message": "Profile not found"
             }), 404
 
-        print("RESULT FOUND")
+        # print("RESULT FOUND")
         return jsonify({
             "success": True,
-            "name": result["name"]
+            "name": result[0]["name"],
+            "profession": result[0]["profession"]
         })
         
-    except Exception as e:
+    except Exception as e:        
         print("ERROR:", e)
-        return jsonify({"error": str(e)}), 500        
+        return jsonify({"error": str(e)}), 500
 
 @teacher_bp.route("/api/teacher/batch-classes")
 def get_batch_classes():

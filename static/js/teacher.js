@@ -137,11 +137,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const data = await response.json();
 
-        if (!data.name) {
-            throw new Error("Name not found");
+        if (!data.success) {
+            throw new Error(data.message || "Profile not found");
         }
 
         document.getElementById("Teachername").textContent = data.name;
+        document.getElementById("TeacherProfession").textContent = data.profession;
 
         const initials = data.name
             .trim()
