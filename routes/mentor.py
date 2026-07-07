@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, session, redirect, url_for, jsonif
 from models.read_excel import extract_student_data
 from models.detect_face import extract_faces
 from models.generate_embeddings import generate_embeddings
+from threading import Thread
 from connect import db_connection
 import base64
 import pandas as pd
@@ -258,8 +259,6 @@ def register_face():
 
         conn.commit()
         
-        from threading import Thread
-
         Thread(
             target=generate_embeddings,
             args=(enrollment_no,),

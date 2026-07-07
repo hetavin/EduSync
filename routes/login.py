@@ -48,7 +48,6 @@ def login():
     session["user_id"] = user["id"]
     session["enrollment"] = user["enrollment"]
     session["role"] = user["role"]
-    session["name"] = user["name"]
 
     flash("Login Successful!", "success")
 

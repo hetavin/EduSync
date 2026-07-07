@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from insightface.model_zoo import get_model
+# from service.faiss_manager import build_faiss_from_db
 from connect import db_connection
 
 recognition_model = get_model(

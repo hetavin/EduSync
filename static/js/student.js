@@ -180,15 +180,16 @@ window.addEventListener('resize', function () {
 
 // ===== Load Student Data =====
 const timeSlotLabels = {
-    'slot1': '9:00 AM - 9:55 AM',
-    'slot2': '9:55 AM - 10:50 AM',
-    'slot3': '11:00 AM - 11:55 AM',
-    'slot4': '11:55 AM - 12:50 PM',
-    'slot5': '1:20 PM - 2:15 PM',
-    'slot6': '2:15 PM - 3:10 PM',
-    'lab1': '9:00 AM - 10:50 AM (Lab)',
-    'lab2': '11:00 AM - 12:50 PM (Lab)',
-    'lab3': '1:20 PM - 3:10 PM (Lab)'
+    'slot1': 'Lecture - 1 <br><small>(9:00 AM - 9:55 AM)</small>',
+    'slot2': 'Lecture - 2 <br><small>(9:55 AM - 10:50 AM)</small>',
+    'slot3': 'Lecture - 3 <br><small>(11:00 AM - 11:55 AM)</small>',
+    'slot4': 'Lecture - 4 <br><small>(11:55 AM - 12:50 PM)</small>',
+    'slot5': 'Lecture - 5 <br><small>(1:20 PM - 2:15 PM)</small>',
+    'slot6': 'Lecture - 6 <br><small>(2:15 PM - 3:10 PM)</small>',
+
+    'lab1': 'Lab <br><small>(9:00 AM - 10:50 AM)</small>',
+    'lab2': 'Lab <br><small>(11:00 AM - 12:50 PM)</small>',
+    'lab3': 'Lab <br><small>(1:20 PM - 3:10 PM)</small>'
 };
 
 function loadStudentProfile() {
@@ -294,7 +295,7 @@ function loadRecentAttendance() {
                             </div>
                             <div class="attendance-details">
                                 <p class="attendance-time">${timeLabel}</p>
-                                <p class="attendance-status">Check-in</p>
+                                <!-- <p class="attendance-status">Check-in</p> -->
                             </div>
                             <span class="status-badge ${statusClass}">${statusText}</span>
                         </div>
