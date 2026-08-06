@@ -11,7 +11,7 @@ from routes.student import student_bp
 
 app = Flask(__name__)
 
-app.secret_key = "edusync_secret"
+app.secret_key = "edusync_4672"
 
 # Prevent browser from caching protected pages
 @app.after_request

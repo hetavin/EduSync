@@ -481,7 +481,10 @@ input:checked+.slider:before {
 .stat-card {
     background: var(--bg-secondary);
     border-radius: 12px;
-    padding: 20px;
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     box-shadow: var(--shadow-sm);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -499,8 +502,8 @@ input:checked+.slider:before {
 }
 
 .stat-icon {
-    width: 48px;
-    height: 48px;
+    width: 58px;
+    height: 58px;
     border-radius: 12px;
     display: flex;
     align-items: center;

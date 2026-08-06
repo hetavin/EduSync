@@ -16,6 +16,8 @@ MODIFY role ENUM('admin','faculty','mentor','student');
 
 drop TABLE users
 
+select * from users
+
 CREATE TABLE students (
     enrollment_no VARCHAR(30) PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
