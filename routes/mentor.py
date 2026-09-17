@@ -4,6 +4,12 @@ from models.detect_face import extract_faces
 from models.generate_embeddings import generate_embeddings
 from threading import Thread
 from connect import db_connection
+from service.attendance_stats import (
+    class_key,
+    conducted_by_month,
+    monthly_row,
+    present_by_month
+)
 import base64
 import pandas as pd
 
@@ -606,62 +612,31 @@ def get_monthly_attendance():
 
         mentor_class = mentor["class_name"]
 
-        query = """
-SELECT
-    s.enrollment_no,
-    s.name,
-    s.batch,
-    s.class,
-
-    ROUND(SUM(CASE WHEN MONTH(a.date)=1  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS jan,
-    ROUND(SUM(CASE WHEN MONTH(a.date)=2  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS feb,
-    ROUND(SUM(CASE WHEN MONTH(a.date)=3  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS mar,
-    ROUND(SUM(CASE WHEN MONTH(a.date)=4  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS apr,
-    ROUND(SUM(CASE WHEN MONTH(a.date)=5  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS may,
-    ROUND(SUM(CASE WHEN MONTH(a.date)=6  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS jun,
-    ROUND(SUM(CASE WHEN MONTH(a.date)=7  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS jul,
-    ROUND(SUM(CASE WHEN MONTH(a.date)=8  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS aug,
-    ROUND(SUM(CASE WHEN MONTH(a.date)=9  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS sep,
-    ROUND(SUM(CASE WHEN MONTH(a.date)=10 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS oct,
-    ROUND(SUM(CASE WHEN MONTH(a.date)=11 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS nov,
-    ROUND(SUM(CASE WHEN MONTH(a.date)=12 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS `dec`,
-
-    ROUND(
-        (
-            SUM(CASE WHEN MONTH(a.date)=1  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
-            SUM(CASE WHEN MONTH(a.date)=2  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
-            SUM(CASE WHEN MONTH(a.date)=3  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
-            SUM(CASE WHEN MONTH(a.date)=4  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
-            SUM(CASE WHEN MONTH(a.date)=5  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
-            SUM(CASE WHEN MONTH(a.date)=6  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
-            SUM(CASE WHEN MONTH(a.date)=7  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
-            SUM(CASE WHEN MONTH(a.date)=8  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
-            SUM(CASE WHEN MONTH(a.date)=9  AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
-            SUM(CASE WHEN MONTH(a.date)=10 AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
-            SUM(CASE WHEN MONTH(a.date)=11 AND a.status='present' THEN 1 ELSE 0 END)*100/120 +
-            SUM(CASE WHEN MONTH(a.date)=12 AND a.status='present' THEN 1 ELSE 0 END)*100/120
-        ) / 12,
-    2) AS avg_attendance
-
-FROM students s
-
-LEFT JOIN attendance a
-    ON s.enrollment_no = a.enrollment_no
-    AND YEAR(a.date) = %s
-
-WHERE s.class = %s
-
-GROUP BY
-    s.enrollment_no,
-    s.name,
-    s.batch,
-    s.class
-
-ORDER BY s.enrollment_no
-"""
-
-        cursor.execute(query, (year, mentor_class))
+        cursor.execute("""
+            SELECT
+                s.enrollment_no,
+                s.name,
+                s.batch,
+                s.class
+            FROM students s
+            WHERE s.class = %s
+            ORDER BY s.enrollment_no
+        """, (mentor_class,))
         students = cursor.fetchall()
+
+        # Per-month lectures conducted per class, and attended per student
+        conducted = conducted_by_month(cursor, year)
+        present = present_by_month(cursor, year, class_name=mentor_class)
+
+        for student in students:
+            key = class_key(student["batch"], student["class"])
+
+            student.update(
+                monthly_row(
+                    present.get(student["enrollment_no"], {}),
+                    conducted.get(key, {})
+                )
+            )
 
         return jsonify({
             "success": True,

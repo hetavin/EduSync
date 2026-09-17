@@ -8,6 +8,7 @@ import string
 import os
 import re
 import pandas as pd
+import pymysql
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -56,6 +57,14 @@ def students():
 
         inserted = 0
         skipped = 0
+        duplicates = []
+        invalid = []
+
+        # Values already used inside this file, so two rows sharing an
+        # email or phone number don't collide on the unique indexes
+        seen_enrollment = set()
+        seen_email = set()
+        seen_phone = set()
 
         for _, row in df.iterrows():
 
@@ -66,39 +75,83 @@ def students():
             if not enrollment_no:
                 continue
 
-            cursor.execute(
-                "SELECT * FROM students WHERE enrollment_no=%s",
-                (enrollment_no,)
-            )
+            # phone_number is UNIQUE, so blanks must be NULL
+            email = student["email"] or None
+            phone_number = student["phone_number"] or None
 
-            if cursor.fetchone():
+            # email is NOT NULL and UNIQUE, so a row without one
+            # can never be stored
+            if not email:
                 skipped += 1
+                invalid.append(enrollment_no)
+                continue
+
+            if (
+                enrollment_no in seen_enrollment
+                or email in seen_email
+                or (phone_number and phone_number in seen_phone)
+            ):
+                skipped += 1
+                duplicates.append(enrollment_no)
                 continue
 
             cursor.execute(
                 """
-                INSERT INTO students
-                (
-                    enrollment_no,
-                    name,
-                    email,
-                    phone_number,
-                    batch,
-                    class,
-                    department
-                )
-                VALUES (%s,%s,%s,%s,%s,%s,%s)
+                SELECT enrollment_no FROM students
+                WHERE enrollment_no=%s
+                   OR email=%s
+                   OR (%s IS NOT NULL AND phone_number=%s)
                 """,
                 (
-                    student["enrollment_no"],
-                    student["name"],
-                    student["email"],
-                    student["phone_number"],
-                    student["batch"],
-                    student["class"],
-                    student["department"]
+                    enrollment_no,
+                    email,
+                    phone_number, phone_number
                 )
             )
+
+            if cursor.fetchone():
+                skipped += 1
+                duplicates.append(enrollment_no)
+                continue
+
+            try:
+                cursor.execute(
+                    """
+                    INSERT INTO students
+                    (
+                        enrollment_no,
+                        name,
+                        email,
+                        phone_number,
+                        batch,
+                        class,
+                        department
+                    )
+                    VALUES (%s,%s,%s,%s,%s,%s,%s)
+                    """,
+                    (
+                        enrollment_no,
+                        student["name"],
+                        email,
+                        phone_number,
+                        student["batch"],
+                        student["class"],
+                        student["department"]
+                    )
+                )
+
+            except pymysql.err.IntegrityError:
+                # Anything the checks above missed: skip the row
+                # instead of losing the whole import
+                skipped += 1
+                duplicates.append(enrollment_no)
+                continue
+
+            seen_enrollment.add(enrollment_no)
+            seen_email.add(email)
+
+            if phone_number:
+                seen_phone.add(phone_number)
 
             inserted += 1
 
@@ -111,16 +164,28 @@ def students():
             "success": True,
             "inserted": inserted,
             "skipped": skipped,
+            "duplicates": duplicates,
+            "invalid": invalid,
             "message": f"{inserted} students imported successfully"
+                       + (f", {skipped} rows skipped" if skipped else "")
         })
 
     except Exception as e:
+
+        try:
+            conn.rollback()
+            cursor.close()
+            conn.close()
+
+        except Exception:
+            pass
+
         return jsonify({
             "success": False,
             "message": str(e)
         }), 500
-        
-        
+
+
 @admin_bp.route('/api/students', methods=['GET'])
 def get_students():
 

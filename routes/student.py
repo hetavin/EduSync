@@ -1,5 +1,12 @@
 from flask import Blueprint, render_template, session, redirect, url_for, jsonify, request
 from connect import db_connection
+from service.attendance_stats import (
+    class_key,
+    conducted_by_month,
+    conducted_sessions,
+    monthly_row,
+    percentage
+)
 from datetime import datetime
 
 student_bp = Blueprint("student", __name__)
@@ -78,32 +85,55 @@ def get_attendance_stats():
             return jsonify({"success": False, "message": "User not found"}), 404
         
         enrollment_no = user['enrollment']
-        
-        # Get current month attendance
-        current_month = datetime.now().strftime('%Y-%m')
+
+        # The student's batch + class decides which conducted lectures
+        # their percentage is measured against
         cursor.execute(
-            """SELECT 
+            "SELECT batch, class FROM students WHERE enrollment_no = %s",
+            (enrollment_no,)
+        )
+        student = cursor.fetchone() or {"batch": "", "class": ""}
+
+        now = datetime.now()
+
+        # Get current month attendance
+        cursor.execute(
+            """SELECT
                    COUNT(*) as total,
-                   SUM(CASE WHEN status = 'present' THEN 1 ELSE 0 END) as present,
-                   SUM(CASE WHEN status = 'absent' THEN 1 ELSE 0 END) as absent
-               FROM attendance 
-               WHERE enrollment_no = %s AND DATE_FORMAT(date, '%%Y-%%m') = %s""",
-            (enrollment_no, current_month)
+                   SUM(CASE WHEN status = 'present' THEN 1 ELSE 0 END) as present
+               FROM attendance
+               WHERE enrollment_no = %s
+                 AND YEAR(date) = %s AND MONTH(date) = %s""",
+            (enrollment_no, now.year, now.month)
         )
         month_stats = cursor.fetchone()
-        
+
+        # Lectures conducted for this class this month
+        monthly_conducted = conducted_sessions(
+            cursor,
+            student["batch"],
+            student["class"],
+            year=now.year,
+            month=now.month
+        )
+
         # Get overall attendance
         cursor.execute(
-            """SELECT 
+            """SELECT
                    COUNT(*) as total,
-                   SUM(CASE WHEN status = 'present' THEN 1 ELSE 0 END) as present,
-                   SUM(CASE WHEN status = 'absent' THEN 1 ELSE 0 END) as absent
-               FROM attendance 
+                   SUM(CASE WHEN status = 'present' THEN 1 ELSE 0 END) as present
+               FROM attendance
                WHERE enrollment_no = %s""",
             (enrollment_no,)
         )
         overall_stats = cursor.fetchone()
-        
+
+        overall_conducted = conducted_sessions(
+            cursor,
+            student["batch"],
+            student["class"]
+        )
+
         # Get today's attendance
         today = datetime.now().strftime('%Y-%m-%d')
         cursor.execute(
@@ -117,23 +147,25 @@ def get_attendance_stats():
         cursor.close()
         conn.close()
         
-        # Calculate percentages
-        overall_attendance = 0
-        if overall_stats['total'] > 0:
-            overall_attendance = round((overall_stats['present'] / overall_stats['total']) * 100, 1)
-        
-        # Calculate monthly percentage based on 120 total lectures per month (like yearly view)
-        monthly_percentage = 0
-        if month_stats['present']:
-            monthly_percentage = round((month_stats['present'] * 100) / 120, 2)
-        
+        # Percentages are measured against conducted lectures, so they
+        # move on their own as attendance is taken for new slots
+        monthly_present = int(month_stats['present'] or 0)
+        overall_present = int(overall_stats['present'] or 0)
+
         return jsonify({
             "success": True,
             "stats": {
-                "overall_percentage": overall_attendance,
-                "monthly_present": month_stats['present'] or 0,
-                "monthly_absent": month_stats['absent'] or 0,
-                "monthly_percentage": monthly_percentage,
+                "overall_percentage": percentage(
+                    overall_present, overall_conducted
+                ),
+                "overall_present": overall_present,
+                "overall_conducted": overall_conducted,
+                "monthly_present": monthly_present,
+                "monthly_absent": max(monthly_conducted - monthly_present, 0),
+                "monthly_conducted": monthly_conducted,
+                "monthly_percentage": percentage(
+                    monthly_present, monthly_conducted
+                ),
                 "today_status": today_record['status'] if today_record else 'not_marked'
             }
         })
@@ -307,33 +339,40 @@ def get_yearly_attendance():
         
         enrollment_no = user['enrollment']
         year = request.args.get('year', datetime.now().year)
-        
+
         cursor.execute(
-            """SELECT
-                ROUND(SUM(CASE WHEN MONTH(date)=1  AND status='present' THEN 1 ELSE 0 END)*100/120, 2) AS jan,
-                ROUND(SUM(CASE WHEN MONTH(date)=2  AND status='present' THEN 1 ELSE 0 END)*100/120, 2) AS feb,
-                ROUND(SUM(CASE WHEN MONTH(date)=3  AND status='present' THEN 1 ELSE 0 END)*100/120, 2) AS mar,
-                ROUND(SUM(CASE WHEN MONTH(date)=4  AND status='present' THEN 1 ELSE 0 END)*100/120, 2) AS apr,
-                ROUND(SUM(CASE WHEN MONTH(date)=5  AND status='present' THEN 1 ELSE 0 END)*100/120, 2) AS may,
-                ROUND(SUM(CASE WHEN MONTH(date)=6  AND status='present' THEN 1 ELSE 0 END)*100/120, 2) AS jun,
-                ROUND(SUM(CASE WHEN MONTH(date)=7  AND status='present' THEN 1 ELSE 0 END)*100/120, 2) AS jul,
-                ROUND(SUM(CASE WHEN MONTH(date)=8  AND status='present' THEN 1 ELSE 0 END)*100/120, 2) AS aug,
-                ROUND(SUM(CASE WHEN MONTH(date)=9  AND status='present' THEN 1 ELSE 0 END)*100/120, 2) AS sep,
-                ROUND(SUM(CASE WHEN MONTH(date)=10 AND status='present' THEN 1 ELSE 0 END)*100/120, 2) AS oct,
-                ROUND(SUM(CASE WHEN MONTH(date)=11 AND status='present' THEN 1 ELSE 0 END)*100/120, 2) AS nov,
-                ROUND(SUM(CASE WHEN MONTH(date)=12 AND status='present' THEN 1 ELSE 0 END)*100/120, 2) AS `dec`
+            "SELECT batch, class FROM students WHERE enrollment_no = %s",
+            (enrollment_no,)
+        )
+        student = cursor.fetchone() or {"batch": "", "class": ""}
+
+        # Lectures the student attended, per month
+        cursor.execute(
+            """SELECT MONTH(date) AS month, COUNT(*) AS present
                FROM attendance
-               WHERE enrollment_no = %s AND YEAR(date) = %s""",
+               WHERE enrollment_no = %s
+                 AND YEAR(date) = %s
+                 AND status = 'present'
+               GROUP BY MONTH(date)""",
             (enrollment_no, year)
         )
-        yearly_data = cursor.fetchone()
-        
+        present_months = {
+            row["month"]: row["present"] for row in cursor.fetchall()
+        }
+
+        # Lectures conducted for the student's class, per month
+        conducted = conducted_by_month(cursor, year).get(
+            class_key(student["batch"], student["class"]), {}
+        )
+
+        yearly_data = monthly_row(present_months, conducted)
+
         cursor.close()
         conn.close()
-        
+
         return jsonify({
             "success": True,
-            "yearly": yearly_data if yearly_data else {}
+            "yearly": yearly_data
         })
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500

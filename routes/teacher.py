@@ -5,6 +5,14 @@ from PIL import Image
 from io import BytesIO
 from models.detect_face import detect_faces_from_tiles
 from models.generate_embeddings import detections_to_embeddings
+from service.attendance_stats import (
+    class_key,
+    conducted_by_month,
+    conducted_sessions,
+    monthly_row,
+    percentage,
+    present_by_month
+)
 
 
 teacher_bp = Blueprint("teacher", __name__)
@@ -283,7 +291,6 @@ def get_attendance():
                 s.phone_number,
                 a.batch,
                 a.class,
-                COUNT(DISTINCT a.date) AS total_classes,
                 SUM(CASE WHEN a.status='present' THEN 1 ELSE 0 END) AS present_count
             FROM attendance a
             LEFT JOIN students s ON a.enrollment_no = s.enrollment_no
@@ -310,19 +317,27 @@ def get_attendance():
 
         students = cursor.fetchall()
 
-        # Calculate attendance percentage and absent count
+        # Measure every student against the lectures their class actually
+        # held, so the figure tracks whatever has been conducted so far
+        conducted_cache = {}
+
         for student in students:
-            total = student["total_classes"] or 0
-            present = student["present_count"] or 0
-            absent = total - present
+            key = class_key(student["batch"], student["class"])
 
-            if total > 0:
-                percentage = (present / 156) * 100
-            else:
-                percentage = 0
+            if key not in conducted_cache:
+                conducted_cache[key] = conducted_sessions(
+                    cursor,
+                    student["batch"],
+                    student["class"]
+                )
 
-            student["attendance_percentage"] = round(percentage, 2)
-            student["absent_count"] = absent
+            conducted = conducted_cache[key]
+            present = int(student["present_count"] or 0)
+
+            student["present_count"] = present
+            student["total_classes"] = conducted
+            student["absent_count"] = max(conducted - present, 0)
+            student["attendance_percentage"] = percentage(present, conducted)
 
         # Get filter options from attendance table
         cursor.execute("""
@@ -457,60 +472,30 @@ def get_monthly_attendance():
         conn = db_connection()
         cursor = conn.cursor()
 
-        query = """
+        cursor.execute("""
             SELECT
                 s.enrollment_no,
                 s.name,
                 s.batch,
-                s.class,
-
-                ROUND(SUM(CASE WHEN MONTH(a.date)=1  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS jan,
-                ROUND(SUM(CASE WHEN MONTH(a.date)=2  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS feb,
-                ROUND(SUM(CASE WHEN MONTH(a.date)=3  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS mar,
-                ROUND(SUM(CASE WHEN MONTH(a.date)=4  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS apr,
-                ROUND(SUM(CASE WHEN MONTH(a.date)=5  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS may,
-                ROUND(SUM(CASE WHEN MONTH(a.date)=6  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS jun,
-                ROUND(SUM(CASE WHEN MONTH(a.date)=7  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS jul,
-                ROUND(SUM(CASE WHEN MONTH(a.date)=8  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS aug,
-                ROUND(SUM(CASE WHEN MONTH(a.date)=9  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS sep,
-                ROUND(SUM(CASE WHEN MONTH(a.date)=10 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS oct,
-                ROUND(SUM(CASE WHEN MONTH(a.date)=11 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS nov,
-                ROUND(SUM(CASE WHEN MONTH(a.date)=12 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) AS `dec`,
-
-                ROUND(
-                    (
-                        ROUND(SUM(CASE WHEN MONTH(a.date)=1  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
-                        ROUND(SUM(CASE WHEN MONTH(a.date)=2  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
-                        ROUND(SUM(CASE WHEN MONTH(a.date)=3  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
-                        ROUND(SUM(CASE WHEN MONTH(a.date)=4  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
-                        ROUND(SUM(CASE WHEN MONTH(a.date)=5  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
-                        ROUND(SUM(CASE WHEN MONTH(a.date)=6  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
-                        ROUND(SUM(CASE WHEN MONTH(a.date)=7  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
-                        ROUND(SUM(CASE WHEN MONTH(a.date)=8  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
-                        ROUND(SUM(CASE WHEN MONTH(a.date)=9  AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
-                        ROUND(SUM(CASE WHEN MONTH(a.date)=10 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
-                        ROUND(SUM(CASE WHEN MONTH(a.date)=11 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2) +
-                        ROUND(SUM(CASE WHEN MONTH(a.date)=12 AND a.status='present' THEN 1 ELSE 0 END)*100/120,2)
-                    ) / 12,
-                2) AS avg_attendance
-
-            FROM students s
-
-            LEFT JOIN attendance a
-            ON s.enrollment_no = a.enrollment_no
-            AND YEAR(a.date) = %s
-
-            GROUP BY
-                s.enrollment_no,
-                s.name,
-                s.batch,
                 s.class
-
+            FROM students s
             ORDER BY s.enrollment_no
-            """
-
-        cursor.execute(query, (year,))
+        """)
         students = cursor.fetchall()
+
+        # Per-month lectures conducted per class, and attended per student
+        conducted = conducted_by_month(cursor, year)
+        present = present_by_month(cursor, year)
+
+        for student in students:
+            key = class_key(student["batch"], student["class"])
+
+            student.update(
+                monthly_row(
+                    present.get(student["enrollment_no"], {}),
+                    conducted.get(key, {})
+                )
+            )
 
         return jsonify({
             "success": True,

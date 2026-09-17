@@ -11,6 +11,8 @@ CREATE TABLE users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+INSERT INTO users (enrollment, email, password, role)
+VALUES ('23BECE30291', 'hetavinpokiya4672@gmail.com', '1111', 'ADMIN');
 ALTER TABLE users
 MODIFY role ENUM('admin','faculty','mentor','student');
 
@@ -137,3 +139,11 @@ SELECT f.name, f.profession
             FROM users u
             INNER JOIN faculty f ON u.email = f.email
             WHERE u.id = 2
+
+
+
+
+
+drop table attendance
+
+DELETE FROM students
